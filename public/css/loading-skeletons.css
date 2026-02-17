@@ -1,0 +1,398 @@
+/* ========================================
+   LOADING SKELETONS
+   Beautiful loading states for better UX
+   ======================================== */
+
+/* ===== BASE SKELETON STYLES ===== */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ===== SKELETON SHAPES ===== */
+.skeleton-text {
+  height: 16px;
+  margin-bottom: 12px;
+  border-radius: 4px;
+}
+
+.skeleton-text-sm {
+  height: 12px;
+  width: 60%;
+}
+
+.skeleton-text-md {
+  height: 16px;
+  width: 80%;
+}
+
+.skeleton-text-lg {
+  height: 20px;
+  width: 100%;
+}
+
+.skeleton-title {
+  height: 24px;
+  width: 70%;
+  margin-bottom: 16px;
+  border-radius: 6px;
+}
+
+.skeleton-circle {
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+}
+
+.skeleton-circle-sm {
+  width: 32px;
+  height: 32px;
+}
+
+.skeleton-circle-lg {
+  width: 64px;
+  height: 64px;
+}
+
+.skeleton-circle-xl {
+  width: 100px;
+  height: 100px;
+}
+
+.skeleton-rectangle {
+  width: 100%;
+  height: 200px;
+  border-radius: 12px;
+}
+
+.skeleton-square {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 12px;
+}
+
+/* ===== SKELETON CARD ===== */
+.skeleton-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.skeleton-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.skeleton-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ===== SKELETON DASHBOARD CARD ===== */
+.skeleton-dashboard-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.skeleton-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.skeleton-stat-item {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+}
+
+/* ===== SKELETON PACKAGE CARD ===== */
+.skeleton-package-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeleton-package-image {
+  width: 100%;
+  height: 180px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.skeleton-package-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ===== SKELETON LIST ===== */
+.skeleton-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeleton-list-item {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ===== SKELETON TABLE ===== */
+.skeleton-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+.skeleton-table-row {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.skeleton-table-cell {
+  padding: 16px;
+}
+
+.skeleton-table-cell:first-child {
+  border-radius: 12px 0 0 12px;
+}
+
+.skeleton-table-cell:last-child {
+  border-radius: 0 12px 12px 0;
+}
+
+/* ===== SKELETON CHART ===== */
+.skeleton-chart {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 24px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.skeleton-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.skeleton-chart-body {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.skeleton-chart-bar {
+  flex: 1;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  border-radius: 8px 8px 0 0;
+}
+
+.skeleton-chart-bar:nth-child(1) { height: 60%; animation-delay: 0s; }
+.skeleton-chart-bar:nth-child(2) { height: 80%; animation-delay: 0.1s; }
+.skeleton-chart-bar:nth-child(3) { height: 45%; animation-delay: 0.2s; }
+.skeleton-chart-bar:nth-child(4) { height: 90%; animation-delay: 0.3s; }
+.skeleton-chart-bar:nth-child(5) { height: 70%; animation-delay: 0.4s; }
+.skeleton-chart-bar:nth-child(6) { height: 55%; animation-delay: 0.5s; }
+
+/* ===== SKELETON PROFILE ===== */
+.skeleton-profile {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 32px;
+  text-align: center;
+}
+
+.skeleton-profile-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+}
+
+.skeleton-profile-name {
+  height: 24px;
+  width: 60%;
+  margin: 0 auto 12px;
+  border-radius: 6px;
+}
+
+.skeleton-profile-bio {
+  height: 16px;
+  width: 80%;
+  margin: 0 auto 8px;
+  border-radius: 4px;
+}
+
+/* ===== SKELETON GRID ===== */
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+/* ===== SKELETON PULSE VARIANT ===== */
+.skeleton-pulse {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ===== SKELETON WAVE VARIANT ===== */
+.skeleton-wave {
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-wave::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: skeleton-wave 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-wave {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ===== SKELETON SHIMMER VARIANT ===== */
+.skeleton-shimmer {
+  background: linear-gradient(
+    110deg,
+    rgba(255, 255, 255, 0.1) 8%,
+    rgba(255, 255, 255, 0.2) 18%,
+    rgba(255, 255, 255, 0.1) 33%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.2s linear infinite;
+}
+
+@keyframes skeleton-shimmer {
+  to { background-position-x: -200%; }
+}
+
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
+@media (max-width: 768px) {
+  .skeleton-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .skeleton-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .skeleton-chart {
+    height: 250px;
+  }
+}
+
+/* ===== UTILITY CLASSES ===== */
+.skeleton-hidden {
+  display: none;
+}
+
+.skeleton-visible {
+  display: block;
+}
+
+/* Fade in content when loaded */
+.content-loaded {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== DARK MODE SUPPORT ===== */
+[data-theme="dark"] .skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+}
+
+[data-theme="dark"] .skeleton-card,
+[data-theme="dark"] .skeleton-dashboard-card,
+[data-theme="dark"] .skeleton-package-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}

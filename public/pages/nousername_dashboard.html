@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - BuddyStore</title>
+  <link rel="icon" type="image/x-icon" href="../images/normal.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/animations.css">
+  <link rel="stylesheet" href="../css/modern-emoji-style.css">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-left {
+      display: flex;
+      gap: 1rem;
+      font-weight: 600;
+    }
+
+    .navbar-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logout-button {
+      background: linear-gradient(135deg, #ff2b84, #e91e63);
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(255, 43, 132, 0.3);
+    }
+
+    .logout-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 43, 132, 0.4);
+    }
+
+    /* Username Alert Banner */
+    .username-alert-banner {
+      background: linear-gradient(135deg, #dc3545, #c82333);
+      color: white;
+      padding: 1rem 1.5rem;
+      font-weight: 600;
+      text-align: center;
+      font-size: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 8px 20px rgba(220, 53, 69, 0.4);
+      border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      animation: pulse 2s infinite;
+      cursor: pointer;
+    }
+
+    .username-alert-banner:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(220, 53, 69, 0.5);
+    }
+
+    @keyframes pulse {
+      0%, 100% { 
+        box-shadow: 0 8px 20px rgba(220, 53, 69, 0.4);
+      }
+      50% { 
+        box-shadow: 0 12px 30px rgba(220, 53, 69, 0.6);
+      }
+    }
+
+    /* Regular announcement banner */
+    .announcement-banner {
+      background: linear-gradient(135deg, #007aff, #00c6ff);
+      color: white;
+      padding: 0.8rem 1.5rem;
+      font-weight: 600;
+      text-align: center;
+      font-size: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 8px 20px rgba(0, 122, 255, 0.3);
+      border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .announcement-banner:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0, 122, 255, 0.4);
+    }
+
+    .content {
+      max-width: 900px;
+      margin: 3rem auto;
+      padding: 1rem;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 2rem;
+      border-radius: 24px;
+      text-align: center;
+      margin-bottom: 2rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.3);
+    }
+
+    .avatar {
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      margin-bottom: 10px;
+      border: 4px solid #0066ff;
+      box-shadow: 0 0 0 2px rgba(0, 102, 255, 0.2);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .avatar:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.3);
+    }
+
+    /* Username Warning Card */
+    .username-warning-card {
+      background: linear-gradient(135deg, #fff5f5, #fed7d7);
+      border: 2px solid #fc8181;
+      border-radius: 24px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(252, 129, 129, 0.2);
+      animation: shake 0.5s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .username-warning-card h3 {
+      color: #c53030;
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .username-warning-card p {
+      color: #742a2a;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+
+    .username-guide {
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      text-align: left;
+    }
+
+    .username-guide h4 {
+      color: #c53030;
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+
+    .username-guide ol {
+      color: #742a2a;
+      padding-left: 1.5rem;
+    }
+
+    .username-guide li {
+      margin-bottom: 0.5rem;
+      line-height: 1.5;
+    }
+
+    .telegram-button {
+      background: linear-gradient(135deg, #0088cc, #006699);
+      color: white;
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 136, 204, 0.3);
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .telegram-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 136, 204, 0.4);
+    }
+
+    /* Disabled state for features */
+    .disabled-overlay {
+      position: relative;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .disabled-overlay::after {
+      content: '🔒 Username Required';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(220, 53, 69, 0.9);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      z-index: 10;
+    }
+
+    /* Stats Section */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 16px;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.3);
+    }
+
+    .stat-number {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #0066ff;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: #666;
+      font-weight: 500;
+    }
+
+    /* Package sections */
+    .category-group {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 24px;
+      padding: 1.8rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .category-group:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.3);
+    }
+
+    .category-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #0066ff;
+      margin-bottom: 1.2rem;
+      border-left: 4px solid #0066ff;
+      padding-left: 10px;
+    }
+
+    .category-packages {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .package-card {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 1rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .package-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.3);
+    }
+
+    .package-card h4 {
+      margin: 0 0 0.5rem;
+      color: #0066ff;
+      font-weight: 600;
+    }
+
+    .package-card p {
+      margin: 0.25rem 0;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 2rem 0;
+      color: #555;
+      font-size: 14px;
+    }
+
+    .footer a {
+      color: #0066ff;
+      text-decoration: none;
+    }
+
+    a {
+      color: #0066ff;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .navbar-left a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      }
+      
+      .category-packages {
+        grid-template-columns: 1fr;
+      }
+      
+      .navbar {
+        padding: 1rem;
+      }
+      
+      .content {
+        padding: 0.5rem;
+      }
+
+      .username-alert-banner {
+        font-size: 14px;
+        padding: 0.8rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-left">
+      <div>DASHBOARD</div>
+      <a id="buyLink" href="#" onclick="checkUsernameForBuy()">BUY MORE</a>
+    </div>
+    <div class="navbar-right">
+      <button class="logout-button" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+  
+  <!-- Username Alert Banner (shown when username is missing) -->
+  <div class="username-alert-banner" id="usernameAlertBanner" style="display: none;" onclick="showUsernameGuide()">
+    <span id="username-alert-text">
+      ⚠️ <strong>ACTION REQUIRED:</strong> Please add a username to your Telegram account to use all features! 
+      <br><small>Tap here for instructions</small>
+    </span>
+  </div>
+
+  <!-- Regular Announcement Banner (shown when username exists) -->
+  <div class="announcement-banner" id="regularBanner" onclick="goToBuy()" style="cursor: pointer;">
+    <span id="announcement-text">🔥 Mixed v500 Pack now available! <br> Tap to get it.</span>
+  </div>
+
+  <div class="content">
+    <!-- Username Warning Card (detailed explanation) -->
+    <div class="username-warning-card" id="usernameWarningCard" style="display: none;">
+      <h3>🚨 Username Required for Full Access</h3>
+      <p>
+        <strong>Your Telegram account doesn't have a username set.</strong> 
+        This is required for our system to send you videos and process orders correctly.
+      </p>
+      <p>
+        Without a username, you'll see <code>@undefined</code> and won't be able to:
+        • Receive videos via Telegram bot<br>
+        • Place orders<br>
+        • Get customer support<br>
+        • Access premium features
+      </p>
+      
+      <div class="username-guide">
+        <h4>📱 How to Add Username to Telegram:</h4>
+        <ol>
+          <li>Open <strong>Telegram app</strong> on your phone</li>
+          <li>Go to <strong>Settings</strong> (tap the hamburger menu ☰)</li>
+          <li>Tap on <strong>"Username"</strong> or <strong>"Edit Profile"</strong></li>
+          <li>Enter a unique username (e.g., john_doe123)</li>
+          <li>Tap <strong>"Save"</strong> or <strong>"Done"</strong></li>
+          <li><strong>Log out and log back in</strong> to this website</li>
+        </ol>
+      </div>
+      
+      <div style="margin-top: 1.5rem;">
+        <a href="https://telegram.org/" target="_blank" class="telegram-button">
+          📱 Open Telegram App
+        </a>
+        <button onclick="refreshPage()" class="telegram-button" style="margin-left: 1rem; background: linear-gradient(135deg, #28a745, #20c997);">
+          🔄 Refresh After Setting Username
+        </button>
+      </div>
+    </div>
+
+    <!-- User Info Card -->
+    <div class="card">
+      <img id="profile-pic" class="avatar" src="" alt="Profile Picture">
+      <p><strong>Welcome, <span id="fullName"></span>!</strong></p>
+      <p>Telegram Username:<br> <a id="username" href="#"></a></p>
+      <div id="usernameStatus"></div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card">
+        <div class="stat-number" id="totalPackages">Loading...</div>
+        <div class="stat-label">Total Packages</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="totalVideos">Loading...</div>
+        <div class="stat-label">Total Videos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="totalSpent">Loading...</div>
+        <div class="stat-label">Total Spent</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="latestPackage">Loading...</div>
+        <div class="stat-label">Latest Package</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="memberSince">Loading...</div>
+        <div class="stat-label">Member Since</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="avgOrderSize">Loading...</div>
+        <div class="stat-label">Avg Order Size</div>
+      </div>
+    </div>
+
+    <!-- Packages Section -->
+    <h3 style="margin-bottom: 1rem;">Your Video Packages</h3>
+    <div id="packages" class="category-groups"></div>
+
+  </div>
+
+  <footer class="footer">
+    Powered by <a href="https://t.me/buddyseller" target="_blank">BuddySeller</a>
+  </footer>
+
+  <script>
+    // Get URL parameters
+    const params = new URLSearchParams(window.location.search);
+    const username = params.get("name");
+    const profilePic = params.get("pic");
+
+    // Store in localStorage
+    localStorage.setItem("username", username);
+    localStorage.setItem("profilePic", profilePic);
+
+    // Check if username is valid
+    const isValidUsername = username && username !== 'null' && username !== 'undefined' && username.trim() !== '';
+
+    // Initialize page based on username status
+    initializePage();
+
+    function initializePage() {
+      // Set user info
+      document.getElementById("fullName").textContent = isValidUsername ? username : "Anonymous User";
+      
+      if (isValidUsername) {
+        document.getElementById("username").textContent = "@" + username;
+        document.getElementById("username").href = "https://t.me/" + username;
+        
+        // Show regular banner, hide username alert
+        document.getElementById("regularBanner").style.display = "block";
+        document.getElementById("usernameAlertBanner").style.display = "none";
+        document.getElementById("usernameWarningCard").style.display = "none";
+        
+        // Enable buy link
+        const buyLink = document.getElementById("buyLink");
+        buyLink.href = `/buy.html?username=${username}`;
+        buyLink.onclick = null; // Remove the check function
+        
+        // Show success status
+        document.getElementById("usernameStatus").innerHTML = `
+          <div style="background: #d4edda; color: #155724; padding: 0.5rem 1rem; border-radius: 8px; margin-top: 1rem; font-size: 0.9rem;">
+            ✅ Username verified! All features are available.
+          </div>
+        `;
+        
+      } else {
+        document.getElementById("username").textContent = "@undefined";
+        document.getElementById("username").href = "#";
+        
+        // Show username alert banner, hide regular banner
+        document.getElementById("regularBanner").style.display = "none";
+        document.getElementById("usernameAlertBanner").style.display = "block";
+        document.getElementById("usernameWarningCard").style.display = "block";
+        
+        // Disable buy link
+        const buyLink = document.getElementById("buyLink");
+        buyLink.href = "#";
+        buyLink.onclick = checkUsernameForBuy;
+        
+        // Show warning status
+        document.getElementById("usernameStatus").innerHTML = `
+          <div style="background: #f8d7da; color: #721c24; padding: 0.5rem 1rem; border-radius: 8px; margin-top: 1rem; font-size: 0.9rem;">
+            ⚠️ No username detected. Please add a username to your Telegram account.
+          </div>
+        `;
+        
+        // Disable certain features
+        disableFeatures();
+      }
+
+      // Set profile picture
+      const profilePicElement = document.getElementById("profile-pic");
+      setProfilePicture(profilePicElement, profilePic);
+
+      // Load user data
+      loadUserData();
+    }
+
+    function disableFeatures() {
+      // Add disabled overlay to stats and packages when they load
+      setTimeout(() => {
+        const statsGrid = document.getElementById("statsGrid");
+        const packagesSection = document.getElementById("packages");
+        
+        if (!isValidUsername) {
+          statsGrid.classList.add("disabled-overlay");
+          packagesSection.classList.add("disabled-overlay");
+        }
+      }, 1000);
+    }
+
+    function checkUsernameForBuy() {
+      if (!isValidUsername) {
+        alert("❌ Please add a username to your Telegram account first!\n\nGo to Telegram Settings → Username → Set a username → Save → Refresh this page");
+        showUsernameGuide();
+        return false;
+      }
+      goToBuy();
+    }
+
+    function goToBuy() {
+      if (isValidUsername) {
+        window.location.href = `/buy.html?username=${username}`;
+      } else {
+        checkUsernameForBuy();
+      }
+    }
+
+    function showUsernameGuide() {
+      // Scroll to the warning card and highlight it
+      const warningCard = document.getElementById("usernameWarningCard");
+      warningCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+      // Add a temporary highlight effect
+      warningCard.style.transform = "scale(1.02)";
+      warningCard.style.boxShadow = "0 25px 50px rgba(252, 129, 129, 0.4)";
+      
+      setTimeout(() => {
+        warningCard.style.transform = "";
+        warningCard.style.boxShadow = "";
+      }, 2000);
+    }
+
+    function refreshPage() {
+      // Clear localStorage and reload
+      localStorage.clear();
+      window.location.reload();
+    }
+
+    function loadUserData() {
+      const usernameParam = isValidUsername ? username : "undefined_user";
+      
+      fetch("/api/history?username=" + usernameParam)
+        .then(res => res.json())
+        .then(data => {
+          updateStats(data);
+          displayPackages(data);
+        })
+        .catch(error => {
+          console.error('Error fetching user data:', error);
+          updateStats([]);
+          displayPackages([]);
+        });
+    }
+
+    function updateStats(packages) {
+      if (!packages || packages.length === 0) {
+        document.getElementById("totalPackages").textContent = "0";
+        document.getElementById("totalVideos").textContent = "0";
+        document.getElementById("totalSpent").textContent = "Rs 0";
+        document.getElementById("latestPackage").textContent = "-";
+        document.getElementById("memberSince").textContent = "-";
+        document.getElementById("avgOrderSize").textContent = "Rs 0";
+        return;
+      }
+
+      // Calculate total packages
+      const totalPackages = packages.length;
+      document.getElementById("totalPackages").textContent = totalPackages;
+
+      // Calculate total videos
+      const totalVideos = packages.reduce((sum, pkg) => sum + (pkg.count || 0), 0);
+      document.getElementById("totalVideos").textContent = totalVideos;
+
+      // Calculate total spent
+      const totalSpent = packages.reduce((sum, pkg) => {
+        if (pkg.price && pkg.price !== "FREE") {
+          const priceMatch = pkg.price.match(/[\d.]+/);
+          return sum + (priceMatch ? parseFloat(priceMatch[0]) : 0);
+        }
+        return sum;
+      }, 0);
+      document.getElementById("totalSpent").textContent = `Rs ${totalSpent.toFixed(2)}`;
+
+      // Get latest package
+      const latestPackage = packages[0]?.package || "-";
+      document.getElementById("latestPackage").textContent = latestPackage;
+
+      // Calculate member since
+      const memberSince = packages.length > 0 ? 
+        new Date(packages[packages.length - 1].date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : "-";
+      document.getElementById("memberSince").textContent = memberSince;
+
+      // Calculate average order size
+      const paidPackages = packages.filter(pkg => pkg.price && pkg.price !== "FREE");
+      const avgOrderSize = paidPackages.length > 0 ? totalSpent / paidPackages.length : 0;
+      document.getElementById("avgOrderSize").textContent = `Rs ${avgOrderSize.toFixed(0)}`;
+    }
+
+    function displayPackages(packages) {
+      const container = document.getElementById("packages");
+      
+      if (!packages || packages.length === 0) {
+        container.innerHTML = isValidUsername ? 
+          "<p>No packages found.</p>" : 
+          "<p>Please add a username to your Telegram account to view packages.</p>";
+        return;
+      }
+
+      const grouped = {};
+      packages.forEach(pkg => {
+        const cat = pkg.package.split(" ")[0];
+        if (!grouped[cat]) grouped[cat] = [];
+        grouped[cat].push(pkg);
+      });
+
+      container.innerHTML = "";
+      Object.entries(grouped).forEach(([category, categoryPackages]) => {
+        const groupDiv = document.createElement("div");
+        groupDiv.className = "category-group";
+
+        const title = document.createElement("div");
+        title.className = "category-title";
+        title.textContent = category + " Package";
+        groupDiv.appendChild(title);
+
+        const grid = document.createElement("div");
+        grid.className = "category-packages";
+
+        categoryPackages.forEach(p => {
+          const card = document.createElement("div");
+          card.className = "package-card";
+          card.innerHTML = `
+            <h4>${p.package}</h4>
+            <p>🎞 Videos: ${p.count}</p>
+            <p>📅 Date: ${p.date}</p>
+            <p>💵 Price: ${p.price}</p>
+          `;
+          grid.appendChild(card);
+        });
+
+        groupDiv.appendChild(grid);
+        container.appendChild(groupDiv);
+      });
+    }
+
+    function setProfilePicture(imgElement, profilePic) {
+      const defaultAvatar = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNTAiIGZpbGw9IiNGNUY1RjUiLz48Y2lyY2xlIGN4PSI1MCIgY3k9IjM1IiByPSIxNSIgZmlsbD0iIzk5OTk5OSIvPjxwYXRoIGQ9Ik0yMCA4NWMwLTE2LjU2OSAxMy40MzEtMzAgMzAtMzBzMzAgMTMuNDMxIDMwIDMwIiBmaWxsPSIjOTk5OTk5Ii8+PC9zdmc+';
+      
+      if (profilePic && profilePic !== 'null' && profilePic !== 'undefined' && profilePic.trim() !== '') {
+        imgElement.src = profilePic;
+        imgElement.onerror = function() {
+          this.src = defaultAvatar;
+          this.onerror = null;
+        };
+      } else {
+        imgElement.src = defaultAvatar;
+      }
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = "/";
+    }
+
+    // Add periodic check for username (in case user adds it in another tab)
+    setInterval(() => {
+      const currentUsername = localStorage.getItem("username");
+      if (!isValidUsername && currentUsername && currentUsername !== 'null' && currentUsername !== 'undefined') {
+        // Username was added, refresh the page
+        window.location.reload();
+      }
+    }, 30000); // Check every 30 seconds
+  </script>
+
+  <!-- Enhanced Animations Script -->
+  <script src="../js/twemoji-loader.js"></script>
+  <script src="../js/page-transitions.js"></script>
+</body>
+</html>

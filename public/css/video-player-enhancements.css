@@ -1,0 +1,267 @@
+/* Additional YouTube-like enhancements for the video player */
+
+/* Custom video controls styling */
+video::-webkit-media-controls-panel {
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+}
+
+video::-webkit-media-controls-play-button {
+    background-color: #fff;
+    border-radius: 50%;
+}
+
+video::-webkit-media-controls-timeline {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+}
+
+video::-webkit-media-controls-current-time-display,
+video::-webkit-media-controls-time-remaining-display {
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Enhanced hover effects */
+.video-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.video-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Loading skeleton animation */
+.video-skeleton {
+    background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Video quality indicator */
+.quality-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+/* View count styling */
+.view-count {
+    color: #aaa;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+/* Enhanced modal animations */
+.video-modal {
+    backdrop-filter: blur(10px);
+    animation: fadeIn 0.3s ease;
+}
+
+.video-modal.active .modal-content {
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Progress bar for video loading */
+.video-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: #ff0000;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* Improved search box */
+.search-box {
+    background: #121212;
+    border: 1px solid #303030;
+    transition: all 0.2s ease;
+}
+
+.search-box:focus {
+    border-color: #065fd4;
+    box-shadow: 0 0 0 2px rgba(6, 95, 212, 0.2);
+}
+
+/* Category button improvements */
+.category-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.category-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.category-btn:hover::before {
+    left: 100%;
+}
+
+/* Video grid improvements */
+.video-grid {
+    animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive video player */
+@media (max-width: 768px) {
+    .modal-content {
+        border-radius: 0;
+        height: 100vh;
+        max-height: 100vh;
+    }
+    
+    .video-player {
+        height: 50vh;
+    }
+    
+    .video-details {
+        padding: 16px;
+        height: 50vh;
+        overflow-y: auto;
+    }
+}
+
+/* Dark theme scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0f0f0f;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #303030;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #404040;
+}
+
+/* Focus states for accessibility */
+.category-btn:focus,
+.search-box:focus,
+.video-card:focus {
+    outline: 2px solid #065fd4;
+    outline-offset: 2px;
+}
+
+/* Video card focus state */
+.video-card {
+    cursor: pointer;
+    outline: none;
+}
+
+.video-card:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(6, 95, 212, 0.3);
+}
+
+/* Enhanced play button */
+.play-button {
+    transition: all 0.2s ease;
+}
+
+.play-button:hover {
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 1);
+}
+
+/* Video info animations */
+.video-info {
+    transition: all 0.2s ease;
+}
+
+.video-card:hover .video-info {
+    transform: translateY(-2px);
+}
+
+/* Loading state improvements */
+.loading {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* Error state styling */
+.error-message {
+    background: #ff4444;
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin: 16px 0;
+    text-align: center;
+}
+
+/* Success state styling */
+.success-message {
+    background: #00d562;
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin: 16px 0;
+    text-align: center;
+}

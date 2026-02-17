@@ -1,0 +1,83 @@
+# Environment variables
+.env
+.env.local
+.env.production
+.env.development
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary folders
+.tmp/
+temp/
+data/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Archive files
+*.zip
+*.tar.gz
+*.rar
+
+# Vercel
+.vercel
+
+# Testing
+coverage/
+.nyc_output/
+
+# Cache
+.cache/
+.parcel-cache/
+
+# Local development
+.qodo/
+
+# Video files (too large for git)
+public/Videos/*.mp4
+public/Videos/*.avi
+public/Videos/*.mov
+public/Videos/*.mkv
+
+# Database dumps
+*.dump
+*.sql

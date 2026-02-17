@@ -1,0 +1,4675 @@
+<!DOCTYPE html>
+<!-- Version: 2.0 - Fixed syntax error - Cache updated -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Admin Panel</title>
+  <link rel="icon" type="image/x-icon" href="../images/admin.ico?v=3">
+  
+  <!-- PWA Meta Tags -->
+  <link rel="manifest" href="/manifest.json?v=4">
+  <meta name="theme-color" content="#667eea">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Admin Panel">
+  <link rel="apple-touch-icon" href="/images/icon-192.png?v=3">
+  <link rel="icon" type="image/png" sizes="192x192" href="/images/icon-192.png?v=3">
+  <link rel="shortcut icon" href="../images/admin.ico?v=3">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/enhanced-effects.css">
+  <link rel="stylesheet" href="../css/modern-emoji-style.css">
+  <!-- Chart.js for Advanced Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: #1e293b;
+      line-height: 1.6;
+      font-size: 14px;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0 2rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .header-btn {
+      background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+      color: #475569;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 12px rgba(71, 85, 105, 0.1);
+    }
+
+    .header-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(71, 85, 105, 0.2);
+    }
+
+    .header-btn.primary {
+      background: linear-gradient(135deg, #007aff, #0066ff);
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+    }
+
+    .header-btn.primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
+    }
+
+    /* Layout */
+    .layout {
+      display: flex;
+      height: calc(100vh - 64px);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid rgba(255, 255, 255, 0.2);
+      overflow-y: auto;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar-section {
+      padding: 1.5rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .sidebar-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+    }
+
+    .user-search {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+
+    .user-search input {
+      width: 100%;
+      padding: 0.5rem 0.75rem 0.5rem 2rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 13px;
+      background: #f8fafc;
+    }
+
+    .user-search input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      background: white;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 14px;
+    }
+
+    .user-stats {
+      background: linear-gradient(135deg, rgba(0, 102, 255, 0.1), rgba(0, 198, 255, 0.1));
+      backdrop-filter: blur(10px);
+      padding: 1rem;
+      border-radius: 16px;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(0, 102, 255, 0.2);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .user-stats:hover {
+      transform: translateY(-2px);
+    }
+
+    .user-stats-number {
+      font-size: 24px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .user-stats-label {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 0.25rem;
+    }
+
+    .add-user-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #007aff, #0066ff);
+      color: white;
+      border: none;
+      padding: 0.75rem;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+    }
+
+    .add-user-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
+    }
+
+    .user-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .user-item {
+      padding: 0.75rem;
+      border-radius: 12px;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid transparent;
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .user-item:hover {
+      background: rgba(255, 255, 255, 0.8);
+      border-color: rgba(0, 102, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-item.selected {
+      background: linear-gradient(135deg, rgba(0, 102, 255, 0.1), rgba(0, 198, 255, 0.1));
+      border-color: #0066ff;
+      box-shadow: 0 4px 12px rgba(0, 102, 255, 0.2);
+    }
+
+    .user-info {
+      flex: 1;
+    }
+
+    .user-name {
+      font-weight: 500;
+      color: #0f172a;
+      font-size: 13px;
+    }
+
+    .user-meta {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 0.25rem;
+    }
+
+    .user-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      margin-top: 0.5rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.125rem 0.375rem;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 500;
+      color: white;
+      background: linear-gradient(135deg, var(--badge-color), var(--badge-color-dark));
+    }
+
+    .delete-user-btn {
+      background: #fef2f2;
+      color: #dc2626;
+      border: none;
+      padding: 0.25rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .delete-user-btn:hover {
+      background: #fee2e2;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      background: transparent;
+    }
+
+    .content-header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .content-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .content-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      color: #374151;
+      border: 1px solid rgba(209, 213, 219, 0.5);
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 1);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, #007aff, #0066ff);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+    }
+
+    .btn.primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
+    }
+
+    .btn.danger {
+      background: linear-gradient(135deg, #ff2b84, #e91e63);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(255, 43, 132, 0.3);
+    }
+
+    .btn.danger:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 43, 132, 0.4);
+    }
+
+    /* Time Filter Buttons */
+    .time-filter-btn {
+      font-size: 0.8125rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(0, 102, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .time-filter-btn.active {
+      background: linear-gradient(135deg, #007aff, #0066ff) !important;
+      color: white !important;
+      border: 2px solid #0066ff !important;
+      box-shadow: 0 4px 16px rgba(0, 122, 255, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+      font-weight: 600 !important;
+      transform: scale(1.05);
+    }
+
+    .time-filter-btn:hover:not(.active) {
+      background: rgba(0, 102, 255, 0.1);
+      border-color: rgba(0, 102, 255, 0.3);
+    }
+
+    /* Tabs */
+    .tabs {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0 2rem;
+      display: flex;
+      gap: 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .tab {
+      padding: 1rem 0;
+      border-bottom: 2px solid transparent;
+      color: #64748b;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .tab:hover {
+      color: #374151;
+      transform: translateY(-1px);
+    }
+
+    .tab.active {
+      color: #0066ff;
+      border-bottom-color: #0066ff;
+    }
+
+    /* Content Area */
+    .content-area {
+      padding: 2rem;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 1.5rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.3);
+    }
+
+    .stat-number {
+      font-size: 28px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    /* Package Cards */
+    .package-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .package-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 1.5rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .package-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.3);
+    }
+
+    .package-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .package-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .package-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .package-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .package-meta-label {
+      font-size: 11px;
+      color: #64748b;
+      text-transform: uppercase;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+
+    .package-meta-value {
+      font-size: 13px;
+      color: #374151;
+      font-weight: 500;
+    }
+
+    /* Settings */
+    .settings-section {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 1.5rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      margin-bottom: 1.5rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .settings-section:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.3);
+    }
+
+    .settings-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px !important;
+      font-weight: 500 !important;
+      color: #374151 !important;
+      margin-bottom: 0.5rem;
+      transition: none !important;
+      transform: none !important;
+    }
+
+    /* Ensure labels don't change when inputs are focused */
+    .form-group:focus-within .form-label,
+    .form-input:focus ~ .form-label,
+    .form-select:focus ~ .form-label,
+    .form-input:focus + .form-label,
+    .form-select:focus + .form-label {
+      font-size: 13px !important;
+      font-weight: 500 !important;
+      color: #374151 !important;
+      transform: none !important;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      border: 2px solid rgba(0, 102, 255, 0.1);
+      border-radius: 12px;
+      font-size: 13px;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+    }
+
+    .form-input[readonly] {
+      background: #f8fafc;
+      color: #374151;
+      border-color: #e2e8f0;
+      cursor: not-allowed;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: #0066ff;
+      box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+      background: rgba(255, 255, 255, 1);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* Price Items */
+    .price-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem;
+      background: linear-gradient(135deg, rgba(0, 102, 255, 0.05), rgba(0, 198, 255, 0.05));
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(0, 102, 255, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .price-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .price-info h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 0.25rem;
+    }
+
+    .price-info p {
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    .price-examples {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 0.5rem;
+    }
+
+    .price-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .price-input {
+      width: 80px;
+      text-align: center;
+    }
+
+    /* Modals */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 1.5rem;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #64748b;
+      padding: 0;
+      margin-left: auto;
+    }
+
+    .modal-close:hover {
+      color: #374151;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: flex-end;
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #64748b;
+    }
+
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    .empty-state h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+      font-size: 14px;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Badge Management */
+    .badge-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .badge-option {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+    }
+
+    .badge-option:hover {
+      border-color: #0066ff;
+      background: rgba(255, 255, 255, 0.9);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .badge-option.selected {
+      border-color: #0066ff;
+      background: linear-gradient(135deg, rgba(0, 102, 255, 0.1), rgba(0, 198, 255, 0.1));
+      box-shadow: 0 4px 12px rgba(0, 102, 255, 0.2);
+    }
+
+    .badge-icon {
+      font-size: 20px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      background: #f1f5f9;
+    }
+
+    .badge-info {
+      flex: 1;
+    }
+
+    .badge-name {
+      font-weight: 500;
+      color: #0f172a;
+      font-size: 13px;
+    }
+
+    .badge-description {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 0.25rem;
+    }
+
+    /* Notification */
+    .notification {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 16px;
+      padding: 1rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2);
+      border-left: 4px solid #0066ff;
+      z-index: 1001;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      max-width: 300px;
+      font-size: 13px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .notification.show {
+      transform: translateX(0);
+    }
+
+    .notification.success {
+      border-left-color: #10b981;
+    }
+
+    .notification.error {
+      border-left-color: #ef4444;
+    }
+
+    .notification.warning {
+      border-left-color: #f59e0b;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .layout {
+        flex-direction: column;
+      }
+      
+      .sidebar {
+        width: 100%;
+        height: auto;
+        max-height: 300px;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      body { font-size: 13px; }
+      .header { padding: 0.75rem 1rem; }
+      .header-left { flex: 1; }
+      .logo { font-size: 1rem; }
+      .header-right { display: flex; gap: 0.3rem; justify-content: flex-end; }
+      .header-btn { padding: 0.5rem 0.9rem; font-size: 0.85rem; min-height: 44px; }
+      .layout { flex-direction: column; }
+      .sidebar { width: 100%; height: auto; max-height: 400px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+      .main-content { width: 100%; }
+      .content-header { padding: 1rem; flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .content-header h1 { font-size: 1.3rem; }
+      .content-area { padding: 1rem; }
+      .tabs { padding: 0 1rem; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+      .tabs::-webkit-scrollbar { display: none; }
+      .tab { white-space: nowrap; font-size: 0.85rem; padding: 0.7rem 1.2rem; min-height: 44px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+      .stat-card { padding: 1rem; }
+      .stat-number { font-size: 1.5rem; }
+      .stat-label { font-size: 0.75rem; }
+      .user-card { padding: 1rem; }
+      .user-info h3 { font-size: 1rem; }
+      .btn { padding: 0.6rem 1rem; font-size: 0.85rem; min-height: 44px; }
+      .modal-content { width: 95%; max-width: 95%; margin: 1rem auto; padding: 1.5rem; max-height: 90vh; overflow-y: auto; }
+      .form-group input, .form-group select, .form-group textarea { font-size: 16px; padding: 0.6rem; min-height: 44px; }
+      input, select, textarea { font-size: 16px !important; }
+      .user-search input { font-size: 16px !important; }
+      table { font-size: 0.8rem; display: block; overflow-x: auto; }
+      th, td { padding: 0.6rem !important; white-space: nowrap; }
+      .empty-state { padding: 2rem 1rem; }
+      .empty-state-icon { font-size: 3rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-left">
+      <div class="logo">BuddyStore Admin</div>
+    </div>
+    <div class="header-right">
+      <button class="header-btn primary" onclick="refreshData()" style="font-size: 13px; padding: 0.4rem 0.8rem; min-width: 40px; justify-content: center;" title="Refresh Data">🔄</button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-title">Users</div>
+        
+        <div class="user-stats">
+          <div class="user-stats-number" id="totalUsers">0</div>
+          <div class="user-stats-label">Total Users</div>
+        </div>
+
+        <button class="add-user-btn" onclick="showAddUserModal()">
+          Add User
+        </button>
+
+        <div class="user-search">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchBar" placeholder="Search users..." oninput="filterUsers()">
+        </div>
+        
+        <div class="user-list" id="userList">
+          <div class="empty-state">
+            <div class="empty-state-icon">⏳</div>
+            <p>Loading users...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="content-header">
+        <h1 class="content-title" id="contentTitle">Dashboard Overview</h1>
+        <div class="content-actions">
+          <button class="btn" onclick="exportData()">Export Data</button>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('overview')">Overview</div>
+        <div class="tab" onclick="switchTab('packages')">Packages</div>
+        <div class="tab" onclick="switchTab('badges')">Badges</div>
+        <div class="tab" onclick="switchTab('videos')">Video Inventory</div>
+        <div class="tab" onclick="switchTab('groupsending')">Group Sending</div>
+        <div class="tab" onclick="switchTab('settings')">Settings</div>
+      </div>
+
+      <div class="content-area">
+        <div id="overview-tab" class="tab-content active">
+
+          <!-- Time Period Filter -->
+          <div class="settings-section" style="margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+              <div class="overview-time-filters" style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                <button class="btn time-filter-btn active" onclick="setOverviewTimeFilter('today')" data-period="today">Today</button>
+                <button class="btn time-filter-btn" onclick="setOverviewTimeFilter('week')" data-period="week">This Week</button>
+                <button class="btn time-filter-btn" onclick="setOverviewTimeFilter('month')" data-period="month">This Month</button>
+                <button class="btn time-filter-btn" onclick="setOverviewTimeFilter('year')" data-period="year">This Year</button>
+                <button class="btn time-filter-btn" onclick="setOverviewTimeFilter('all')" data-period="all">All Time</button>
+                <button class="btn time-filter-btn" onclick="showOverviewCustomRange()" data-period="custom">📅 Custom Range</button>
+              </div>
+              <button class="btn primary" onclick="refreshOverviewData()" title="Refresh Overview">🔄 Refresh</button>
+            </div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-number" id="totalPackages">0</div>
+              <div class="stat-label">Total Packages</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" id="totalRevenue">Rs 0</div>
+              <div class="stat-label">Total Revenue</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" id="activeUsers">0</div>
+              <div class="stat-label">Active Users</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" id="totalVideos">0</div>
+              <div class="stat-label">Total Videos</div>
+            </div>
+          </div>
+
+          <!-- Analytics Charts Section -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+            <!-- Revenue Trend Analysis -->
+            <div class="settings-section">
+              <div class="settings-title">📈 Revenue Trend Analysis</div>
+              <canvas id="overviewRevenueChart" style="max-height: 350px;"></canvas>
+            </div>
+
+            <!-- Package Distribution -->
+            <div class="settings-section">
+              <div class="settings-title">🎯 Package Distribution</div>
+              <canvas id="overviewPackageChart" style="max-height: 350px;"></canvas>
+            </div>
+          </div>
+
+          <!-- Customer Insights Section -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+            <!-- Top Customers Chart -->
+            <div class="settings-section">
+              <div class="settings-title">🏆 Top 10 Customers by Revenue</div>
+              <canvas id="overviewTopCustomersChart" style="max-height: 350px;"></canvas>
+            </div>
+
+            <!-- Order Value Distribution -->
+            <div class="settings-section">
+              <div class="settings-title">📊 Order Value Distribution</div>
+              <canvas id="overviewOrderValueChart" style="max-height: 350px;"></canvas>
+            </div>
+          </div>
+
+          <!-- Top 10 Customers Table -->
+          <div class="settings-section" style="margin-top: 1.5rem;">
+            <div class="settings-title">🏆 Top 10 Customers</div>
+            <div style="overflow-x: auto;">
+              <table id="overviewTopCustomersTable" style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+                <thead>
+                  <tr style="background: linear-gradient(135deg, rgba(0, 102, 255, 0.1), rgba(0, 198, 255, 0.1)); border-bottom: 2px solid rgba(0, 102, 255, 0.2);">
+                    <th style="padding: 1rem; text-align: left; font-weight: 600; color: #0f172a; font-size: 0.875rem;">Rank</th>
+                    <th style="padding: 1rem; text-align: left; font-weight: 600; color: #0f172a; font-size: 0.875rem;">Username</th>
+                    <th style="padding: 1rem; text-align: center; font-weight: 600; color: #0f172a; font-size: 0.875rem;">Total Orders</th>
+                    <th style="padding: 1rem; text-align: right; font-weight: 600; color: #0f172a; font-size: 0.875rem;">Total Spent</th>
+                    <th style="padding: 1rem; text-align: right; font-weight: 600; color: #0f172a; font-size: 0.875rem;">Avg Order Value</th>
+                    <th style="padding: 1rem; text-align: center; font-weight: 600; color: #0f172a; font-size: 0.875rem;">Last Purchase</th>
+                  </tr>
+                </thead>
+                <tbody id="overviewTopCustomersTableBody">
+                  <tr>
+                    <td colspan="6" style="padding: 3rem; text-align: center; color: #64748b;">
+                      <div style="font-size: 3rem; margin-bottom: 1rem;">⏳</div>
+                      <div>Loading customer data...</div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="packages-tab" class="tab-content">
+          <div id="packageList">
+            <div class="empty-state">
+              <div class="empty-state-icon">📦</div>
+              <h3>No User Selected</h3>
+              <p>Select a user to view and manage their packages.</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="badges-tab" class="tab-content">
+          <div id="badgesContent">
+            <div class="empty-state">
+              <div class="empty-state-icon">🏅️</div>
+              <h3>Badge Management</h3>
+              <p>Select a user to manage their badges and reputation.</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="videos-tab" class="tab-content">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3>Video Inventory Management</h3>
+            <button class="btn primary" onclick="refreshVideoInventory()">
+              🔄 Refresh Counts
+            </button>
+          </div>
+          
+          <div class="stats-grid" id="videoStatsGrid">
+            <!-- Video count cards will be populated here -->
+          </div>
+          
+          <div class="settings-section">
+            <div class="settings-title">Package Video Counts</div>
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;">Monitor how many videos are uploaded to each package category.</p>
+            <div id="videoInventoryContainer">
+              <div class="empty-state">
+                <div class="empty-state-icon">⏳</div>
+                <p>Loading video inventory...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="groupsending-tab" class="tab-content">
+          <!-- Target Selection Section -->
+          <div class="settings-section">
+            <div class="settings-title">Target Selection</div>
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 1.5rem;">Choose where to send the videos - either auto-detect from bot's groups/channels or enter manually.</p>
+            
+            <div class="form-group">
+              <label class="form-label">Target Type</label>
+              <div style="display: flex; gap: 1.5rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal; cursor: pointer;">
+                  <input type="radio" name="targetType" value="auto" checked style="margin: 0;" onchange="toggleTargetInput()">
+                  <span>Auto-detect (Bot's groups/channels)</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal; cursor: pointer;">
+                  <input type="radio" name="targetType" value="manual" style="margin: 0;" onchange="toggleTargetInput()">
+                  <span>Manual entry</span>
+                </label>
+              </div>
+              
+              <!-- Auto-detect section -->
+              <div id="autoDetectSection">
+                <button class="btn" onclick="loadBotChats()" id="loadChatsBtn">
+                  Scan Bot's Groups & Channels
+                </button>
+                <div id="chatsList" style="margin-top: 1rem;"></div>
+              </div>
+              
+              <!-- Manual entry section -->
+              <div id="manualEntrySection" style="display: none;">
+                <input type="text" class="form-input" id="manualChatId" placeholder="Enter @username, chat ID, or invite link">
+                <p style="font-size: 0.8rem; color: #666; margin-top: 0.5rem;">
+                  Examples: @mychannel, -1001234567890, https://t.me/mychannel
+                </p>
+              </div>
+            </div>
+            
+            <!-- ✅ Topic ID Section (for forum threads) -->
+            <div class="form-group" style="margin-top: 1.5rem;">
+              <label class="form-label">
+                📝 Topic ID (Optional - for forum groups)
+                <span style="font-weight: normal; color: #666; font-size: 0.85rem; margin-left: 0.5rem;">
+                  Leave empty to send to general chat
+                </span>
+              </label>
+              <input 
+                type="text" 
+                class="form-input" 
+                id="topicId" 
+                placeholder="Enter topic ID (e.g., 2, 5, 12)"
+                style="max-width: 300px;"
+              >
+              <div style="background: #e3f2fd; border-left: 4px solid #2196F3; padding: 12px; margin-top: 0.8rem; border-radius: 4px;">
+                <div style="font-size: 0.85rem; color: #1565C0; margin-bottom: 0.5rem; font-weight: 600;">
+                  💡 How to find Topic ID:
+                </div>
+                <div style="font-size: 0.8rem; color: #1976D2; line-height: 1.6;">
+                  1. Open your topic in Telegram<br>
+                  2. Copy the topic link (e.g., https://t.me/c/3274479338/2)<br>
+                  3. The last number is your Topic ID (in this example: <strong>2</strong>)<br>
+                  4. Use the <a href="/telegram-id-converter.html" target="_blank" style="color: #1565C0; text-decoration: underline;">ID Converter Tool</a> for easy conversion
+                </div>
+              </div>
+              <p style="font-size: 0.75rem; color: #999; margin-top: 0.8rem; font-style: italic;">
+                ℹ️ Topic ID is only needed for groups with topics/forums enabled. Leave empty for regular groups or to send to general chat.
+              </p>
+            </div>
+          </div>
+          
+          <!-- Package Configuration Section -->
+          <div class="settings-section">
+            <div class="settings-title">Package Configuration</div>
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 1.5rem;">Select the package type and specify how many videos to send.</p>
+            
+            <div class="form-group">
+              <label class="form-label">Package Type</label>
+              <select class="form-select" id="groupPackageType" onchange="updateGroupVideoCount()">
+                <option value="">Choose package type</option>
+                <option value="Mixed">Mixed</option>
+                <option value="Mom And Son">Mom And Son</option>
+                <option value="Rape">Rape</option>
+                <option value="SL Leaks">SL Leaks</option>
+                <option value="CCTV">CCTV</option>
+                <option value="Full Package">Full Package (All Categories)</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Number of Videos</label>
+              <input type="number" class="form-input" id="groupVideoCount" placeholder="How many videos to send" min="1" max="1000">
+              <div id="groupVideoLimit" style="font-size: 0.8rem; color: #666; margin-top: 0.5rem; font-style: italic;">Select a package to see available videos</div>
+            </div>
+          </div>
+          
+          <!-- Sending Options Section -->
+          <div class="settings-section">
+            <div class="settings-title">Sending Options</div>
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 1.5rem;">Configure how the videos should be sent and what additional features to include.</p>
+            
+            <div class="form-group">
+              <label class="form-label">Delivery Settings</label>
+              <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 0.5rem;">
+                <label style="display: flex; align-items: center; gap: 0.75rem; font-weight: normal; cursor: pointer; padding: 0.75rem; background: rgba(255, 255, 255, 0.5); border-radius: 8px; border: 1px solid rgba(0, 102, 255, 0.1); transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255, 255, 255, 0.8)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.5)'">
+                  <input type="checkbox" id="groupSendWithCaption" style="margin: 0;">
+                  <div>
+                    <div style="font-weight: 500; color: #0f172a;">Add caption to videos</div>
+                    <div style="font-size: 0.8rem; color: #64748b;">Include custom captions with each video</div>
+                  </div>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; font-weight: normal; cursor: pointer; padding: 0.75rem; background: rgba(255, 255, 255, 0.5); border-radius: 8px; border: 1px solid rgba(0, 102, 255, 0.1); transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255, 255, 255, 0.8)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.5)'">
+                  <input type="checkbox" id="groupSendWithDelay" checked style="margin: 0;">
+                  <div>
+                    <div style="font-weight: 500; color: #0f172a;">Add delay between videos</div>
+                    <div style="font-size: 0.8rem; color: #64748b;">Recommended to avoid rate limiting</div>
+                  </div>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; font-weight: normal; cursor: pointer; padding: 0.75rem; background: rgba(255, 255, 255, 0.5); border-radius: 8px; border: 1px solid rgba(0, 102, 255, 0.1); transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255, 255, 255, 0.8)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.5)'">
+                  <input type="checkbox" id="groupSendNotification" checked style="margin: 0;">
+                  <div>
+                    <div style="font-weight: 500; color: #0f172a;">Send completion notification</div>
+                    <div style="font-size: 0.8rem; color: #64748b;">Notify admin when sending is complete</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+            
+            <!-- Caption Template -->
+            <div class="form-group" id="captionSection" style="display: none;">
+              <label class="form-label">Caption Template</label>
+              <textarea class="form-textarea" id="groupCaptionTemplate" placeholder="Enter caption template...\n\nAvailable variables:\n{package} - Package name\n{count} - Video number\n{total} - Total videos"></textarea>
+            </div>
+          </div>
+          
+          <!-- Send Actions Section -->
+          <div class="settings-section">
+            <div class="settings-title">Send Actions</div>
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 1.5rem;">Review your configuration and start the sending process.</p>
+            
+            <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem;">
+              <button class="btn primary" onclick="sendVideosToGroup()" id="sendToGroupBtn">
+                Send Videos to Group/Channel
+              </button>
+              <button class="btn" onclick="previewGroupSending()">
+                Preview Configuration
+              </button>
+            </div>
+            
+            <!-- Status Display -->
+            <div id="groupSendingStatus" style="display: none;"></div>
+          </div>
+        </div>
+
+        <div id="settings-tab" class="tab-content">
+          <div class="settings-section">
+            <div class="settings-title">Announcement Management</div>
+            <div class="form-group">
+              <label class="form-label">Current Announcement</label>
+              <textarea class="form-textarea" id="announcementText" placeholder="Enter announcement text..."></textarea>
+            </div>
+            <div style="display: flex; gap: 0.75rem;">
+              <button class="btn primary" onclick="updateAnnouncement()">Update Announcement</button>
+              <button class="btn" onclick="generateRandomAnnouncement()">Generate Random</button>
+            </div>
+          </div>
+          
+          <div class="settings-section">
+            <div class="settings-title">Package Pricing</div>
+            <div id="packagePricingContainer"></div>
+            <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
+              <button class="btn primary" onclick="updateAllPricing()">Update All Pricing</button>
+              <button class="btn" onclick="refreshPricingData()">Refresh Pricing Data</button>
+            </div>
+          </div>
+          
+          <div class="settings-section">
+            <div class="settings-title">Sample Configuration</div>
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;">Configure how many sample videos are given for each package type.</p>
+            <div id="sampleConfigContainer"></div>
+            <button class="btn primary" onclick="updateAllSampleConfig()" style="margin-top: 1rem;">Update All Sample Counts</button>
+          </div>
+
+          <div class="settings-section">
+            <div class="settings-title">Minimum Video Count Per Package</div>
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;">Set the minimum number of videos required for each package when creating orders. Previously locked to 100 for all packages.</p>
+            <div id="minVideoConfigContainer"></div>
+            <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
+              <button class="btn primary" onclick="updateAllMinVideoConfig()">Update All Minimums</button>
+              <button class="btn" onclick="refreshMinVideoConfig()">Refresh</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="analytics-tab" class="tab-content" style="display: none;">
+          <!-- Time Period Filter -->
+          <div class="settings-section" style="margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                <button class="btn time-filter-btn" onclick="setAnalyticsTimeFilter('today')" data-period="today">Today</button>
+                <button class="btn time-filter-btn" onclick="setAnalyticsTimeFilter('week')" data-period="week">This Week</button>
+                <button class="btn time-filter-btn" onclick="setAnalyticsTimeFilter('month')" data-period="month">This Month</button>
+                <button class="btn time-filter-btn" onclick="setAnalyticsTimeFilter('year')" data-period="year">This Year</button>
+                <button class="btn time-filter-btn active" onclick="setAnalyticsTimeFilter('all')" data-period="all">All Time</button>
+                <button class="btn time-filter-btn" onclick="showCustomRangeModal()" data-period="custom">📅 Custom</button>
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn" onclick="exportAnalyticsData()" title="Export Analytics Data">📊 Export</button>
+                <button class="btn primary" onclick="loadAnalytics()" title="Refresh Analytics">🔄 Refresh</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Key Metrics -->
+          <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(0, 122, 255, 0.1), rgba(0, 102, 255, 0.05));">
+              <div class="stat-label" style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">💰 Total Revenue</div>
+              <div class="stat-number" id="analyticsRevenue" style="color: #007aff;">Rs 0.00</div>
+              <div style="font-size: 0.75rem; color: #10b981; margin-top: 0.5rem;" id="analyticsRevenueChange">
+                <span id="analyticsRevenueChangeIcon">📈</span> <span id="analyticsRevenueChangeText">+0% from last period</span>
+              </div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05));">
+              <div class="stat-label" style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">📦 Total Orders</div>
+              <div class="stat-number" id="analyticsOrders" style="color: #10b981;">0</div>
+              <div style="font-size: 0.75rem; color: #10b981; margin-top: 0.5rem;" id="analyticsOrdersChange">
+                <span id="analyticsOrdersChangeIcon">📈</span> <span id="analyticsOrdersChangeText">+0% from last period</span>
+              </div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(124, 58, 237, 0.05));">
+              <div class="stat-label" style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">👥 Active Users</div>
+              <div class="stat-number" id="analyticsUsers" style="color: #8b5cf6;">0</div>
+              <div style="font-size: 0.75rem; color: #10b981; margin-top: 0.5rem;" id="analyticsUsersChange">
+                <span id="analyticsUsersChangeIcon">📈</span> <span id="analyticsUsersChangeText">+0% from last period</span>
+              </div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.05));">
+              <div class="stat-label" style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">💎 Avg Order Value</div>
+              <div class="stat-number" id="analyticsAvgOrder" style="color: #f59e0b;">Rs 0.00</div>
+              <div style="font-size: 0.75rem; color: #10b981; margin-top: 0.5rem;" id="analyticsAvgOrderChange">
+                <span id="analyticsAvgOrderChangeIcon">📈</span> <span id="analyticsAvgOrderChangeText">+0% from last period</span>
+              </div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(219, 39, 119, 0.05));">
+              <div class="stat-label" style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">📹 Total Videos Sold</div>
+              <div class="stat-number" id="analyticsTotalVideos" style="color: #ec4899;">0</div>
+              <div style="font-size: 0.75rem; color: #64748b; margin-top: 0.5rem;" id="analyticsVideosInfo">
+                Across all packages
+              </div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05));">
+              <div class="stat-label" style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">🔥 Conversion Rate</div>
+              <div class="stat-number" id="analyticsConversionRate" style="color: #ef4444;">0%</div>
+              <div style="font-size: 0.75rem; color: #64748b; margin-top: 0.5rem;" id="analyticsConversionInfo">
+                Orders per user
+              </div>
+            </div>
+          </div>
+
+          <!-- Advanced Charts Section -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+            <!-- Revenue Over Time Chart (Line Chart with Chart.js) -->
+            <div class="settings-section">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <div class="settings-title">📈 Revenue Trend Analysis</div>
+                <select id="revenueChartType" onchange="updateRevenueChartType()" style="padding: 0.5rem; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.875rem;">
+                  <option value="line">Line Chart</option>
+                  <option value="bar">Bar Chart</option>
+                  <option value="area">Area Chart</option>
+                </select>
+              </div>
+              <canvas id="revenueChartCanvas" style="max-height: 350px;"></canvas>
+            </div>
+
+            <!-- Package Distribution Chart (Doughnut Chart with Chart.js) -->
+            <div class="settings-section">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <div class="settings-title">🎯 Package Distribution</div>
+                <select id="packageChartType" onchange="updatePackageChartType()" style="padding: 0.5rem; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.875rem;">
+                  <option value="doughnut">Doughnut Chart</option>
+                  <option value="pie">Pie Chart</option>
+                  <option value="polarArea">Polar Area</option>
+                </select>
+              </div>
+              <canvas id="packageChartCanvas" style="max-height: 350px;"></canvas>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+            <!-- User Activity Heatmap -->
+            <div class="settings-section">
+              <div class="settings-title">🔥 User Activity Heatmap</div>
+              <canvas id="userActivityChart" style="max-height: 350px;"></canvas>
+            </div>
+
+            <!-- Revenue by Package Type (Horizontal Bar) -->
+            <div class="settings-section">
+              <div class="settings-title">💰 Revenue by Package Type</div>
+              <canvas id="revenueByPackageChart" style="max-height: 350px;"></canvas>
+            </div>
+          </div>
+
+          <!-- Customer Insights Section -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+            <!-- Top Customers Chart -->
+            <div class="settings-section">
+              <div class="settings-title">🏆 Top 10 Customers by Revenue</div>
+              <canvas id="topCustomersChart" style="max-height: 350px;"></canvas>
+            </div>
+
+            <!-- Order Value Distribution -->
+            <div class="settings-section">
+              <div class="settings-title">📊 Order Value Distribution</div>
+              <canvas id="orderValueDistributionChart" style="max-height: 350px;"></canvas>
+            </div>
+          </div>
+
+          <!-- Top 10 Customers Table -->
+          <div class="settings-section" style="margin-top: 1.5rem;">
+            <div class="settings-title">🏆 Top 10 Customers</div>
+            <div style="overflow-x: auto;">
+              <table id="topCustomersTable" style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+                <thead>
+                  <tr style="background: linear-gradient(135deg, rgba(0, 102, 255, 0.1), rgba(0, 198, 255, 0.1)); border-bottom: 2px solid rgba(0, 102, 255, 0.2);">
+                    <th style="padding: 1rem; text-align: left; font-weight: 600; color: #0f172a; font-size: 0.875rem;">Rank</th>
+                    <th style="padding: 1rem; text-align: left; font-weight: 600; color: #0f172a; font-size: 0.875rem;">Username</th>
+                    <th style="padding: 1rem; text-align: center; font-weight: 600; color: #0f172a; font-size: 0.875rem;">Total Orders</th>
+                    <th style="padding: 1rem; text-align: right; font-weight: 600; color: #0f172a; font-size: 0.875rem;">Total Spent</th>
+                    <th style="padding: 1rem; text-align: right; font-weight: 600; color: #0f172a; font-size: 0.875rem;">Avg Order Value</th>
+                    <th style="padding: 1rem; text-align: center; font-weight: 600; color: #0f172a; font-size: 0.875rem;">Last Purchase</th>
+                  </tr>
+                </thead>
+                <tbody id="topCustomersTableBody">
+                  <tr>
+                    <td colspan="6" style="padding: 3rem; text-align: center; color: #64748b;">
+                      <div style="font-size: 3rem; margin-bottom: 1rem;">⏳</div>
+                      <div>Loading customer data...</div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add User Modal -->
+  <div id="addUserModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Add New User</h3>
+        <button class="modal-close" onclick="closeModal('addUserModal')">&times;</button>
+      </div>
+      <form id="addUserForm">
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input type="text" class="form-input" id="newUsername" placeholder="Enter username (@ will be removed automatically)" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input type="text" class="form-input" id="newFirstName" placeholder="Enter first name" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input type="text" class="form-input" id="newLastName" placeholder="Enter last name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Telegram ID</label>
+          <input type="number" class="form-input" id="newTelegramId" placeholder="Enter Telegram ID" required>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn" onclick="closeModal('addUserModal')">Cancel</button>
+          <button type="submit" class="btn primary">Add User</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Package Modal -->
+  <div id="addPackageModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Add Package</h3>
+        <button class="modal-close" onclick="closeModal('addPackageModal')">&times;</button>
+      </div>
+      <form id="addPackageForm">
+        <div class="form-group">
+          <label class="form-label">Package Type</label>
+          <select class="form-select" id="packageType" required onchange="handlePackageTypeChange()">
+            <option value="">Select package type</option>
+            <option value="Mixed">Mixed</option>
+            <option value="Mom And Son">Mom And Son</option>
+            <option value="Rape">Rape</option>
+            <option value="SL Leaks">SL Leaks</option>
+            <option value="CCTV">CCTV</option>
+            <option value="Full Package">Full Package (All Categories)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Video Count</label>
+          <input type="number" class="form-input" id="videoCount" placeholder="Number of videos" min="1" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Price (Rs)</label>
+          <input type="number" class="form-input" id="packagePrice" placeholder="Price will be calculated automatically" min="0" step="0.01" required readonly>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input type="date" class="form-input" id="packageDate" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Delivery Method</label>
+          <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.5rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal; cursor: pointer;">
+              <input type="radio" name="deliveryMethod" value="sendConfirmation" checked style="margin: 0;">
+              <span>Add package and send confirmation to admin</span>
+            </label>
+          </div>
+          <p style="font-size: 0.8rem; color: #64748b; margin: 0.5rem 0 0 0;">Package will be added and confirmation sent to admin (works like normal orders from buy.html)</p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn" onclick="closeModal('addPackageModal')">Cancel</button>
+          <button type="button" class="btn" onclick="addPackageToCart()" style="background: linear-gradient(135deg, #f1c40f, #f39c12); color: white;">Add to Cart</button>
+          <button type="submit" class="btn primary">Add Package</button>
+        </div>
+      </form>
+
+      <!-- Admin Cart Section -->
+      <div id="adminCartSection" style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid rgba(0, 102, 255, 0.1);">
+        <h4 style="margin-bottom: 1rem; color: #374151; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 0.5rem;">
+          Cart <span id="adminCartBadge" style="background: #ff4757; color: white; border-radius: 50%; padding: 0.15rem 0.4rem; font-size: 0.75rem; font-weight: 600;">0</span>
+        </h4>
+        <div id="adminCartItems" style="max-height: 200px; overflow-y: auto;">
+          <!-- Cart items will be added here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Badge Management Modal -->
+  <div id="badgeModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Manage Badges</h3>
+        <button class="modal-close" onclick="closeModal('badgeModal')">&times;</button>
+      </div>
+      <div id="badgeModalContent">
+        <!-- Badge content will be populated here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification -->
+  <div id="notification" class="notification">
+    <div id="notificationMessage"></div>
+  </div>
+
+  <script>
+    let allUsers = [];
+    let selectedUser = null;
+    let currentTab = 'overview';
+    
+    // Badge System with vibrant colors
+    const BADGE_TYPES = {
+      // Membership Level Badges
+      VIP: { icon: '👑', color: '#FFD700', description: 'VIP Customer', priority: 1 },
+      PREMIUM: { icon: '💎', color: '#9B59B6', description: 'Premium Member', priority: 2 },
+      LOYAL: { icon: '⭐', color: '#E74C3C', description: 'Loyal Customer', priority: 3 },
+      NEW: { icon: '🆕', color: '#00FF7F', description: 'New Customer', priority: 4 },
+      
+      // Achievement Badges
+      FIRST_PURCHASE: { icon: '🎯', color: '#FF1493', description: 'First Purchase', priority: 5 },
+      REGULAR_CUSTOMER: { icon: '🔥', color: '#FF4500', description: 'Regular Customer', priority: 6 },
+      LOYAL_CUSTOMER: { icon: '⭐', color: '#F39C12', description: 'Loyal Customer', priority: 7 },
+      VIP_MEMBER: { icon: '👑', color: '#8E44AD', description: 'VIP Member', priority: 8 },
+      
+      // Spending Badges
+      BIG_SPENDER: { icon: '💰', color: '#00CED1', description: 'Big Spender', priority: 9 },
+      PREMIUM_CUSTOMER: { icon: '💎', color: '#2C3E50', description: 'Premium Customer', priority: 10 },
+      
+      // Video Collection Badges
+      VIDEO_COLLECTOR: { icon: '📹', color: '#FF6347', description: 'Video Collector', priority: 11 },
+      CONTENT_MASTER: { icon: '🎬', color: '#FF69B4', description: 'Content Master', priority: 12 },
+      
+      // Special Badges
+      BULK_BUYER: { icon: '📦', color: '#8A2BE2', description: 'Bulk Buyer', priority: 13 },
+      EARLY_ADOPTER: { icon: '🚀', color: '#00BFFF', description: 'Early Adopter', priority: 14 },
+      VERIFIED: { icon: '✅', color: '#1E90FF', description: 'Verified User', priority: 15 },
+      
+      // Admin Badges
+      SUSPENDED: { icon: '⛔', color: '#DC143C', description: 'Suspended', priority: 16 },
+      BLACKLISTED: { icon: '🚫', color: '#2F4F4F', description: 'Blacklisted', priority: 17 }
+    };
+    
+    // Package pricing
+    let packagePrices = {
+      'Mixed': { pricePerVideo: 1 },
+      'Mom And Son': { pricePerVideo: 1.5 },
+      'Rape': { pricePerVideo: 1.2 },
+      'SL Leaks': { pricePerVideo: 0.8 },
+      'CCTV': { pricePerVideo: 1.0 },
+
+    };
+
+    // Automatic Price Calculation System
+    const automaticPriceCalculation = {
+      // Package pricing configuration (will be loaded from server)
+      packagePrices: {
+        'Mixed': { pricePerVideo: 1 },
+        'Mom And Son': { pricePerVideo: 1.5 },
+        'Rape': { pricePerVideo: 1.2 },
+        'SL Leaks': { pricePerVideo: 0.8 },
+        'CCTV': { pricePerVideo: 1.0 },
+
+      },
+
+      // Function to calculate price automatically
+      calculatePrice: function(packageType, videoCount) {
+        const pricing = this.packagePrices[packageType];
+        if (!pricing) return 0;
+        return (videoCount * pricing.pricePerVideo).toFixed(2);
+      },
+
+      // Function to update price when package type or count changes
+      updatePrice: function() {
+        const packageType = document.getElementById('packageType').value;
+        const videoCount = parseInt(document.getElementById('videoCount').value) || 0;
+        const priceField = document.getElementById('packagePrice');
+        
+        if (packageType === 'Full Package') {
+          // Full Package has fixed price
+          priceField.value = '4000.00';
+        } else if (packageType && videoCount > 0) {
+          const calculatedPrice = this.calculatePrice(packageType, videoCount);
+          priceField.value = calculatedPrice;
+        } else {
+          // Clear price if no valid input
+          priceField.value = '';
+        }
+      },
+
+      // Initialize automatic price calculation
+      init: function() {
+        // Load current pricing from server
+        fetch('/api/package-prices')
+          .then(response => response.json())
+          .then(prices => {
+            this.packagePrices = prices;
+            console.log('📊 Loaded package prices for auto-calculation:', prices);
+            
+            // Update global packagePrices variable too
+            packagePrices = prices;
+          })
+          .catch(error => {
+            console.error('❌ Failed to load package prices:', error);
+          });
+
+        // Add event listeners for automatic calculation
+        this.setupEventListeners();
+      },
+
+      // Setup event listeners
+      setupEventListeners: function() {
+        // Use event delegation since modal might not be in DOM yet
+        document.addEventListener('change', (e) => {
+          if (e.target.id === 'packageType' || e.target.id === 'videoCount') {
+            this.updatePrice();
+          }
+        });
+        
+        document.addEventListener('input', (e) => {
+          if (e.target.id === 'videoCount') {
+            this.updatePrice();
+          }
+        });
+      }
+    };
+
+    // Handle package type change in add package modal
+    async function handlePackageTypeChange() {
+      const packageType = document.getElementById('packageType').value;
+      const videoCountField = document.getElementById('videoCount');
+      const priceField = document.getElementById('packagePrice');
+      
+      if (packageType === 'Full Package') {
+        // For Full Package, get total video count from all categories
+        try {
+          const response = await fetch('/api/video-counts');
+          if (response.ok) {
+            const videoCounts = await response.json();
+            const categories = ['Mixed', 'Mom And Son', 'Rape', 'SL Leaks', 'CCTV'];
+            const totalVideos = categories.reduce((sum, cat) => {
+              return sum + (videoCounts[cat]?.totalVideos || 0);
+            }, 0);
+            
+            // Set video count to total and make it readonly
+            videoCountField.value = totalVideos;
+            videoCountField.readOnly = true;
+            videoCountField.style.background = '#f8fafc';
+            videoCountField.style.color = '#374151';
+            
+            // Set fixed price for Full Package
+            priceField.value = '4000.00';
+            
+            console.log(`📦 Full Package selected: ${totalVideos.toLocaleString()} total videos for Rs.4000`);
+          } else {
+            throw new Error('Failed to load video counts');
+          }
+        } catch (error) {
+          console.error('Error loading video counts for Full Package:', error);
+          alert('Failed to load video counts for Full Package. Please try again.');
+          // Reset selection
+          document.getElementById('packageType').value = '';
+        }
+      } else {
+        // For regular packages, make video count editable
+        videoCountField.readOnly = false;
+        videoCountField.style.background = '';
+        videoCountField.style.color = '';
+        videoCountField.value = '';
+        priceField.value = '';
+      }
+      
+      // Trigger price calculation
+      automaticPriceCalculation.updatePrice();
+    }
+
+    // Handle Full Package order creation
+    async function handleFullPackageOrder(username, deliveryMethod) {
+      try {
+        showNotification('Creating Full Package order...', 'info');
+        
+        // Get real-time video counts
+        const response = await fetch('/api/video-counts');
+        if (!response.ok) {
+          throw new Error('Failed to load video counts');
+        }
+        
+        const videoCounts = await response.json();
+        const categories = ['Mixed', 'Mom And Son', 'Rape', 'SL Leaks', 'CCTV'];
+        
+        // Create bulk order items
+        const fullPackageItems = [];
+        let totalVideos = 0;
+        
+        for (const category of categories) {
+          const videoCount = videoCounts[category]?.totalVideos || 0;
+          if (videoCount > 0) {
+            const item = {
+              package: category,
+              count: videoCount,
+              pricePerVideo: packagePrices[category]?.pricePerVideo || 1,
+              totalPrice: (packagePrices[category]?.pricePerVideo || 1) * videoCount,
+              date: document.getElementById('packageDate').value
+            };
+            fullPackageItems.push(item);
+            totalVideos += videoCount;
+          }
+        }
+        
+        if (fullPackageItems.length === 0) {
+          throw new Error('No videos available for Full Package');
+        }
+        
+        console.log(`🎁 Creating Full Package for @${username}: ${totalVideos.toLocaleString()} videos`);
+        
+        // Create bulk order
+        const bulkOrderData = {
+          username,
+          cartItems: fullPackageItems,
+          isFullPackage: true,
+          totalPrice: 4000,
+          totalVideos: totalVideos
+        };
+        
+        // Choose endpoint based on delivery method
+        let endpoint;
+        let successMessage;
+        
+        switch(deliveryMethod) {
+          case 'deliverImmediately':
+            // Send bulk order and deliver immediately
+            endpoint = '/api/bulk-order';
+            const bulkResponse = await fetch(endpoint, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(bulkOrderData)
+            });
+            
+            if (bulkResponse.ok) {
+              successMessage = `Full Package created and delivery started for @${username}! ${totalVideos.toLocaleString()} videos will be sent sequentially.`;
+            } else {
+              throw new Error('Failed to create bulk order');
+            }
+            break;
+            
+          case 'sendConfirmation':
+            // Send bulk order with confirmation
+            endpoint = '/api/bulk-order';
+            const confirmResponse = await fetch(endpoint, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(bulkOrderData)
+            });
+            
+            if (confirmResponse.ok) {
+              successMessage = `Full Package created and confirmation sent to admin for @${username}! ${totalVideos.toLocaleString()} videos ready for delivery.`;
+            } else {
+              throw new Error('Failed to create bulk order');
+            }
+            break;
+            
+          default:
+            // Add Full Package to user's dashboard only
+            const fullPackageRecord = {
+              package: `Full Package v${totalVideos}`,
+              count: totalVideos,
+              date: document.getElementById('packageDate').value,
+              price: 'Rs 4000.00',
+              isFullPackage: true
+            };
+            
+            const addResponse = await fetch('/api/addPackage', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                username,
+                packageType: 'Full Package',
+                count: totalVideos,
+                price: 4000,
+                date: document.getElementById('packageDate').value
+              })
+            });
+            
+            if (addResponse.ok) {
+              successMessage = `Full Package added to @${username}'s dashboard! ${totalVideos.toLocaleString()} videos for Rs.4000.`;
+            } else {
+              throw new Error('Failed to add Full Package');
+            }
+        }
+        
+        showNotification(successMessage, 'success');
+        closeModal('addPackageModal');
+        
+        // Refresh packages for the selected user
+        if (selectedUser && selectedUser.username === username) {
+          loadPackages(username);
+        }
+        
+        // Clear form
+        document.getElementById('addPackageForm').reset();
+        document.getElementById('packageDate').value = new Date().toISOString().split('T')[0];
+        document.querySelector('input[name="deliveryMethod"][value="sendConfirmation"]').checked = true;
+        
+      } catch (error) {
+        console.error('Error creating Full Package order:', error);
+        showNotification(`Failed to create Full Package: ${error.message}`, 'error');
+      }
+    }
+
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', function() {
+      fetchUsers();
+      updateOverviewStats(); // Load and cache stats on page load - will be reused when switching tabs
+      
+      // Set default date to today
+      document.getElementById('packageDate').value = new Date().toISOString().split('T')[0];
+      
+      // Initialize automatic price calculation
+      automaticPriceCalculation.init();
+      
+      // Initialize username input auto-cleanup
+      initializeUsernameInputs();
+    });
+
+    // ✅ Function to automatically remove "@" from username inputs
+    function initializeUsernameInputs() {
+      // Add event listeners to all username input fields
+      const usernameInputs = ['newUsername', 'searchBar'];
+      
+      usernameInputs.forEach(inputId => {
+        const input = document.getElementById(inputId);
+        if (input) {
+          // Remove @ on input
+          input.addEventListener('input', function(e) {
+            let value = e.target.value;
+            if (value.startsWith('@')) {
+              e.target.value = value.substring(1);
+            }
+          });
+          
+          // Remove @ on paste
+          input.addEventListener('paste', function(e) {
+            setTimeout(() => {
+              let value = e.target.value;
+              if (value.startsWith('@')) {
+                e.target.value = value.substring(1);
+              }
+            }, 10);
+          });
+        }
+      });
+      
+      console.log('✅ Username input auto-cleanup initialized');
+    }
+
+    // Fetch all users
+    async function fetchUsers() {
+      try {
+        console.log('Fetching users...');
+        const res = await fetch('/api/users');
+        
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        
+        const users = await res.json();
+        console.log('Users fetched:', users);
+        
+        allUsers = users;
+        displayUsers(users);
+        updateUserStats();
+      } catch (error) {
+        console.error('Error fetching users:', error);
+        showNotification('Failed to load users: ' + error.message, 'error');
+        
+        // Show error state in user list
+        const userList = document.getElementById('userList');
+        userList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">❌</div>
+            <h3>Error Loading Users</h3>
+            <p>Failed to load users. Please try again.</p>
+            <button class="btn primary" onclick="fetchUsers()">
+              Retry
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    // Display users in sidebar
+    function displayUsers(users) {
+      const userList = document.getElementById('userList');
+      
+      if (users.length === 0) {
+        userList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">👥</div>
+            <h3>No Users Found</h3>
+            <p>No users match your search criteria.</p>
+          </div>
+        `;
+        return;
+      }
+
+      userList.innerHTML = '';
+
+      users.forEach(user => {
+        if (!user.username) return; // Skip users without username
+
+        const div = document.createElement('div');
+        div.className = 'user-item';
+        if (selectedUser && selectedUser.username === user.username) {
+          div.classList.add('selected');
+        }
+
+        div.innerHTML = `
+          <div class="user-info">
+            <div class="user-name">@${user.username}</div>
+            <div class="user-meta">Last active: Recently</div>
+            <div class="user-badges" id="badges-${user.username}"></div>
+          </div>
+          <button class="delete-user-btn" onclick="deleteUser('${user.username}')" title="Delete User">
+            🗑️
+          </button>
+        `;
+        
+        // Load and display user badges
+        // DISABLED: Badge endpoint causing 503 errors
+        // loadUserBadges(user.username);
+
+        // Fixed event handler
+        div.addEventListener('click', function(e) {
+          if (e.target.classList.contains('delete-user-btn')) return;
+          e.preventDefault();
+          selectUser(user, div);
+        });
+
+        userList.appendChild(div);
+      });
+    }
+
+    // Filter users based on search
+    function filterUsers() {
+      const keyword = document.getElementById('searchBar').value.toLowerCase();
+      const filtered = allUsers.filter(u => 
+        u.username && u.username.toLowerCase().includes(keyword)
+      );
+      displayUsers(filtered);
+    }
+
+    // Select a user
+    async function selectUser(user, clickedElement = null) {
+      console.log('Selecting user:', user);
+      selectedUser = user;
+      
+      // Update UI to show selected user
+      document.querySelectorAll('.user-item').forEach(u => u.classList.remove('selected'));
+      
+      if (clickedElement) {
+        clickedElement.classList.add('selected');
+      }
+      
+      // Update content title
+      document.getElementById('contentTitle').innerHTML = `${user.username}`;
+      
+      // Load user's packages
+      await loadPackages(user.username);
+      
+      // Switch to packages tab if not on overview
+      if (currentTab !== 'overview') {
+        switchTab('packages');
+      }
+    }
+
+    // Load packages for selected user
+    async function loadPackages(username) {
+      try {
+        console.log('Loading packages for user:', username);
+        
+        // Show loading state
+        const packageList = document.getElementById('packageList');
+        packageList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">⏳</div>
+            <h3>Loading Packages</h3>
+            <p>Please wait while we load the packages...</p>
+          </div>
+        `;
+        
+        const res = await fetch(`/api/history?username=${username}`);
+        
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status} - ${res.statusText}`);
+        }
+        
+        const packages = await res.json();
+        console.log('Packages loaded:', packages);
+        
+        displayPackages(packages, username);
+        
+      } catch (error) {
+        console.error('Error loading packages:', error);
+        showNotification(`Failed to load packages: ${error.message}`, 'error');
+        
+        // Show error state in packages tab
+        const packageList = document.getElementById('packageList');
+        packageList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">❌</div>
+            <h3>Error Loading Packages</h3>
+            <p>Failed to load packages for @${username}.</p>
+            <button class="btn primary" onclick="loadPackages('${username}')">
+              Retry
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    // Display packages
+    function displayPackages(packages, username) {
+      const packageList = document.getElementById('packageList');
+      
+      if (!packages || packages.length === 0) {
+        packageList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📦</div>
+            <h3>No Packages Found</h3>
+            <p>@${username} hasn't purchased any packages yet.</p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+              <button class="btn primary" onclick="showAddPackageModal('${username}')">
+                Add Package
+              </button>
+              <button class="btn" onclick="showBadgeModal('${username}')">
+                Manage Badges
+              </button>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      let html = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <h3>Packages for @${username}</h3>
+          <div style="display: flex; gap: 0.75rem;">
+            <button class="btn primary" onclick="showAddPackageModal('${username}')">
+              Add Package
+            </button>
+            <button class="btn" onclick="showBadgeModal('${username}')">
+              Manage Badges
+            </button>
+          </div>
+        </div>
+        <div class="package-grid">
+      `;
+
+      packages.forEach((pkg, index) => {
+        const isSample = pkg.isSample || pkg.price === 'FREE';
+        html += `
+          <div class="package-card">
+            <div class="package-header">
+              <div class="package-title">${pkg.package} ${isSample ? '(Sample)' : ''}</div>
+              <button class="btn danger" onclick="deletePackage('${username}', ${index})">
+                Delete
+              </button>
+            </div>
+            <div class="package-meta">
+              <div class="package-meta-item">
+                <div class="package-meta-label">Videos</div>
+                <div class="package-meta-value">${pkg.count}</div>
+              </div>
+              <div class="package-meta-item">
+                <div class="package-meta-label">Date</div>
+                <div class="package-meta-value">${pkg.date}</div>
+              </div>
+              <div class="package-meta-item">
+                <div class="package-meta-label">Price</div>
+                <div class="package-meta-value">${pkg.price}</div>
+              </div>
+              <div class="package-meta-item">
+                <div class="package-meta-label">Type</div>
+                <div class="package-meta-value">${isSample ? 'Sample' : 'Paid'}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      html += '</div>';
+      packageList.innerHTML = html;
+    }
+
+    // Update overview statistics - with time period filtering
+    async function updateOverviewStats(forceRefresh = false) {
+      try {
+        console.log('📊 Loading statistics for period:', currentOverviewPeriod);
+        
+        // Show loading state
+        document.getElementById('totalPackages').textContent = '...';
+        document.getElementById('totalRevenue').textContent = '...';
+        document.getElementById('activeUsers').textContent = '...';
+        document.getElementById('totalVideos').textContent = '...';
+        
+        // Fetch users and calculate stats based on period
+        const usersResponse = await fetch('/api/users');
+        if (!usersResponse.ok) throw new Error('Failed to fetch users');
+        const users = await usersResponse.json();
+        
+        const analytics = calculateAnalytics(users, currentOverviewPeriod);
+        
+        // Display the stats
+        document.getElementById('totalPackages').textContent = analytics.totalOrders;
+        document.getElementById('totalRevenue').textContent = `Rs ${analytics.totalRevenue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        document.getElementById('activeUsers').textContent = analytics.activeUsers;
+        document.getElementById('totalVideos').textContent = analytics.totalVideos.toLocaleString();
+        
+        console.log('✅ Statistics loaded for', currentOverviewPeriod, ':', analytics);
+        
+      } catch (error) {
+        console.error('❌ Error loading overview stats:', error);
+        // Show error state
+        document.getElementById('totalPackages').textContent = 'Error';
+        document.getElementById('totalRevenue').textContent = 'Error';
+        document.getElementById('activeUsers').textContent = 'Error';
+        document.getElementById('totalVideos').textContent = 'Error';
+      }
+    }
+
+    // Update user statistics
+    function updateUserStats() {
+      document.getElementById('totalUsers').textContent = allUsers.length;
+    }
+
+    // Switch tabs
+    function switchTab(tabName) {
+      currentTab = tabName;
+      
+      // Update tab buttons
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+      
+      // Update tab content
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      document.getElementById(`${tabName}-tab`).classList.add('active');
+      
+      // Load content based on tab
+      switch(tabName) {
+        case 'overview':
+          updateOverviewStats(); // Uses cached stats - only loads from API on page load or manual refresh
+          loadOverviewAnalytics();
+          break;
+        case 'packages':
+          if (selectedUser) {
+            loadPackages(selectedUser.username);
+          }
+          break;
+        case 'badges':
+          loadBadgeManagement();
+          break;
+        case 'videos':
+          loadVideoInventory();
+          break;
+        case 'groupsending':
+          loadGroupSending();
+          break;
+        case 'settings':
+          loadSettings();
+          break;
+        case 'analytics':
+          loadAnalytics();
+          break;
+      }
+    }
+
+    // Delete user
+    async function deleteUser(username) {
+      if (!confirm(`Are you sure you want to delete user @${username}? This action cannot be undone.`)) {
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/deleteUser', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username })
+        });
+
+        const data = await res.json();
+        
+        if (data.success) {
+          showNotification(`User @${username} deleted successfully`, 'success');
+          
+          // Clear selection if deleted user was selected
+          if (selectedUser && selectedUser.username === username) {
+            selectedUser = null;
+            document.getElementById('contentTitle').innerHTML = 'Dashboard Overview';
+            switchTab('overview');
+          }
+          
+          fetchUsers(); // Refresh user list
+        } else {
+          showNotification('Failed to delete user', 'error');
+        }
+      } catch (error) {
+        console.error('Error deleting user:', error);
+        showNotification('Failed to delete user: ' + error.message, 'error');
+      }
+    }
+
+    // Delete package
+    async function deletePackage(username, index) {
+      if (!confirm('Are you sure you want to delete this package?')) {
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/deletePackage', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, index })
+        });
+
+        const data = await res.json();
+        
+        if (data.success) {
+          showNotification('Package deleted successfully', 'success');
+          loadPackages(username); // Refresh packages
+        } else {
+          showNotification('Failed to delete package', 'error');
+        }
+      } catch (error) {
+        console.error('Error deleting package:', error);
+        showNotification('Failed to delete package: ' + error.message, 'error');
+      }
+    }
+
+    // Show add user modal
+    function showAddUserModal() {
+      document.getElementById('addUserModal').style.display = 'flex';
+    }
+
+    // Show add package modal
+    function showAddPackageModal(username) {
+      if (!username && selectedUser) {
+        username = selectedUser.username;
+      }
+      
+      if (!username) {
+        showNotification('Please select a user first', 'warning');
+        return;
+      }
+      
+      document.getElementById('addPackageModal').style.display = 'flex';
+      document.getElementById('addPackageModal').dataset.username = username;
+      
+      // Reset form
+      document.getElementById('addPackageForm').reset();
+      document.getElementById('packageDate').value = new Date().toISOString().split('T')[0];
+      
+      // Make price field readonly to prevent manual editing
+      document.getElementById('packagePrice').readOnly = true;
+      document.getElementById('packagePrice').placeholder = 'Price will be calculated automatically';
+      
+      // Reset submit button state (fix for loading state persisting)
+      const submitBtn = document.querySelector('#addPackageForm button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Add Package';
+        // Remove any inline styles that might disable the button
+        submitBtn.style.opacity = '';
+        submitBtn.style.pointerEvents = '';
+        submitBtn.style.removeProperty('opacity');
+        submitBtn.style.removeProperty('pointer-events');
+      }
+    }
+
+    // Close modal
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+      
+      // Reset submit button state when closing add package modal
+      if (modalId === 'addPackageModal') {
+        const submitBtn = document.querySelector('#addPackageForm button[type="submit"]');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Add Package';
+          // Remove any inline styles that might disable the button
+          submitBtn.style.opacity = '';
+          submitBtn.style.pointerEvents = '';
+          submitBtn.style.removeProperty('opacity');
+          submitBtn.style.removeProperty('pointer-events');
+        }
+      }
+    }
+
+    // Handle add user form submission
+    document.getElementById('addUserForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const userData = {
+        username: document.getElementById('newUsername').value,
+        firstName: document.getElementById('newFirstName').value,
+        lastName: document.getElementById('newLastName').value,
+        telegramId: parseInt(document.getElementById('newTelegramId').value)
+      };
+      
+      try {
+        const response = await fetch('/api/addUser', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(userData)
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          showNotification(`User @${userData.username} created successfully`, 'success');
+          closeModal('addUserModal');
+          fetchUsers(); // Refresh user list
+          
+          // Clear form
+          document.getElementById('addUserForm').reset();
+        } else {
+          showNotification(data.error || 'Failed to create user', 'error');
+        }
+      } catch (error) {
+        console.error('Error creating user:', error);
+        showNotification('Error creating user', 'error');
+      }
+    });
+
+    // Handle add package form submission
+    document.getElementById('addPackageForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Creating...';
+      
+      const username = document.getElementById('addPackageModal').dataset.username;
+      
+      // If cart has items, submit bulk order instead
+      if (adminPackageCart.length > 0) {
+        await submitBulkPackages();
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+        return;
+      }
+      
+      const deliveryMethod = document.querySelector('input[name="deliveryMethod"]:checked').value;
+      const packageType = document.getElementById('packageType').value;
+      
+      // Handle Full Package differently
+      if (packageType === 'Full Package') {
+        try {
+          await handleFullPackageOrder(username, deliveryMethod);
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }
+        return;
+      }
+      
+      const videoCount = parseInt(document.getElementById('videoCount').value);
+      
+      // Validate minimum video count
+      const minRequired = minVideoConfig[packageType] || 1;
+      if (videoCount < minRequired) {
+        showNotification(`Minimum ${minRequired} videos required for ${packageType} package`, 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+        return;
+      }
+      
+      const packageData = {
+        username,
+        packageType: packageType,
+        count: videoCount,
+        price: parseFloat(document.getElementById('packagePrice').value),
+        date: document.getElementById('packageDate').value
+      };
+      
+      try {
+        // Choose endpoint based on delivery method
+        let endpoint;
+        switch(deliveryMethod) {
+          case 'deliverImmediately':
+            endpoint = '/api/addPackageAndDeliver';
+            break;
+          case 'sendConfirmation':
+            endpoint = '/api/addPackageWithConfirmation';
+            break;
+          default:
+            endpoint = '/api/addPackage';
+        }
+        
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(packageData)
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          if (deliveryMethod === 'deliverImmediately') {
+            if (data.delivered) {
+              showNotification(`Package added and ${data.deliveredCount} videos delivered to @${username}!`, 'success');
+            } else {
+              showNotification(`Package added but delivery failed: ${data.deliveryError}`, 'warning');
+            }
+          } else if (deliveryMethod === 'sendConfirmation') {
+            showNotification(`Package added and confirmation message sent to admin for @${username}!`, 'success');
+          } else {
+            showNotification(`Package added to @${username} successfully`, 'success');
+          }
+          
+          // Refresh packages for the selected user
+          if (selectedUser && selectedUser.username === username) {
+            loadPackages(username);
+          }
+          
+          // Clear form for next package
+          document.getElementById('packageType').value = '';
+          document.getElementById('videoCount').value = '';
+          document.getElementById('packagePrice').value = '';
+          document.getElementById('packageDate').value = new Date().toISOString().split('T')[0];
+          document.querySelector('input[name="deliveryMethod"][value="sendConfirmation"]').checked = true;
+          
+          // Re-enable button immediately for next package
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+          submitBtn.style.opacity = '';
+          submitBtn.style.pointerEvents = '';
+          submitBtn.style.removeProperty('opacity');
+          submitBtn.style.removeProperty('pointer-events');
+        } else {
+          showNotification(data.error || 'Failed to add package', 'error');
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }
+      } catch (error) {
+        console.error('Error adding package:', error);
+        showNotification('Error adding package', 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    });
+
+    // Deliver package manually
+    async function deliverPackage(username, packageIndex) {
+      if (!confirm(`Are you sure you want to deliver this package to @${username}?`)) {
+        return;
+      }
+      
+      try {
+        showNotification('Delivering videos...', 'info');
+        
+        const response = await fetch('/api/deliverPackage', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, packageIndex })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success && data.delivered) {
+          showNotification(`Successfully delivered ${data.deliveredCount} videos to @${username}!`, 'success');
+        } else {
+          showNotification(`Delivery failed: ${data.deliveryError || 'Unknown error'}`, 'error');
+        }
+        
+        // Refresh packages to show updated delivery status
+        if (selectedUser && selectedUser.username === username) {
+          loadPackages(username);
+        }
+        
+      } catch (error) {
+        console.error('Error delivering package:', error);
+        showNotification('Error delivering package: ' + error.message, 'error');
+      }
+    }
+
+    // Show notification
+    function showNotification(message, type = 'info') {
+      const notification = document.getElementById('notification');
+      const messageEl = document.getElementById('notificationMessage');
+      
+      messageEl.textContent = message;
+      notification.className = `notification ${type}`;
+      notification.classList.add('show');
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 5000);
+    }
+
+    // Refresh data
+    function refreshData() {
+      showNotification('Refreshing data...', 'info');
+      fetchUsers();
+      updateOverviewStats(true); // Force refresh stats
+      
+      if (selectedUser) {
+        loadPackages(selectedUser.username);
+      }
+    }
+
+    // Export data
+    function exportData() {
+      showNotification('Data export feature will be implemented', 'warning');
+    }
+
+    // Close modals when clicking outside
+    window.addEventListener('click', function(e) {
+      if (e.target.classList.contains('modal')) {
+        e.target.style.display = 'none';
+      }
+    });
+
+    // ===== VIDEO INVENTORY FUNCTIONS =====
+    
+    // Load Video Inventory tab
+    async function loadVideoInventory() {
+      console.log('Loading Video Inventory tab...');
+      
+      try {
+        // Load video inventory data
+        const response = await fetch('/api/video-counts');
+        
+        if (response.ok) {
+          const inventory = await response.json();
+          displayVideoInventory(inventory);
+          
+          // Also update the stats grid
+          updateVideoStatsGrid(inventory);
+          
+          showNotification('Video inventory loaded successfully', 'success');
+        } else {
+          throw new Error('Failed to load video inventory');
+        }
+      } catch (error) {
+        console.error('Error loading video inventory:', error);
+        showNotification('Failed to load video inventory', 'error');
+        
+        // Show error state
+        const container = document.getElementById('videoInventoryContainer');
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">❌</div>
+            <h3>Error Loading Inventory</h3>
+            <p>Failed to load video inventory data.</p>
+            <button class="btn primary" onclick="loadVideoInventory()">
+              Retry
+            </button>
+          </div>
+        `;
+      }
+    }
+    
+    // Display video inventory
+    function displayVideoInventory(inventory) {
+      const container = document.getElementById('videoInventoryContainer');
+      
+      if (!inventory || Object.keys(inventory).length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📹</div>
+            <h3>No Video Data</h3>
+            <p>No video inventory data available.</p>
+          </div>
+        `;
+        return;
+      }
+      
+      // Define package order
+      const packageOrder = ['Mixed', 'Mom And Son', 'Rape', 'SL Leaks', 'CCTV'];
+      
+      let html = '';
+      
+      packageOrder.forEach(packageName => {
+        const packageData = inventory[packageName] || { totalVideos: 0, lastUpdated: 'Never' };
+        const statusColor = packageData.totalVideos > 0 ? '#10b981' : '#ef4444';
+        const statusText = packageData.totalVideos > 0 ? 'Available' : 'Empty';
+        
+        html += `
+          <div class="price-item" style="margin-bottom: 1rem;">
+            <div class="price-info" style="flex: 1;">
+              <h4>${packageName}</h4>
+              <p>Total Videos: ${packageData.totalVideos.toLocaleString()}</p>
+              <div class="price-examples">Last Updated: ${packageData.lastUpdated}</div>
+            </div>
+            <div class="price-controls" style="flex-direction: column; align-items: flex-end; gap: 0.5rem;">
+              <div style="color: ${statusColor}; font-weight: 600; font-size: 12px;">
+                ${statusText}
+              </div>
+              <button class="btn danger" onclick="clearVideoCategory('${packageName}')" 
+                      ${packageData.totalVideos === 0 ? 'disabled' : ''}
+                      style="padding: 0.25rem 0.5rem; font-size: 11px; ${packageData.totalVideos === 0 ? 'opacity: 0.5; cursor: not-allowed;' : ''}">
+                Clear All
+              </button>
+            </div>
+          </div>
+        `;
+      });
+      
+      container.innerHTML = html;
+    }
+    
+    // Update video stats grid
+    function updateVideoStatsGrid(inventory) {
+      const grid = document.getElementById('videoStatsGrid');
+      
+      if (!inventory || Object.keys(inventory).length === 0) {
+        grid.innerHTML = `
+          <div class="stat-card">
+            <div class="stat-number">0</div>
+            <div class="stat-label">Total Categories</div>
+          </div>
+        `;
+        return;
+      }
+      
+      const packageOrder = ['Mixed', 'Mom And Son', 'Rape', 'SL Leaks', 'CCTV'];
+      const validPackages = packageOrder.map(name => inventory[name] || { totalVideos: 0 }).filter(pkg => pkg.totalVideos !== undefined);
+      
+      const totalVideos = validPackages.reduce((sum, pkg) => sum + (pkg.totalVideos || 0), 0);
+      const activeCategories = validPackages.filter(pkg => (pkg.totalVideos || 0) > 0).length;
+      const largestCategory = validPackages.reduce((max, pkg, index) => 
+        (pkg.totalVideos || 0) > (max.totalVideos || 0) ? { ...pkg, name: packageOrder[index] } : max, 
+        { totalVideos: 0, name: 'None' });
+      
+      grid.innerHTML = `
+        <div class="stat-card">
+          <div class="stat-number">${totalVideos.toLocaleString()}</div>
+          <div class="stat-label">Total Videos</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">${activeCategories}</div>
+          <div class="stat-label">Active Categories</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">${largestCategory.name}</div>
+          <div class="stat-label">Largest Category</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">${(largestCategory.totalVideos || 0).toLocaleString()}</div>
+          <div class="stat-label">Max Videos</div>
+        </div>
+      `;
+    }
+    
+    // Refresh video inventory
+    async function refreshVideoInventory() {
+      showNotification('Refreshing video inventory...', 'info');
+      await loadVideoInventory();
+    }
+    
+    // Clear video category
+    async function clearVideoCategory(category) {
+      if (!confirm(`Are you sure you want to clear all videos from the ${category} category? This action cannot be undone.`)) {
+        return;
+      }
+      
+      try {
+        showNotification(`Clearing ${category} category...`, 'info');
+        
+        const response = await fetch(`/api/inventory/${encodeURIComponent(category)}`, {
+          method: 'DELETE'
+        });
+        
+        if (response.ok) {
+          showNotification(`Successfully cleared ${category} category`, 'success');
+          await loadVideoInventory(); // Refresh the display
+        } else {
+          const data = await response.json();
+          throw new Error(data.error || 'Failed to clear category');
+        }
+      } catch (error) {
+        console.error('Error clearing video category:', error);
+        showNotification(`Failed to clear ${category} category: ${error.message}`, 'error');
+      }
+    }
+    
+    // ===== SETTINGS FUNCTIONS =====
+    
+    // Load Settings tab
+    async function loadSettings() {
+      console.log('Loading Settings tab...');
+      
+      try {
+        // Load current announcement
+        await loadCurrentAnnouncement();
+        
+        // Load package pricing
+        await loadPackagePricing();
+        
+        // Load sample configuration
+        await loadSampleConfiguration();
+        
+        // Load minimum video configuration
+        await loadMinVideoConfig();
+        
+        showNotification('Settings loaded successfully', 'success');
+      } catch (error) {
+        console.error('Error loading settings:', error);
+        showNotification('Failed to load settings', 'error');
+      }
+    }
+    
+    // Load current announcement
+    async function loadCurrentAnnouncement() {
+      try {
+        const response = await fetch('/api/announcement');
+        if (response.ok) {
+          const data = await response.json();
+          document.getElementById('announcementText').value = data.announcement || '';
+        }
+      } catch (error) {
+        console.error('Error loading announcement:', error);
+      }
+    }
+    
+    // Load package pricing
+    async function loadPackagePricing() {
+      const container = document.getElementById('packagePricingContainer');
+      
+      try {
+        const response = await fetch('/api/package-prices');
+        if (response.ok) {
+          const prices = await response.json();
+          displayPackagePricing(prices);
+        } else {
+          throw new Error('Failed to load pricing');
+        }
+      } catch (error) {
+        console.error('Error loading package pricing:', error);
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">❌</div>
+            <h3>Error Loading Pricing</h3>
+            <p>Failed to load package pricing data.</p>
+          </div>
+        `;
+      }
+    }
+    
+    // Display package pricing
+    function displayPackagePricing(prices) {
+      const container = document.getElementById('packagePricingContainer');
+      
+      // Define package order - FIXED: Added 'Foreign'
+      const packageOrder = ['Mixed', 'Mom And Son', 'Rape', 'SL Leaks', 'CCTV', 'Foreign'];
+      
+      let html = '';
+      
+      packageOrder.forEach(packageName => {
+        const pricing = prices[packageName] || { pricePerVideo: 1.0 };
+        
+        html += `
+          <div class="price-item">
+            <div class="price-info">
+              <h4>${packageName}</h4>
+              <p>Price per video in Rs</p>
+              <div class="price-examples">Examples: 100 videos = Rs ${(100 * pricing.pricePerVideo).toFixed(2)}, 500 videos = Rs ${(500 * pricing.pricePerVideo).toFixed(2)}</div>
+            </div>
+            <div class="price-controls">
+              <input type="number" class="form-input price-input" 
+                     value="${pricing.pricePerVideo}" 
+                     min="0" step="0.1" 
+                     data-package="${packageName}"
+                     onchange="updatePackagePrice('${packageName}', this.value)">
+            </div>
+          </div>
+        `;
+      });
+      
+      container.innerHTML = html;
+    }
+    
+    // Load sample configuration
+    async function loadSampleConfiguration() {
+      const container = document.getElementById('sampleConfigContainer');
+      
+      try {
+        const response = await fetch('/api/sample-config');
+        if (response.ok) {
+          const config = await response.json();
+          displaySampleConfiguration(config);
+        } else {
+          // Use default configuration if API fails
+          const defaultConfig = {
+            'Mixed': 10,
+            'Mom And Son': 5,
+            'Rape': 5,
+            'SL Leaks': 15,
+            'CCTV': 8,
+            'Foreign': 10
+          };
+          displaySampleConfiguration(defaultConfig);
+        }
+      } catch (error) {
+        console.error('Error loading sample configuration:', error);
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">❌</div>
+            <h3>Error Loading Sample Config</h3>
+            <p>Failed to load sample configuration data.</p>
+          </div>
+        `;
+      }
+    }
+    
+    // Display sample configuration
+    function displaySampleConfiguration(config) {
+      const container = document.getElementById('sampleConfigContainer');
+      
+      // Define package order - FIXED: Added 'Foreign'
+      const packageOrder = ['Mixed', 'Mom And Son', 'Rape', 'SL Leaks', 'CCTV', 'Foreign'];
+      
+      let html = '';
+      
+      packageOrder.forEach(packageName => {
+        const sampleCount = config[packageName] || 10;
+        
+        html += `
+          <div class="price-item">
+            <div class="price-info">
+              <h4>${packageName}</h4>
+              <p>Number of sample videos given to new users</p>
+              <div class="price-examples">Users get ${sampleCount} free videos when they first try this package</div>
+            </div>
+            <div class="price-controls">
+              <input type="number" class="form-input price-input" 
+                     value="${sampleCount}" 
+                     min="1" max="50" 
+                     data-package="${packageName}"
+                     onchange="updateSampleCount('${packageName}', this.value)">
+            </div>
+          </div>
+        `;
+      });
+      
+      container.innerHTML = html;
+    }
+    
+    // Update package price
+    function updatePackagePrice(packageName, newPrice) {
+      console.log(`Updating price for ${packageName}: ${newPrice}`);
+      // This function should send the update to the server
+      // Implementation depends on your backend API
+    }
+    
+    // Update sample count
+    function updateSampleCount(packageName, newCount) {
+      console.log(`Updating sample count for ${packageName}: ${newCount}`);
+      // This function should send the update to the server
+      // Implementation depends on your backend API
+    }
+    
+    // Update all pricing
+    async function updateAllPricing() {
+      try {
+        const priceInputs = document.querySelectorAll('.price-input[data-package]');
+        const updates = {};
+        
+        priceInputs.forEach(input => {
+          const packageName = input.dataset.package;
+          const value = parseFloat(input.value);
+          if (!isNaN(value) && value >= 0) {
+            updates[packageName] = { pricePerVideo: value };
+          }
+        });
+        
+        const response = await fetch('/api/package-prices', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updates)
+        });
+        
+        if (response.ok) {
+          showNotification('All pricing updated successfully', 'success');
+        } else {
+          throw new Error('Failed to update pricing');
+        }
+      } catch (error) {
+        console.error('Error updating pricing:', error);
+        showNotification('Failed to update pricing', 'error');
+      }
+    }
+    
+    // Update all sample configuration
+    async function updateAllSampleConfig() {
+      try {
+        const sampleInputs = document.querySelectorAll('#sampleConfigContainer .price-input[data-package]');
+        const updates = {};
+        
+        sampleInputs.forEach(input => {
+          const packageName = input.dataset.package;
+          const value = parseInt(input.value);
+          if (!isNaN(value) && value >= 1) {
+            updates[packageName] = value;
+          }
+        });
+        
+        const response = await fetch('/api/sample-config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updates)
+        });
+        
+        if (response.ok) {
+          showNotification('All sample configuration updated successfully', 'success');
+        } else {
+          throw new Error('Failed to update sample configuration');
+        }
+      } catch (error) {
+        console.error('Error updating sample configuration:', error);
+        showNotification('Failed to update sample configuration', 'error');
+      }
+    }
+    
+    // Refresh pricing data
+    async function refreshPricingData() {
+      showNotification('Refreshing pricing data...', 'info');
+      await loadPackagePricing();
+    }
+    
+    // Update announcement
+    async function updateAnnouncement() {
+      try {
+        const announcement = document.getElementById('announcementText').value;
+        
+        const response = await fetch('/api/announcement', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ announcement })
+        });
+        
+        if (response.ok) {
+          showNotification('Announcement updated successfully', 'success');
+        } else {
+          throw new Error('Failed to update announcement');
+        }
+      } catch (error) {
+        console.error('Error updating announcement:', error);
+        showNotification('Failed to update announcement', 'error');
+      }
+    }
+    
+    // Generate random announcement
+    function generateRandomAnnouncement() {
+      const announcements = [
+        '🎉 New video packages available! Check out our latest collection.',
+        '🔥 Special offer: Get 20% more videos with every purchase!',
+        '📹 Fresh content added daily. Don\'t miss out!',
+        '⭐ Premium quality videos now available in all categories.',
+        '🚀 Upgraded servers for faster video delivery!',
+        '💎 VIP members get exclusive access to new releases.',
+        '🎯 Limited time offer: Double videos on first purchase!',
+        '📱 New mobile-optimized viewing experience available.',
+        '🔔 Enable notifications to get alerts for new content.',
+        '🎊 Thank you for being part of our community!'
+      ];
+      
+      const randomAnnouncement = announcements[Math.floor(Math.random() * announcements.length)];
+      document.getElementById('announcementText').value = randomAnnouncement;
+    }
+    
+    // ===== GROUP SENDING FUNCTIONS =====
+    
+    // Global variables for group sending
+    let availableChats = [];
+    let selectedChatId = null;
+    let videoInventory = {};
+    
+    // Load Group Sending tab
+    async function loadGroupSending() {
+      console.log('Loading Group Sending tab...');
+      
+      // Initialize caption toggle
+      const captionCheckbox = document.getElementById('groupSendWithCaption');
+      if (captionCheckbox) {
+        captionCheckbox.addEventListener('change', function() {
+          const captionSection = document.getElementById('captionSection');
+          captionSection.style.display = this.checked ? 'block' : 'none';
+        });
+      }
+      
+      // Load video inventory for limits
+      await loadVideoInventoryForGroups();
+      
+      showNotification('Group Sending tab loaded. Select a target and package to begin.', 'info');
+    }
+    
+    // Toggle between auto-detect and manual entry
+    function toggleTargetInput() {
+      const targetType = document.querySelector('input[name="targetType"]:checked').value;
+      const autoSection = document.getElementById('autoDetectSection');
+      const manualSection = document.getElementById('manualEntrySection');
+      
+      if (targetType === 'auto') {
+        autoSection.style.display = 'block';
+        manualSection.style.display = 'none';
+      } else {
+        autoSection.style.display = 'none';
+        manualSection.style.display = 'block';
+      }
+      
+      // Clear selection
+      selectedChatId = null;
+      document.querySelectorAll('.chat-item').forEach(item => item.classList.remove('selected'));
+    }
+    
+    // Load bot's chats (groups and channels)
+    async function loadBotChats() {
+      const loadBtn = document.getElementById('loadChatsBtn');
+      const chatsList = document.getElementById('chatsList');
+      
+      try {
+        loadBtn.textContent = 'Scanning...';
+        loadBtn.disabled = true;
+        
+        chatsList.innerHTML = `
+          <div style="text-align: center; padding: 1rem; color: #666;">
+            <p>Scanning for groups and channels...</p>
+          </div>
+        `;
+        
+        const response = await fetch('/api/bot-chats');
+        
+        if (response.ok) {
+          const data = await response.json();
+          availableChats = data.chats || [];
+          displayAvailableChats(availableChats);
+          
+          if (availableChats.length === 0) {
+            showNotification('No groups or channels found. Make sure the bot is added to groups/channels.', 'warning');
+          } else {
+            showNotification(`Found ${availableChats.length} groups/channels`, 'success');
+          }
+        } else {
+          throw new Error('Failed to load bot chats');
+        }
+      } catch (error) {
+        console.error('Error loading bot chats:', error);
+        chatsList.innerHTML = `
+          <div style="text-align: center; padding: 1rem; color: #e74c3c;">
+            <p>Failed to scan for groups/channels</p>
+            <p style="font-size: 0.8rem;">Error: ${error.message}</p>
+          </div>
+        `;
+        showNotification('Failed to scan for groups/channels', 'error');
+      } finally {
+        loadBtn.textContent = 'Scan Bot\'s Groups & Channels';
+        loadBtn.disabled = false;
+      }
+    }
+    
+    // Display available chats
+    function displayAvailableChats(chats) {
+      const chatsList = document.getElementById('chatsList');
+      
+      if (chats.length === 0) {
+        chatsList.innerHTML = `
+          <div style="text-align: center; padding: 1rem; color: #666;">
+            <h4>No Groups or Channels Found</h4>
+            <p>The bot is not added to any groups or channels yet.</p>
+            <p style="font-size: 0.8rem; margin-top: 1rem;">To add the bot:</p>
+            <ol style="text-align: left; font-size: 0.8rem; color: #666;">
+              <li>Add the bot to your group/channel</li>
+              <li>Give it admin permissions (for channels)</li>
+              <li>Click "Scan" again</li>
+            </ol>
+          </div>
+        `;
+        return;
+      }
+      
+      chatsList.innerHTML = `
+        <div style="margin-bottom: 1rem;">
+          <h4 style="margin: 0; color: #0066ff;">Available Groups & Channels (${chats.length})</h4>
+          <p style="font-size: 0.8rem; color: #666; margin: 0.5rem 0;">Click to select a target for video sending</p>
+        </div>
+        <div style="max-height: 300px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px;">
+          ${chats.map(chat => {
+            if (chat.isExample) {
+              return `
+                <div style="padding: 1rem; text-align: center; color: #666; border-bottom: 1px solid #f1f5f9;">
+                  <h4>${chat.title}</h4>
+                  <p style="font-size: 0.8rem; margin-top: 0.5rem;">Add the bot to groups/channels and try scanning again</p>
+                </div>
+              `;
+            }
+            
+            const targetId = chat.targetId || chat.id;
+            const displayId = chat.username ? `@${chat.username}` : chat.id;
+            
+            return `
+              <div class="chat-item" onclick="selectChat('${targetId}', '${chat.title}', '${chat.type}')" 
+                   style="padding: 0.75rem; border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.75rem;">
+                <div style="flex: 1;">
+                  <div style="font-weight: 500; color: #0f172a;">${chat.title}</div>
+                  <div style="font-size: 0.8rem; color: #64748b;">
+                    ${chat.type.charAt(0).toUpperCase() + chat.type.slice(1)} • Target: ${displayId}
+                    ${chat.username ? ` • Username available` : ` • ID only`}
+                  </div>
+                </div>
+                <div style="color: #64748b; font-size: 0.8rem;">
+                  ${chat.member_count ? `${chat.member_count} members` : chat.username ? 'Ready' : 'ID only'}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+      
+      // Add hover effects
+      const style = document.createElement('style');
+      style.textContent = `
+        .chat-item:hover {
+          background-color: #f8fafc !important;
+          border-color: #0066ff !important;
+        }
+        .chat-item.selected {
+          background-color: rgba(0, 102, 255, 0.1) !important;
+          border-color: #0066ff !important;
+          box-shadow: inset 3px 0 0 #0066ff;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+    
+    // Select a chat
+    function selectChat(chatId, title, type) {
+      selectedChatId = chatId;
+      
+      // Update UI
+      document.querySelectorAll('.chat-item').forEach(item => item.classList.remove('selected'));
+      event.currentTarget.classList.add('selected');
+      
+      showNotification(`Selected ${type}: ${title}`, 'success');
+      console.log('Selected chat:', { chatId, title, type });
+    }
+    
+    // Load video inventory for group sending
+    async function loadVideoInventoryForGroups() {
+      try {
+        const response = await fetch('/api/video-counts');
+        if (response.ok) {
+          videoInventory = await response.json();
+          console.log('Loaded video inventory for groups:', videoInventory);
+        } else {
+          console.warn('Failed to load video inventory');
+        }
+      } catch (error) {
+        console.error('Error loading video inventory:', error);
+      }
+    }
+    
+    // Update video count limits when package changes
+    function updateGroupVideoCount() {
+      const packageType = document.getElementById('groupPackageType').value;
+      const limitDiv = document.getElementById('groupVideoLimit');
+      const videoCountInput = document.getElementById('groupVideoCount');
+      
+      if (packageType && videoInventory[packageType]) {
+        const maxVideos = videoInventory[packageType].totalVideos || 0;
+        const minVideos = minVideoConfig[packageType] || 1;
+        
+        limitDiv.innerHTML = `Minimum: ${minVideos.toLocaleString()} | Maximum: ${maxVideos.toLocaleString()} videos`;
+        limitDiv.style.color = '#0066ff';
+        
+        videoCountInput.min = minVideos;
+        videoCountInput.max = maxVideos;
+        
+        // Auto-suggest a reasonable amount (at least minimum)
+        if (!videoCountInput.value) {
+          const suggested = Math.max(minVideos, Math.min(100, Math.floor(maxVideos * 0.1)));
+          videoCountInput.placeholder = `Suggested: ${suggested} videos (min: ${minVideos})`;
+        }
+      } else {
+        limitDiv.textContent = 'Select a package to see available videos';
+        limitDiv.style.color = '#666';
+        videoCountInput.min = 1;
+        videoCountInput.max = 1000;
+      }
+    }
+    
+    // Preview group sending
+    function previewGroupSending() {
+      const targetType = document.querySelector('input[name="targetType"]:checked').value;
+      const packageType = document.getElementById('groupPackageType').value;
+      const videoCount = parseInt(document.getElementById('groupVideoCount').value);
+      const withCaption = document.getElementById('groupSendWithCaption').checked;
+      const withDelay = document.getElementById('groupSendWithDelay').checked;
+      const captionTemplate = document.getElementById('groupCaptionTemplate').value;
+      
+      let targetInfo = '';
+      if (targetType === 'auto') {
+        if (selectedChatId) {
+          const selectedChat = availableChats.find(chat => chat.id === selectedChatId);
+          targetInfo = `${selectedChat.type}: ${selectedChat.title} (${selectedChatId})`;
+        } else {
+          return showNotification('Please select a target group/channel first', 'warning');
+        }
+      } else {
+        const manualId = document.getElementById('manualChatId').value;
+        if (!manualId) {
+          return showNotification('Please enter a chat ID or username', 'warning');
+        }
+        targetInfo = `Manual target: ${manualId}`;
+      }
+      
+      if (!packageType || !videoCount) {
+        return showNotification('Please select package and video count', 'warning');
+      }
+      
+      const previewHtml = `
+        <div style="background: rgba(0, 102, 255, 0.1); padding: 1rem; border-radius: 12px; border: 1px solid rgba(0, 102, 255, 0.2);">
+          <h4 style="margin: 0 0 1rem 0; color: #0066ff;">Sending Preview</h4>
+          <div style="display: grid; gap: 0.5rem; font-size: 0.9rem;">
+            <div><strong>Target:</strong> ${targetInfo}</div>
+            <div><strong>Package:</strong> ${packageType}</div>
+            <div><strong>Videos:</strong> ${videoCount} videos</div>
+            <div><strong>Caption:</strong> ${withCaption ? 'Yes' + (captionTemplate ? ` ("${captionTemplate.substring(0, 50)}...")` : '') : 'No'}</div>
+            <div><strong>Delay:</strong> ${withDelay ? 'Yes (1 second between videos)' : 'No'}</div>
+            <div><strong>Estimated time:</strong> ${withDelay ? Math.ceil(videoCount * 1.2) : Math.ceil(videoCount * 0.1)} seconds</div>
+          </div>
+        </div>
+      `;
+      
+      const statusDiv = document.getElementById('groupSendingStatus');
+      statusDiv.innerHTML = previewHtml;
+      statusDiv.style.display = 'block';
+      
+      showNotification('Preview generated! Review the details above.', 'info');
+    }
+    
+    // Send videos to group/channel
+    async function sendVideosToGroup() {
+      const targetType = document.querySelector('input[name="targetType"]:checked').value;
+      const packageType = document.getElementById('groupPackageType').value;
+      const videoCount = parseInt(document.getElementById('groupVideoCount').value);
+      const withCaption = document.getElementById('groupSendWithCaption').checked;
+      const withDelay = document.getElementById('groupSendWithDelay').checked;
+      const withNotification = document.getElementById('groupSendNotification').checked;
+      const captionTemplate = document.getElementById('groupCaptionTemplate').value;
+      const topicId = document.getElementById('topicId').value.trim(); // ✅ Get Topic ID
+      
+      let targetId = '';
+      if (targetType === 'auto') {
+        if (!selectedChatId) {
+          return showNotification('Please select a target group/channel first', 'warning');
+        }
+        targetId = selectedChatId;
+      } else {
+        const manualId = document.getElementById('manualChatId').value;
+        if (!manualId) {
+          return showNotification('Please enter a chat ID or username', 'warning');
+        }
+        targetId = manualId;
+      }
+      
+      if (!packageType || !videoCount) {
+        return showNotification('Please select package and video count', 'warning');
+      }
+      
+      // Validate minimum video count
+      const minRequired = minVideoConfig[packageType] || 1;
+      if (videoCount < minRequired) {
+        return showNotification(`Minimum ${minRequired} videos required for ${packageType} package`, 'error');
+      }
+      
+      // ✅ Enhanced confirmation message with Topic ID info
+      let confirmMessage = `Are you sure you want to send ${videoCount} ${packageType} videos to the selected target?`;
+      if (topicId) {
+        confirmMessage += `\n\nTopic ID: ${topicId} (will send to specific forum topic)`;
+      }
+      
+      if (!confirm(confirmMessage)) {
+        return;
+      }
+      
+      try {
+        const sendBtn = document.getElementById('sendToGroupBtn');
+        sendBtn.disabled = true;
+        sendBtn.textContent = 'Sending...';
+        
+        const statusDiv = document.getElementById('groupSendingStatus');
+        statusDiv.innerHTML = `
+          <div style="background: rgba(0, 102, 255, 0.1); padding: 1rem; border-radius: 12px; border: 1px solid rgba(0, 102, 255, 0.2);">
+            <h4 style="margin: 0 0 1rem 0; color: #0066ff;">Sending in Progress</h4>
+            <div style="display: grid; gap: 0.5rem; font-size: 0.9rem;">
+              <div><strong>Status:</strong> <span id="sendingProgress">Preparing...</span></div>
+              <div><strong>Progress:</strong> <span id="sendingCount">0</span> / ${videoCount} videos</div>
+            </div>
+          </div>
+        `;
+        statusDiv.style.display = 'block';
+        
+        const response = await fetch('/api/send-to-group', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            targetId,
+            packageType,
+            videoCount,
+            withCaption,
+            withDelay,
+            withNotification,
+            captionTemplate,
+            topicId: topicId || null  // ✅ Include Topic ID (null if empty)
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+          // ✅ Check if pending confirmation
+          if (data.status === 'pending_confirmation') {
+            statusDiv.innerHTML = `
+              <div style="background: rgba(251, 191, 36, 0.1); padding: 1rem; border-radius: 12px; border: 1px solid rgba(251, 191, 36, 0.2);">
+                <h4 style="margin: 0 0 1rem 0; color: #f59e0b;">⏳ Awaiting Admin Confirmation</h4>
+                <div style="display: grid; gap: 0.5rem; font-size: 0.9rem;">
+                  <div><strong>Status:</strong> Confirmation request sent to admin</div>
+                  <div><strong>Target:</strong> ${data.targetId}${data.topicId ? ` (Topic: ${data.topicId})` : ''}</div>
+                  <div><strong>Package:</strong> ${data.packageType}</div>
+                  <div><strong>Videos:</strong> ${data.videosToSend} videos ready to send</div>
+                  <div style="margin-top: 0.5rem; padding: 0.5rem; background: rgba(251, 191, 36, 0.1); border-radius: 6px;">
+                    <strong>👉 Check your Telegram bot for the confirmation message!</strong>
+                  </div>
+                </div>
+              </div>
+            `;
+            showNotification('Confirmation request sent! Check Telegram bot to approve.', 'info');
+          } else {
+            // Old success handling (shouldn't happen with new flow, but keep for safety)
+            statusDiv.innerHTML = `
+              <div style="background: rgba(16, 185, 129, 0.1); padding: 1rem; border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.2);">
+                <h4 style="margin: 0 0 1rem 0; color: #10b981;">Sending Complete!</h4>
+                <div style="display: grid; gap: 0.5rem; font-size: 0.9rem;">
+                  <div><strong>Sent:</strong> ${data.sentCount || videoCount} videos</div>
+                  <div><strong>Target:</strong> ${data.targetInfo || targetId}${topicId ? ` (Topic: ${topicId})` : ''}</div>
+                  <div><strong>Package:</strong> ${packageType}</div>
+                  <div><strong>Time taken:</strong> ${data.timeTaken || 'N/A'}</div>
+                </div>
+              </div>
+            `;
+            showNotification(`Successfully sent ${data.sentCount || videoCount} videos!`, 'success');
+          }
+        } else {
+          throw new Error(data.error || 'Failed to send videos');
+        }
+      } catch (error) {
+        console.error('Error sending videos to group:', error);
+        const statusDiv = document.getElementById('groupSendingStatus');
+        statusDiv.innerHTML = `
+          <div style="background: rgba(239, 68, 68, 0.1); padding: 1rem; border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.2);">
+            <h4 style="margin: 0 0 1rem 0; color: #ef4444;">Sending Failed</h4>
+            <div style="display: grid; gap: 0.5rem; font-size: 0.9rem;">
+              <div><strong>Error:</strong> ${error.message}</div>
+              <div><strong>Target:</strong> ${targetId}</div>
+              <div><strong>Package:</strong> ${packageType}</div>
+            </div>
+          </div>
+        `;
+        showNotification('Failed to send videos: ' + error.message, 'error');
+      } finally {
+        const sendBtn = document.getElementById('sendToGroupBtn');
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Send Videos to Group/Channel';
+      }
+    }
+
+    // Badge Management Functions
+    async function loadUserBadges(username) {
+      // DISABLED: Badge endpoint causing 503 errors
+      return; // Exit immediately - no API call
+    }
+
+    function displayUserBadges(username, badges) {
+      const badgeContainer = document.getElementById(`badges-${username}`);
+      if (!badgeContainer) return;
+      
+      badgeContainer.innerHTML = badges.map(badge => {
+        const badgeType = BADGE_TYPES[badge.type] || badge;
+        const gradientColor = getGradientColor(badgeType.color);
+        return `<span class="badge" style="background: ${gradientColor}; --badge-color: ${badgeType.color}; --badge-color-dark: ${darkenColor(badgeType.color, 20)}">
+          ${badgeType.icon} ${badgeType.description}
+        </span>`;
+      }).join('');
+    }
+    
+    // Helper function to create gradient colors
+    function getGradientColor(baseColor) {
+      const darkColor = darkenColor(baseColor, 20);
+      return `linear-gradient(135deg, ${baseColor}, ${darkColor})`;
+    }
+    
+    // Helper function to darken a color
+    function darkenColor(color, percent) {
+      const num = parseInt(color.replace('#', ''), 16);
+      const amt = Math.round(2.55 * percent);
+      const R = (num >> 16) - amt;
+      const G = (num >> 8 & 0x00FF) - amt;
+      const B = (num & 0x0000FF) - amt;
+      return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+        (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+        (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+    }
+
+    function showBadgeModal(username) {
+      if (!username && selectedUser) {
+        username = selectedUser.username;
+      }
+      
+      if (!username) {
+        showNotification('Please select a user first', 'warning');
+        return;
+      }
+      
+      loadBadgeModalContent(username);
+      document.getElementById('badgeModal').style.display = 'flex';
+    }
+
+    async function loadBadgeModalContent(username) {
+      const modalContent = document.getElementById('badgeModalContent');
+      
+      try {
+        const response = await fetch(`/api/user/badges?username=${username}`);
+        const data = response.ok ? await response.json() : { badges: [] };
+        const userBadges = data.badges || [];
+        
+        modalContent.innerHTML = `
+          <div style="margin-bottom: 1.5rem;">
+            <h4>Badges for @${username}</h4>
+            <div class="user-badges">
+              ${userBadges.map(badge => {
+                const badgeType = BADGE_TYPES[badge.type] || badge;
+                const gradientColor = getGradientColor(badgeType.color);
+                return `<span class="badge" style="background: ${gradientColor}; --badge-color: ${badgeType.color}; --badge-color-dark: ${darkenColor(badgeType.color, 20)}">
+                  ${badgeType.icon} ${badgeType.description}
+                </span>`;
+              }).join('')}
+            </div>
+          </div>
+          
+          <div class="badge-grid">
+            ${Object.entries(BADGE_TYPES).map(([key, badge]) => {
+              const hasBadge = userBadges.some(b => b.type === key);
+              return `
+                <div class="badge-option ${hasBadge ? 'selected' : ''}" onclick="toggleBadge('${username}', '${key}')">
+                  <div class="badge-icon" style="background-color: ${badge.color}20; color: ${badge.color}">
+                    ${badge.icon}
+                  </div>
+                  <div class="badge-info">
+                    <div class="badge-name">${badge.description}</div>
+                    <div class="badge-description">Priority: ${badge.priority}</div>
+                  </div>
+                  <div style="margin-left: auto;">
+                    ${hasBadge ? '✅' : '➕'}
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+          
+          <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem; justify-content: center;">
+            <button class="btn" onclick="autoAssignBadges('${username}')">Auto-Assign Badges</button>
+          </div>
+        `;
+      } catch (error) {
+        console.error('Error loading badge modal:', error);
+        modalContent.innerHTML = '<p>Error loading badges. Please try again.</p>';
+      }
+    }
+
+    async function toggleBadge(username, badgeType) {
+      try {
+        const response = await fetch('/api/user/badge', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, badgeType, action: 'toggle' })
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          showNotification(data.message, 'success');
+          loadBadgeModalContent(username);
+          loadUserBadges(username);
+        } else {
+          showNotification('Failed to update badge', 'error');
+        }
+      } catch (error) {
+        console.error('Error toggling badge:', error);
+        showNotification('Error updating badge', 'error');
+      }
+    }
+
+    async function autoAssignBadges(username) {
+      try {
+        const response = await fetch('/api/user/auto-assign-badges', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username })
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          showNotification(`Auto-assigned ${data.assignedCount} badges`, 'success');
+          loadBadgeModalContent(username);
+          loadUserBadges(username);
+        } else {
+          showNotification('Failed to auto-assign badges', 'error');
+        }
+      } catch (error) {
+        console.error('Error auto-assigning badges:', error);
+        showNotification('Error auto-assigning badges', 'error');
+      }
+    }
+
+    // Settings Functions
+    async function loadSettings() {
+      // Generate random announcement for admin preview
+      function generateRandomAnnouncement() {
+        const packages = ['Mixed', 'Mom And Son', 'Rape', 'SL Leaks', 'CCTV'];
+        const videoCounts = ['v100', 'v200', 'v300', 'v500', 'v1000'];
+        const emojis = ['🔥', '✨', '🎆', '💥', '🎉', '🚀', '⚡', '🌟'];
+        const actions = ['Now Available', 'Just Dropped', 'Fresh Release', 'Hot Deal', 'Special Offer', 'Limited Time'];
+        
+        const randomPackage = packages[Math.floor(Math.random() * packages.length)];
+        const randomCount = videoCounts[Math.floor(Math.random() * videoCounts.length)];
+        const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+        const randomAction = actions[Math.floor(Math.random() * actions.length)];
+        
+        return `${randomEmoji} ${randomPackage} ${randomCount} Pack is ${randomAction}!`;
+      }
+      
+      // Load current announcement
+      try {
+        const response = await fetch('/api/announcement');
+        if (response.ok) {
+          const data = await response.json();
+          document.getElementById('announcementText').value = data.text || '';
+        }
+      } catch (error) {
+        console.error('Error loading announcement:', error);
+      }
+      
+      // Load package pricing
+      loadPackagePricing();
+      
+      // Load sample configuration
+      loadSampleConfiguration();
+      
+      // Add generate random function to global scope
+      window.generateRandomAnnouncement = function() {
+        document.getElementById('announcementText').value = generateRandomAnnouncement();
+      };
+    }
+
+    async function loadPackagePricing() {
+      const container = document.getElementById('packagePricingContainer');
+      
+      try {
+        const response = await fetch('/api/package-prices');
+        const prices = response.ok ? await response.json() : {
+          'Mixed': { pricePerVideo: 1 },
+          'Mom And Son': { pricePerVideo: 1.5 },
+          'Rape': { pricePerVideo: 1.2 },
+          'SL Leaks': { pricePerVideo: 0.8 },
+          'CCTV': { pricePerVideo: 1.0 }
+        };
+        
+        // Ensure CCTV is included if missing
+        if (!prices['CCTV']) {
+          prices['CCTV'] = { pricePerVideo: 1.0 };
+          console.log('✅ Added missing CCTV pricing');
+        }
+        
+        console.log('📊 Loaded package prices:', Object.keys(prices));
+        console.log('🎬 CCTV price:', prices['CCTV']);
+        
+        container.innerHTML = Object.entries(prices).map(([packageName, pricing]) => `
+          <div class="price-item" data-package="${packageName}">
+            <div class="price-info">
+              <h4>${packageName}</h4>
+              <p>Rs ${pricing.pricePerVideo} per video</p>
+              <div class="price-examples">
+                <strong>Examples:</strong>
+                v100 = Rs ${(100 * pricing.pricePerVideo).toFixed(0)} | 
+                v200 = Rs ${(200 * pricing.pricePerVideo).toFixed(0)} | 
+                v500 = Rs ${(500 * pricing.pricePerVideo).toFixed(0)}
+              </div>
+            </div>
+            <div class="price-controls">
+              <label>Rs</label>
+              <input type="number" class="price-input" value="${pricing.pricePerVideo}" step="0.1" min="0"
+                     onchange="updatePackagePrice('${packageName}', 'pricePerVideo', this.value)"
+                     onkeyup="updatePriceExamples('${packageName}', this.value)">
+            </div>
+          </div>
+        `).join('');
+      } catch (error) {
+        console.error('Error loading package pricing:', error);
+        // Fallback with all packages including CCTV
+        const fallbackPrices = {
+          'Mixed': { pricePerVideo: 1 },
+          'Mom And Son': { pricePerVideo: 1.5 },
+          'Rape': { pricePerVideo: 1.2 },
+          'SL Leaks': { pricePerVideo: 0.8 },
+          'CCTV': { pricePerVideo: 1.0 }
+        };
+        
+        container.innerHTML = Object.entries(fallbackPrices).map(([packageName, pricing]) => `
+          <div class="price-item" data-package="${packageName}">
+            <div class="price-info">
+              <h4>${packageName}</h4>
+              <p>Rs ${pricing.pricePerVideo} per video</p>
+              <div class="price-examples">
+                <strong>Examples:</strong>
+                v100 = Rs ${(100 * pricing.pricePerVideo).toFixed(0)} | 
+                v200 = Rs ${(200 * pricing.pricePerVideo).toFixed(0)} | 
+                v500 = Rs ${(500 * pricing.pricePerVideo).toFixed(0)}
+              </div>
+            </div>
+            <div class="price-controls">
+              <label>Rs</label>
+              <input type="number" class="price-input" value="${pricing.pricePerVideo}" step="0.1" min="0"
+                     onchange="updatePackagePrice('${packageName}', 'pricePerVideo', this.value)"
+                     onkeyup="updatePriceExamples('${packageName}', this.value)">
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    async function updateAnnouncement() {
+      const text = document.getElementById('announcementText').value;
+      
+      try {
+        const response = await fetch('/api/announcement', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        });
+        
+        if (response.ok) {
+          showNotification('Announcement updated successfully', 'success');
+        } else {
+          showNotification('Failed to update announcement', 'error');
+        }
+      } catch (error) {
+        console.error('Error updating announcement:', error);
+        showNotification('Error updating announcement', 'error');
+      }
+    }
+
+    async function updatePackagePrice(packageName, priceType, value) {
+      try {
+        const response = await fetch('/api/package-price', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ packageName, priceType, value: parseFloat(value) })
+        });
+        
+        if (response.ok) {
+          showNotification(`${packageName} ${priceType} updated to Rs ${value}`, 'success');
+          updatePriceExamples(packageName, value);
+        } else {
+          showNotification('Failed to update price', 'error');
+        }
+      } catch (error) {
+        console.error('Error updating price:', error);
+        showNotification('Error updating price', 'error');
+      }
+    }
+    
+    function updatePriceExamples(packageName, pricePerVideo) {
+      const priceItem = document.querySelector(`[data-package="${packageName}"] .price-examples`);
+      if (priceItem) {
+        const price = parseFloat(pricePerVideo);
+        priceItem.innerHTML = `
+          <strong>Examples:</strong>
+          v100 = Rs ${(100 * price).toFixed(0)} | 
+          v200 = Rs ${(200 * price).toFixed(0)} | 
+          v500 = Rs ${(500 * price).toFixed(0)}
+        `;
+      }
+    }
+
+    async function updateAllPricing() {
+      const priceInputs = document.querySelectorAll('.price-input');
+      let updateCount = 0;
+      
+      for (const input of priceInputs) {
+        const packageName = input.closest('[data-package]').dataset.package;
+        const value = input.value;
+        
+        try {
+          const response = await fetch('/api/package-price', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ packageName, priceType: 'pricePerVideo', value: parseFloat(value) })
+          });
+          
+          if (response.ok) {
+            updateCount++;
+            updatePriceExamples(packageName, value);
+          }
+        } catch (error) {
+          console.error(`Error updating price for ${packageName}:`, error);
+        }
+      }
+      
+      if (updateCount > 0) {
+        showNotification(`Updated ${updateCount} package prices successfully`, 'success');
+      } else {
+        showNotification('Failed to update pricing', 'error');
+      }
+    }
+
+    // Refresh pricing data from server
+    async function refreshPricingData() {
+      showNotification('Refreshing pricing data...', 'info');
+      await loadPackagePricing();
+      showNotification('Pricing data refreshed successfully', 'success');
+    }
+
+    // Sample Configuration Functions
+    async function loadSampleConfiguration() {
+      const container = document.getElementById('sampleConfigContainer');
+      
+      try {
+        const response = await fetch('/api/sample-config');
+        const sampleConfig = response.ok ? await response.json() : {
+          'Mixed': { sampleCount: 100 },
+          'Mom And Son': { sampleCount: 100 },
+          'Rape': { sampleCount: 100 },
+          'SL Leaks': { sampleCount: 100 },
+          'CCTV': { sampleCount: 100 }
+        };
+        
+        // Ensure CCTV is included if missing
+        if (!sampleConfig['CCTV']) {
+          sampleConfig['CCTV'] = { sampleCount: 100 };
+        }
+        
+        container.innerHTML = Object.entries(sampleConfig).map(([packageName, config]) => `
+          <div class="price-item" data-sample-package="${packageName}">
+            <div class="price-info">
+              <h4>${packageName} Samples</h4>
+              <p>${config.sampleCount} videos per sample request</p>
+              <div class="price-examples">
+                <strong>Note:</strong> Users can only request samples once per package type.
+              </div>
+            </div>
+            <div class="price-controls">
+              <label>Videos</label>
+              <input type="number" class="sample-input" value="${config.sampleCount}" min="0" max="1000" step="1"
+                     onchange="updateSampleCount('${packageName}', this.value)"
+                     onkeyup="updateSampleDisplay('${packageName}', this.value)">
+            </div>
+          </div>
+        `).join('');
+      } catch (error) {
+        console.error('Error loading sample configuration:', error);
+        container.innerHTML = '<p style="color: #e74c3c;">Error loading sample configuration</p>';
+      }
+    }
+
+    // Minimum Video Count Configuration Functions
+    let minVideoConfig = {}; // Global variable to store min video config
+
+    async function loadMinVideoConfig() {
+      const container = document.getElementById('minVideoConfigContainer');
+      
+      try {
+        const response = await fetch('/api/min-video-config');
+        const config = response.ok ? await response.json() : {
+          'Mixed': 100,
+          'Mom And Son': 100,
+          'Rape': 100,
+          'SL Leaks': 100,
+          'CCTV': 100
+        };
+        
+        // Store in global variable for validation
+        minVideoConfig = config;
+        
+        // Ensure CCTV is included if missing
+        if (minVideoConfig['CCTV'] === undefined) {
+          minVideoConfig['CCTV'] = 100;
+        }
+        
+        container.innerHTML = Object.entries(minVideoConfig).map(([packageName, minCount]) => `
+          <div class="price-item" data-min-package="${packageName}">
+            <div class="price-info">
+              <h4>${packageName}</h4>
+              <p>Minimum ${minCount} videos required</p>
+              <div class="price-examples">
+                <strong>Note:</strong> Orders below this minimum will be rejected.
+              </div>
+            </div>
+            <div class="price-controls">
+              <label>Min Videos</label>
+              <input type="number" class="min-video-input" value="${minCount}" min="1" max="10000" step="1"
+                     onchange="updateMinVideoCount('${packageName}', this.value)"
+                     onkeyup="updateMinVideoDisplay('${packageName}', this.value)">
+            </div>
+          </div>
+        `).join('');
+        
+        console.log('✅ Loaded minimum video config:', minVideoConfig);
+      } catch (error) {
+        console.error('Error loading minimum video configuration:', error);
+        container.innerHTML = '<p style="color: #e74c3c;">Error loading minimum video configuration</p>';
+      }
+    }
+
+    async function updateMinVideoCount(packageName, minVideoCount) {
+      try {
+        const response = await fetch('/api/min-video-config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ packageName, minVideoCount: parseInt(minVideoCount) })
+        });
+        
+        if (response.ok) {
+          minVideoConfig[packageName] = parseInt(minVideoCount);
+          showNotification(`${packageName} minimum video count updated to ${minVideoCount}`, 'success');
+          updateMinVideoDisplay(packageName, minVideoCount);
+        } else {
+          showNotification('Failed to update minimum video count', 'error');
+        }
+      } catch (error) {
+        console.error('Error updating minimum video count:', error);
+        showNotification('Error updating minimum video count', 'error');
+      }
+    }
+    
+    function updateMinVideoDisplay(packageName, minVideoCount) {
+      const minItem = document.querySelector(`[data-min-package="${packageName}"] .price-info p`);
+      if (minItem) {
+        minItem.textContent = `Minimum ${minVideoCount} videos required`;
+      }
+    }
+
+    async function updateAllMinVideoConfig() {
+      const minInputs = document.querySelectorAll('.min-video-input');
+      let updateCount = 0;
+      
+      for (const input of minInputs) {
+        const packageName = input.closest('[data-min-package]').dataset.minPackage;
+        const value = input.value;
+        
+        try {
+          const response = await fetch('/api/min-video-config', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ packageName, minVideoCount: parseInt(value) })
+          });
+          
+          if (response.ok) {
+            updateCount++;
+            minVideoConfig[packageName] = parseInt(value);
+            updateMinVideoDisplay(packageName, value);
+          }
+        } catch (error) {
+          console.error(`Error updating minimum video count for ${packageName}:`, error);
+        }
+      }
+      
+      if (updateCount > 0) {
+        showNotification(`Updated ${updateCount} minimum video configurations successfully`, 'success');
+      } else {
+        showNotification('Failed to update minimum video configuration', 'error');
+      }
+    }
+
+    async function refreshMinVideoConfig() {
+      showNotification('Refreshing minimum video configuration...', 'info');
+      await loadMinVideoConfig();
+      showNotification('Minimum video configuration refreshed successfully', 'success');
+    }
+
+    async function updateSampleCount(packageName, sampleCount) {
+      try {
+        const response = await fetch('/api/sample-config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ packageName, sampleCount: parseInt(sampleCount) })
+        });
+        
+        if (response.ok) {
+          showNotification(`${packageName} sample count updated to ${sampleCount} videos`, 'success');
+          updateSampleDisplay(packageName, sampleCount);
+        } else {
+          showNotification('Failed to update sample count', 'error');
+        }
+      } catch (error) {
+        console.error('Error updating sample count:', error);
+        showNotification('Error updating sample count', 'error');
+      }
+    }
+    
+    function updateSampleDisplay(packageName, sampleCount) {
+      const sampleItem = document.querySelector(`[data-sample-package="${packageName}"] .price-info p`);
+      if (sampleItem) {
+        sampleItem.textContent = `${sampleCount} videos per sample request`;
+      }
+    }
+
+    async function updateAllSampleConfig() {
+      const sampleInputs = document.querySelectorAll('.sample-input');
+      let updateCount = 0;
+      
+      for (const input of sampleInputs) {
+        const packageName = input.closest('[data-sample-package]').dataset.samplePackage;
+        const value = input.value;
+        
+        try {
+          const response = await fetch('/api/sample-config', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ packageName, sampleCount: parseInt(value) })
+          });
+          
+          if (response.ok) {
+            updateCount++;
+            updateSampleDisplay(packageName, value);
+          }
+        } catch (error) {
+          console.error(`Error updating sample count for ${packageName}:`, error);
+        }
+      }
+      
+      if (updateCount > 0) {
+        showNotification(`Updated ${updateCount} sample configurations successfully`, 'success');
+      } else {
+        showNotification('Failed to update sample configuration', 'error');
+      }
+    }
+
+    function loadBadgeManagement() {
+      const badgesContent = document.getElementById('badgesContent');
+      
+      if (selectedUser) {
+        badgesContent.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3>Badge Management for @${selectedUser.username}</h3>
+            <button class="btn primary" onclick="showBadgeModal('${selectedUser.username}')">
+              Manage Badges
+            </button>
+          </div>
+          <div id="userBadgeDisplay"></div>
+        `;
+        loadBadgeModalContent(selectedUser.username).then(() => {
+          document.getElementById('userBadgeDisplay').innerHTML = 
+            document.getElementById('badgeModalContent').innerHTML;
+        });
+      } else {
+        badgesContent.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">🎖️</div>
+            <h3>Badge Management</h3>
+            <p>Select a user to manage their badges and reputation.</p>
+          </div>
+        `;
+      }
+    }
+
+    // Video Inventory Functions
+    async function loadVideoInventory() {
+      try {
+        const response = await fetch('/api/video-counts');
+        if (response.ok) {
+          const videoCounts = await response.json();
+          displayVideoInventory(videoCounts);
+        } else {
+          showNotification('Failed to load video inventory', 'error');
+        }
+      } catch (error) {
+        console.error('Error loading video inventory:', error);
+        showNotification('Error loading video inventory', 'error');
+      }
+    }
+
+    function displayVideoInventory(videoCounts) {
+      const statsGrid = document.getElementById('videoStatsGrid');
+      const container = document.getElementById('videoInventoryContainer');
+      
+      // Create stats cards
+      statsGrid.innerHTML = Object.entries(videoCounts).map(([packageName, data]) => {
+        const lastUpdated = data.lastUpdated === 'Never' ? 'Never' : 
+          new Date(data.lastUpdated).toLocaleDateString();
+        
+        return `
+          <div class="stat-card">
+            <div class="stat-number">${data.totalVideos.toLocaleString()}</div>
+            <div class="stat-label">${packageName} Videos</div>
+            <div style="font-size: 11px; color: #64748b; margin-top: 0.5rem;">
+              Last updated: ${lastUpdated}
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      // Create detailed inventory table
+      container.innerHTML = `
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+            <thead>
+              <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                <th style="padding: 1rem; text-align: left; font-weight: 600; color: #374151;">Package</th>
+                <th style="padding: 1rem; text-align: center; font-weight: 600; color: #374151;">Total Videos</th>
+                <th style="padding: 1rem; text-align: center; font-weight: 600; color: #374151;">Last Updated</th>
+                <th style="padding: 1rem; text-align: center; font-weight: 600; color: #374151;">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${Object.entries(videoCounts).map(([packageName, data]) => {
+                const lastUpdated = data.lastUpdated === 'Never' ? 'Never' : 
+                  new Date(data.lastUpdated).toLocaleDateString();
+                const status = data.totalVideos > 0 ? 
+                  `<span style="color: #10b981; font-weight: 500;">✅ Active</span>` :
+                  `<span style="color: #ef4444; font-weight: 500;">❌ Empty</span>`;
+                
+                return `
+                  <tr style="border-bottom: 1px solid #f1f5f9;">
+                    <td style="padding: 1rem; font-weight: 500; color: #0f172a;">${packageName}</td>
+                    <td style="padding: 1rem; text-align: center; font-size: 1.1rem; font-weight: 600; color: #3b82f6;">
+                      ${data.totalVideos.toLocaleString()}
+                    </td>
+                    <td style="padding: 1rem; text-align: center; color: #64748b;">${lastUpdated}</td>
+                    <td style="padding: 1rem; text-align: center;">${status}</td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+        
+        <div style="margin-top: 2rem; padding: 1rem; background: #f8fafc; border-radius: 8px; border-left: 4px solid #3b82f6;">
+          <h4 style="margin: 0 0 0.5rem 0; color: #0f172a;">📊 Inventory Summary</h4>
+          <p style="margin: 0; color: #64748b; font-size: 0.9rem;">
+            Total videos across all packages: <strong>${Object.values(videoCounts).reduce((sum, data) => sum + data.totalVideos, 0).toLocaleString()}</strong>
+          </p>
+        </div>
+      `;
+    }
+
+    async function refreshVideoInventory() {
+      showNotification('Refreshing video inventory...', 'info');
+      await loadVideoInventory();
+      showNotification('Video inventory refreshed successfully', 'success');
+    }
+
+    // Log cleanup function
+    async function cleanupLogs() {
+      if (!confirm('Are you sure you want to cleanup log files? This will rotate large log files and delete old backups.')) {
+        return;
+      }
+      
+      try {
+        showNotification('Starting log cleanup...', 'info');
+        
+        const response = await fetch('/api/cleanup-logs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          showNotification('Log cleanup completed successfully!', 'success');
+        } else {
+          showNotification('Failed to cleanup logs', 'error');
+        }
+      } catch (error) {
+        console.error('Error during log cleanup:', error);
+        showNotification('Error during log cleanup: ' + error.message, 'error');
+      }
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal').forEach(modal => {
+          modal.style.display = 'none';
+        });
+      }
+    });
+
+    // ==================== ANALYTICS FUNCTIONS ====================
+    // Analytics functions moved to advanced-analytics.js
+    // ==================== END ANALYTICS FUNCTIONS ====================
+
+    // ==================== OVERVIEW ANALYTICS ====================
+    let currentOverviewPeriod = 'today';
+    let overviewAnalyticsData = null;
+    let overviewChartInstances = {};
+
+    function setOverviewTimeFilter(period) {
+      currentOverviewPeriod = period;
+      
+      // Update button states
+      document.querySelectorAll('.overview-time-filters .time-filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.period === period) {
+          btn.classList.add('active');
+        }
+      });
+      
+      // Reload overview stats and analytics
+      updateOverviewStats(true);
+      loadOverviewAnalytics();
+    }
+
+    function showOverviewCustomRange() {
+      showNotification('Custom range feature coming soon!', 'info');
+    }
+
+    function refreshOverviewData() {
+      updateOverviewStats(true);
+      loadOverviewAnalytics();
+      showNotification('Overview data refreshed!', 'success');
+    }
+
+    async function loadOverviewAnalytics() {
+      try {
+        const usersResponse = await fetch('/api/users');
+        if (!usersResponse.ok) throw new Error('Failed to fetch users');
+        const users = await usersResponse.json();
+        
+        const analytics = calculateAnalytics(users, currentOverviewPeriod);
+        overviewAnalyticsData = analytics;
+        
+        createOverviewRevenueChart(analytics);
+        createOverviewPackageChart(analytics);
+        createOverviewTopCustomersChart(analytics);
+        createOverviewOrderValueChart(analytics);
+        updateOverviewTopCustomersTable(analytics.topCustomers);
+        
+        // Hide loading state after content is loaded
+        const loadingState = document.getElementById('overviewLoadingState');
+        if (loadingState) {
+          loadingState.style.display = 'none';
+        }
+      } catch (error) {
+        console.error('Error loading overview analytics:', error);
+        // Hide loading state even on error
+        const loadingState = document.getElementById('overviewLoadingState');
+        if (loadingState) {
+          loadingState.style.display = 'none';
+        }
+      }
+    }
+
+    function createOverviewRevenueChart(analytics) {
+      const canvas = document.getElementById('overviewRevenueChart');
+      if (!canvas) return;
+      
+      const ctx = canvas.getContext('2d');
+      
+      if (overviewChartInstances.revenue) {
+        overviewChartInstances.revenue.destroy();
+      }
+      
+      const dates = Object.keys(analytics.dailyRevenue).sort();
+      const revenues = dates.map(date => analytics.dailyRevenue[date]);
+      
+      if (dates.length === 0) {
+        canvas.parentElement.innerHTML = '<div style="text-align: center; padding: 3rem; color: #64748b;">No revenue data for this period</div>';
+        return;
+      }
+      
+      const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+      gradient.addColorStop(0, 'rgba(0, 122, 255, 0.8)');
+      gradient.addColorStop(1, 'rgba(0, 122, 255, 0.2)');
+      
+      overviewChartInstances.revenue = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: dates.map(date => new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+          datasets: [{
+            label: 'Revenue (Rs)',
+            data: revenues,
+            backgroundColor: gradient,
+            borderColor: '#007aff',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            pointBackgroundColor: '#fff',
+            pointBorderColor: '#007aff',
+            pointBorderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: true, position: 'top' },
+            tooltip: {
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              padding: 12,
+              callbacks: {
+                label: function(context) {
+                  return `Revenue: Rs ${context.parsed.y.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { callback: function(value) { return 'Rs ' + value.toLocaleString(); } },
+              grid: { color: 'rgba(0, 0, 0, 0.05)' }
+            },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    function createOverviewPackageChart(analytics) {
+      const canvas = document.getElementById('overviewPackageChart');
+      if (!canvas) return;
+      
+      const ctx = canvas.getContext('2d');
+      
+      if (overviewChartInstances.package) {
+        overviewChartInstances.package.destroy();
+      }
+      
+      const packages = Object.entries(analytics.packageDistribution).sort((a, b) => b[1] - a[1]);
+      
+      if (packages.length === 0) {
+        canvas.parentElement.innerHTML = '<div style="text-align: center; padding: 3rem; color: #64748b;">No package data for this period</div>';
+        return;
+      }
+      
+      const colors = ['#007aff', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#6366f1', '#14b8a6', '#f97316', '#06b6d4'];
+      
+      overviewChartInstances.package = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: packages.map(([name]) => name),
+          datasets: [{
+            data: packages.map(([, count]) => count),
+            backgroundColor: colors.slice(0, packages.length),
+            borderWidth: 2,
+            borderColor: '#fff',
+            hoverOffset: 10
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'right',
+              labels: {
+                padding: 15,
+                font: { size: 12 },
+                generateLabels: function(chart) {
+                  const data = chart.data;
+                  if (data.labels.length && data.datasets.length) {
+                    const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
+                    return data.labels.map((label, i) => {
+                      const value = data.datasets[0].data[i];
+                      const percentage = ((value / total) * 100).toFixed(1);
+                      return {
+                        text: `${label}: ${value} (${percentage}%)`,
+                        fillStyle: data.datasets[0].backgroundColor[i],
+                        hidden: false,
+                        index: i
+                      };
+                    });
+                  }
+                  return [];
+                }
+              }
+            },
+            tooltip: {
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              padding: 12,
+              callbacks: {
+                label: function(context) {
+                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                  const percentage = ((context.parsed / total) * 100).toFixed(1);
+                  return `${context.label}: ${context.parsed} orders (${percentage}%)`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function createOverviewTopCustomersChart(analytics) {
+      const canvas = document.getElementById('overviewTopCustomersChart');
+      if (!canvas) return;
+      
+      const ctx = canvas.getContext('2d');
+      
+      if (overviewChartInstances.topCustomers) {
+        overviewChartInstances.topCustomers.destroy();
+      }
+      
+      if (analytics.topCustomers.length === 0) {
+        canvas.parentElement.innerHTML = '<div style="text-align: center; padding: 3rem; color: #64748b;">No customer data for this period</div>';
+        return;
+      }
+      
+      const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+      gradient.addColorStop(0, 'rgba(16, 185, 129, 0.8)');
+      gradient.addColorStop(1, 'rgba(16, 185, 129, 0.2)');
+      
+      overviewChartInstances.topCustomers = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: analytics.topCustomers.map(c => '@' + c.username),
+          datasets: [{
+            label: 'Total Spent (Rs)',
+            data: analytics.topCustomers.map(c => c.totalSpent),
+            backgroundColor: gradient,
+            borderColor: '#10b981',
+            borderWidth: 2,
+            borderRadius: 8
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              padding: 12,
+              callbacks: {
+                label: function(context) {
+                  const customer = analytics.topCustomers[context.dataIndex];
+                  return [
+                    `Total Spent: Rs ${customer.totalSpent.toFixed(2)}`,
+                    `Orders: ${customer.totalOrders}`,
+                    `Avg Order: Rs ${customer.avgOrderValue.toFixed(2)}`
+                  ];
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              ticks: { callback: function(value) { return 'Rs ' + value.toLocaleString(); } },
+              grid: { color: 'rgba(0, 0, 0, 0.05)' }
+            },
+            y: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    function createOverviewOrderValueChart(analytics) {
+      const canvas = document.getElementById('overviewOrderValueChart');
+      if (!canvas) return;
+      
+      const ctx = canvas.getContext('2d');
+      
+      if (overviewChartInstances.orderValue) {
+        overviewChartInstances.orderValue.destroy();
+      }
+      
+      if (analytics.orderValues.length === 0) {
+        canvas.parentElement.innerHTML = '<div style="text-align: center; padding: 3rem; color: #64748b;">No order data for this period</div>';
+        return;
+      }
+      
+      const maxValue = Math.max(...analytics.orderValues);
+      const binSize = Math.ceil(maxValue / 10);
+      const bins = {};
+      
+      analytics.orderValues.forEach(value => {
+        const bin = Math.floor(value / binSize) * binSize;
+        bins[bin] = (bins[bin] || 0) + 1;
+      });
+      
+      const sortedBins = Object.keys(bins).sort((a, b) => parseInt(a) - parseInt(b));
+      
+      const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+      gradient.addColorStop(0, 'rgba(245, 158, 11, 0.8)');
+      gradient.addColorStop(1, 'rgba(245, 158, 11, 0.2)');
+      
+      overviewChartInstances.orderValue = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: sortedBins.map(bin => `Rs ${parseInt(bin)}-${parseInt(bin) + binSize}`),
+          datasets: [{
+            label: 'Number of Orders',
+            data: sortedBins.map(bin => bins[bin]),
+            backgroundColor: gradient,
+            borderColor: '#f59e0b',
+            borderWidth: 2,
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: true },
+            tooltip: {
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              padding: 12,
+              callbacks: { label: function(context) { return `Orders: ${context.parsed.y}`; } }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { stepSize: 1 },
+              grid: { color: 'rgba(0, 0, 0, 0.05)' }
+            },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    function updateOverviewTopCustomersTable(topCustomers) {
+      const tbody = document.getElementById('overviewTopCustomersTableBody');
+      if (!tbody) return;
+      
+      if (topCustomers.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" style="padding: 3rem; text-align: center; color: #64748b;">
+              <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+              <div>No customer data for this period</div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
+      let html = '';
+      
+      topCustomers.forEach((customer, index) => {
+        const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
+        const rowStyle = index % 2 === 0 ? 'background: rgba(255, 255, 255, 0.5);' : 'background: rgba(248, 250, 252, 0.5);';
+        
+        html += `
+          <tr style="${rowStyle} border-bottom: 1px solid #e2e8f0; transition: background 0.2s;" onmouseover="this.style.background='rgba(0, 102, 255, 0.05)'" onmouseout="this.style.background='${index % 2 === 0 ? 'rgba(255, 255, 255, 0.5)' : 'rgba(248, 250, 252, 0.5)'}'">
+            <td style="padding: 1rem; font-weight: 600; color: #0f172a;">${medal} ${index + 1}</td>
+            <td style="padding: 1rem; color: #0f172a; font-weight: 500;">@${customer.username}</td>
+            <td style="padding: 1rem; text-align: center; color: #64748b;">${customer.totalOrders}</td>
+            <td style="padding: 1rem; text-align: right; color: #10b981; font-weight: 600;">Rs ${customer.totalSpent.toFixed(2)}</td>
+            <td style="padding: 1rem; text-align: right; color: #64748b;">Rs ${customer.avgOrderValue.toFixed(2)}</td>
+            <td style="padding: 1rem; text-align: center; color: #64748b; font-size: 0.875rem;">${customer.lastPurchase}</td>
+          </tr>
+        `;
+      });
+      
+      tbody.innerHTML = html;
+    }
+    // ==================== END OVERVIEW ANALYTICS ====================
+
+    // ==================== ADMIN BULK PACKAGE CART ====================
+    let adminPackageCart = [];
+
+    function addPackageToCart() {
+      const username = document.getElementById('addPackageModal').dataset.username;
+      const packageType = document.getElementById('packageType').value;
+      const videoCount = parseInt(document.getElementById('videoCount').value);
+      const price = parseFloat(document.getElementById('packagePrice').value);
+      const date = document.getElementById('packageDate').value;
+
+      if (!packageType || !videoCount || !price || !date) {
+        showNotification('Please fill all fields before adding to cart', 'warning');
+        return;
+      }
+
+      if (packageType === 'Full Package') {
+        showNotification('Full Package cannot be added to cart. Please submit directly.', 'warning');
+        return;
+      }
+
+      // Validate minimum video count
+      const minRequired = minVideoConfig[packageType] || 1;
+      if (videoCount < minRequired) {
+        showNotification(`Minimum ${minRequired} videos required for ${packageType} package`, 'error');
+        return;
+      }
+
+      const cartItem = {
+        package: packageType,
+        count: videoCount,
+        pricePerVideo: price / videoCount,
+        totalPrice: price,
+        date: date
+      };
+
+      adminPackageCart.push(cartItem);
+
+      // Clear form
+      document.getElementById('packageType').value = '';
+      document.getElementById('videoCount').value = '';
+      document.getElementById('packagePrice').value = '';
+      document.getElementById('packageDate').value = new Date().toISOString().split('T')[0];
+
+      updateAdminCartDisplay();
+      showNotification(`${packageType} added to cart!`, 'success');
+    }
+
+    function updateAdminCartDisplay() {
+      const cartSection = document.getElementById('adminCartSection');
+      const cartItems = document.getElementById('adminCartItems');
+      const cartBadge = document.getElementById('adminCartBadge');
+
+      if (adminPackageCart.length === 0) {
+        cartSection.style.display = 'none';
+        return;
+      }
+
+      cartSection.style.display = 'block';
+      cartBadge.textContent = adminPackageCart.length;
+
+      cartItems.innerHTML = '';
+
+      adminPackageCart.forEach((item, index) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.style.cssText = 'background: rgba(255, 255, 255, 0.95); border: 2px solid rgba(0, 102, 255, 0.1); border-radius: 12px; padding: 0.8rem; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;';
+        itemDiv.innerHTML = `
+          <div style="flex: 1;">
+            <div style="font-weight: 500; color: #374151; margin-bottom: 0.2rem;">${item.package} v${item.count}</div>
+          </div>
+          <div style="font-weight: 500; color: #374151; margin-right: 1rem;">Rs ${item.totalPrice.toFixed(2)}</div>
+          <button onclick="removeFromAdminCart(${index})" style="background: #ff4757; color: white; border: none; border-radius: 6px; padding: 0.2rem 0.4rem; cursor: pointer; font-size: 0.7rem; font-weight: 500;">Remove</button>
+        `;
+        cartItems.appendChild(itemDiv);
+      });
+    }
+
+    function removeFromAdminCart(index) {
+      adminPackageCart.splice(index, 1);
+      updateAdminCartDisplay();
+      showNotification('Item removed from cart', 'info');
+    }
+
+    function clearAdminCart() {
+      if (confirm('Are you sure you want to clear the entire cart?')) {
+        adminPackageCart = [];
+        updateAdminCartDisplay();
+        showNotification('Cart cleared', 'info');
+      }
+    }
+
+    async function submitBulkPackages() {
+      if (adminPackageCart.length === 0) {
+        showNotification('Cart is empty!', 'warning');
+        return;
+      }
+
+      const username = document.getElementById('addPackageModal').dataset.username;
+      if (!username) {
+        showNotification('No user selected', 'error');
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/bulk-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            username, 
+            cartItems: adminPackageCart 
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success || response.ok) {
+          showNotification(`Bulk order created successfully for @${username}!`, 'success');
+          
+          // Clear cart
+          adminPackageCart = [];
+          updateAdminCartDisplay();
+          
+          // Refresh packages
+          if (selectedUser && selectedUser.username === username) {
+            loadPackages(username);
+          }
+          
+          // Close modal after 2 seconds
+          setTimeout(() => {
+            closeModal('addPackageModal');
+          }, 2000);
+        } else {
+          showNotification(data.error || 'Failed to create bulk order', 'error');
+        }
+      } catch (error) {
+        console.error('Error submitting bulk packages:', error);
+        showNotification('Error submitting bulk order', 'error');
+      }
+    }
+    // ==================== END ADMIN BULK PACKAGE CART ====================
+  </script>
+
+  <!-- Enhanced Animations Script -->
+  <script src="../js/twemoji-loader.js"></script>
+  <script src="../js/page-transitions.js"></script>
+  <!-- Advanced Analytics Script -->
+
+  <script src="../js/advanced-analytics.js"></script>
+
+</body>
+</html>

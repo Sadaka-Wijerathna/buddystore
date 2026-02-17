@@ -1,0 +1,23 @@
+/* Modern Emoji Styling with Twemoji */
+
+/* Style all emoji images from Twemoji */
+img.emoji {
+  height: 1.2em !important;
+  width: 1.2em !important;
+  margin: 0 0.05em 0 0.1em !important;
+  vertical-align: -0.2em !important;
+  display: inline-block !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Ensure emojis render properly in all contexts */
+.emoji,
+img[draggable="false"][alt] {
+  height: 1.2em !important;
+  width: 1.2em !important;
+  margin: 0 0.05em 0 0.1em !important;
+  vertical-align: -0.2em !important;
+  display: inline-block !important;
+}

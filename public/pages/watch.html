@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch - BuddyStore</title>
+    <link rel="icon" type="image/x-icon" href="../images/normal.ico">
+    <link rel="stylesheet" href="../css/youtube-style.css">
+    <style>
+        .yt-video-player-container {
+            background: #000;
+            position: relative;
+        }
+        
+        .yt-video-player {
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+        
+        .yt-loading-player {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: var(--bs-space-xl);
+            border-radius: var(--bs-radius-xl);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .yt-loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid var(--bs-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .video-error-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: var(--bs-space-lg);
+            color: white;
+            text-align: center;
+            padding: var(--bs-space-2xl);
+        }
+
+        .video-error-state .error-icon {
+            font-size: 64px;
+            opacity: 0.7;
+        }
+
+        .video-error-state .error-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: var(--bs-space-sm);
+        }
+
+        .video-error-state .error-message {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        /* Like/Dislike button active states */
+        .yt-action-button.liked,
+        .yt-action-button.active {
+            background: var(--bs-primary) !important;
+            color: white !important;
+        }
+        
+        .yt-action-button.liked svg,
+        .yt-action-button.active svg {
+            fill: white !important;
+        }
+        
+        .yt-action-button {
+            transition: all 0.3s ease;
+        }
+        
+        .yt-action-button:hover {
+            background: var(--bs-glass-bg);
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+    <!-- BuddyStore YouTube-style Header -->
+    <header class="yt-header">
+        <div class="yt-header-left">
+            <button class="yt-menu-button" aria-label="Menu">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                </svg>
+            </button>
+            <a href="videos.html" class="yt-logo">
+                <div class="yt-logo-icon"></div>
+                <span class="yt-logo-text">BuddyStore</span>
+            </a>
+        </div>
+        
+        <div class="yt-header-center">
+            <div class="yt-search-container">
+                <input type="text" class="yt-search-input" placeholder="Search videos..." id="searchInput">
+                <button class="yt-search-button" aria-label="Search">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <div class="yt-header-right">
+            <a href="buy.html" class="yt-icon-button" aria-label="Buy Premium">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                </svg>
+            </a>
+            <a href="#" class="yt-icon-button" id="dashboardLink" aria-label="Dashboard">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                </svg>
+            </a>
+            <button class="yt-profile-button" aria-label="Account" id="profileButton">
+                BS
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="yt-main">
+        <div class="yt-watch-container">
+            <!-- Primary Content -->
+            <div class="yt-primary-content">
+                <!-- Video Player -->
+                <div class="yt-video-player-container">
+                    <div class="yt-loading-player" id="loadingPlayer">
+                        <div class="yt-loading-spinner"></div>
+                        <span>Loading video...</span>
+                    </div>
+                    <video class="yt-video-player" id="videoPlayer" controls style="display: none;">
+                        <source src="" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <!-- Video Info -->
+                <div class="yt-video-primary-info">
+                    <h1 class="yt-video-title-large" id="videoTitle">Loading...</h1>
+                    <div class="yt-video-actions">
+                        <div class="yt-video-stats">
+                            <span id="videoViews">Loading views...</span>
+                            <span> • </span>
+                            <span id="videoDate">Loading date...</span>
+                        </div>
+                        <div class="yt-action-buttons">
+                            <button class="yt-action-button" id="likeButton">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/>
+                                </svg>
+                                <span id="likeCount">0</span>
+                            </button>
+                            <button class="yt-action-button" id="dislikeButton">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/>
+                                </svg>
+                                <span id="dislikeCount">0</span>
+                            </button>
+                            <button class="yt-action-button">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.50-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                                </svg>
+                                Share
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Channel Info -->
+                <div class="yt-channel-info">
+                    <div class="yt-channel-avatar-large"></div>
+                    <div class="yt-channel-details">
+                        <div class="yt-channel-name-large">BuddyStore</div>
+                        <div class="yt-channel-subscribers" id="subscriberCount">Loading subscribers...</div>
+                    </div>
+                    <button class="yt-subscribe-button subscribed" id="subscribeButton">Subscribed</button>
+                </div>
+
+                <!-- Video Description -->
+                <div class="yt-video-description">
+                    <div class="yt-description-text" id="videoDescription">
+                        Loading description...
+                    </div>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="yt-comments-section">
+                    <div class="yt-comments-header">
+                        <div class="yt-comments-count" id="commentsCount">Loading comments...</div>
+                        <button class="yt-sort-button">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/>
+                            </svg>
+                            Sort by
+                        </button>
+                    </div>
+
+                    <!-- Add Comment -->
+                    <div class="yt-comment-box">
+                        <div class="yt-comment-avatar" id="userCommentAvatar">BS</div>
+                        <div class="yt-comment-input-container">
+                            <textarea class="yt-comment-input" placeholder="Add a comment..." rows="1" id="commentInput"></textarea>
+                            <div class="yt-comment-actions">
+                                <button class="yt-comment-button cancel" id="cancelComment">Cancel</button>
+                                <button class="yt-comment-button submit" disabled id="submitComment">Comment</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Comments List -->
+                    <div id="commentsList">
+                        <!-- Comments will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Secondary Content (Recommendations) -->
+            <div class="yt-secondary-content">
+                <div class="recommendations-header">
+                    <h3 style="font-size: 16px; font-weight: 600; color: var(--bs-text-primary); margin-bottom: var(--bs-space-lg); display: flex; align-items: center; gap: var(--bs-space-sm);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/>
+                        </svg>
+                        Up Next
+                    </h3>
+                </div>
+                <div class="yt-recommendations" id="recommendations">
+                    <!-- Loading state -->
+                    <div class="recommendations-loading" id="recommendationsLoading">
+                        <div class="yt-recommendation-card" style="opacity: 0.6;">
+                            <div class="yt-recommendation-thumbnail">
+                                <div class="yt-skeleton" style="width: 100%; height: 100%; border-radius: 8px;"></div>
+                            </div>
+                            <div class="yt-recommendation-info">
+                                <div class="yt-skeleton" style="height: 14px; margin-bottom: 8px; border-radius: 4px;"></div>
+                                <div class="yt-skeleton" style="height: 12px; width: 80%; border-radius: 4px;"></div>
+                            </div>
+                        </div>
+                        <div class="yt-recommendation-card" style="opacity: 0.4;">
+                            <div class="yt-recommendation-thumbnail">
+                                <div class="yt-skeleton" style="width: 100%; height: 100%; border-radius: 8px;"></div>
+                            </div>
+                            <div class="yt-recommendation-info">
+                                <div class="yt-skeleton" style="height: 14px; margin-bottom: 8px; border-radius: 4px;"></div>
+                                <div class="yt-skeleton" style="height: 12px; width: 70%; border-radius: 4px;"></div>
+                            </div>
+                        </div>
+                        <div class="yt-recommendation-card" style="opacity: 0.2;">
+                            <div class="yt-recommendation-thumbnail">
+                                <div class="yt-skeleton" style="width: 100%; height: 100%; border-radius: 8px;"></div>
+                            </div>
+                            <div class="yt-recommendation-info">
+                                <div class="yt-skeleton" style="height: 14px; margin-bottom: 8px; border-radius: 4px;"></div>
+                                <div class="yt-skeleton" style="height: 12px; width: 60%; border-radius: 4px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        class BuddyStoreWatchPage {
+            constructor() {
+                this.currentVideo = null;
+                this.recommendations = [];
+                this.currentUser = null;
+                this.totalUsers = 0;
+                this.userLikes = new Set();
+                this.userDislikes = new Set();
+                this.comments = [];
+                this.init();
+            }
+
+            async init() {
+                this.setupUserProfile();
+                this.setupEventListeners();
+                
+                // Get video ID from URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const videoId = urlParams.get('v');
+                
+                if (videoId) {
+                    await this.loadVideo(videoId);
+                    await this.loadUserStats();
+                    await this.loadUserInteractions(videoId);
+                    await this.loadComments(videoId);
+                    await this.loadRecommendations();
+                } else {
+                    // Redirect to videos page if no video ID
+                    window.location.href = 'videos.html';
+                }
+            }
+
+            setupUserProfile() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const username = urlParams.get('user') || localStorage.getItem('username');
+                const profilePic = urlParams.get('pic') || localStorage.getItem('profilePic');
+                
+                if (username) {
+                    this.currentUser = { username, profilePic };
+                    localStorage.setItem('username', username);
+                    if (profilePic) localStorage.setItem('profilePic', profilePic);
+                    
+                    // Update profile button
+                    const profileButton = document.getElementById('profileButton');
+                    if (profilePic && profilePic !== 'null' && profilePic !== 'undefined') {
+                        profileButton.style.backgroundImage = `url(${profilePic})`;
+                        profileButton.textContent = '';
+                    } else {
+                        profileButton.textContent = username.substring(0, 2).toUpperCase();
+                    }
+                    
+                    // Update comment avatar
+                    const commentAvatar = document.getElementById('userCommentAvatar');
+                    if (profilePic && profilePic !== 'null' && profilePic !== 'undefined') {
+                        commentAvatar.style.backgroundImage = `url(${profilePic})`;
+                        commentAvatar.textContent = '';
+                    } else {
+                        commentAvatar.textContent = username.substring(0, 2).toUpperCase();
+                    }
+                    
+                    // Update dashboard link
+                    const dashboardLink = document.getElementById('dashboardLink');
+                    dashboardLink.href = `dashboard.html?name=${username}&pic=${encodeURIComponent(profilePic || '')}`;
+                } else {
+                    // Redirect to login if no user
+                    window.location.href = '/';
+                }
+            }
+
+            setupEventListeners() {
+                // Like button
+                document.getElementById('likeButton').addEventListener('click', () => {
+                    this.handleLike();
+                });
+
+                // Dislike button
+                document.getElementById('dislikeButton').addEventListener('click', () => {
+                    this.handleDislike();
+                });
+
+                // Subscribe button (always subscribed for registered users)
+                document.getElementById('subscribeButton').addEventListener('click', () => {
+                    // Do nothing - all registered users are automatically subscribed
+                });
+
+                // Comment input
+                const commentInput = document.getElementById('commentInput');
+                const commentSubmit = document.getElementById('submitComment');
+                const commentCancel = document.getElementById('cancelComment');
+                
+                commentInput.addEventListener('input', () => {
+                    commentSubmit.disabled = commentInput.value.trim() === '';
+                });
+
+                commentSubmit.addEventListener('click', () => {
+                    this.submitComment();
+                });
+
+                commentCancel.addEventListener('click', () => {
+                    commentInput.value = '';
+                    commentSubmit.disabled = true;
+                });
+
+                // Search functionality
+                document.getElementById('searchInput').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        const query = e.target.value.trim();
+                        if (query) {
+                            const username = this.currentUser?.username || '';
+                            const profilePic = this.currentUser?.profilePic || '';
+                            window.location.href = `videos.html?search=${encodeURIComponent(query)}&name=${username}&pic=${encodeURIComponent(profilePic)}`;
+                        }
+                    }
+                });
+
+                document.querySelector('.yt-search-button').addEventListener('click', () => {
+                    const query = document.getElementById('searchInput').value.trim();
+                    if (query) {
+                        const username = this.currentUser?.username || '';
+                        const profilePic = this.currentUser?.profilePic || '';
+                        window.location.href = `videos.html?search=${encodeURIComponent(query)}&name=${username}&pic=${encodeURIComponent(profilePic)}`;
+                    }
+                });
+            }
+
+            async handleLike() {
+                if (!this.currentUser) {
+                    alert('Please login to like videos');
+                    return;
+                }
+
+                const videoId = this.currentVideo.id;
+                const username = this.currentUser.username;
+                
+                // Disable button during request to prevent double-clicks
+                const likeButton = document.getElementById('likeButton');
+                likeButton.style.pointerEvents = 'none';
+                
+                try {
+                    console.log('👍 Sending like request:', { videoId, username });
+                    
+                    const response = await fetch('/api/video/like', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ videoId, username })
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log('✅ Like response:', data);
+                        
+                        // Update local state
+                        if (data.liked) {
+                            this.userLikes.add(videoId);
+                            this.userDislikes.delete(videoId);
+                        } else {
+                            this.userLikes.delete(videoId);
+                        }
+                        
+                        // Update UI
+                        this.updateLikeButtons(data.liked, data.disliked);
+                        this.currentVideo.likes = data.totalLikes;
+                        this.currentVideo.dislikes = data.totalDislikes;
+                        document.getElementById('likeCount').textContent = data.totalLikes;
+                        document.getElementById('dislikeCount').textContent = data.totalDislikes;
+                        
+                        // Show feedback
+                        this.showLikeFeedback(data.liked ? 'liked' : 'unliked');
+                    } else {
+                        const errorData = await response.json();
+                        console.error('❌ Like request failed:', errorData);
+                        alert('Failed to like video. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('❌ Error handling like:', error);
+                    alert('Network error. Please check your connection and try again.');
+                } finally {
+                    // Re-enable button
+                    likeButton.style.pointerEvents = 'auto';
+                }
+            }
+
+            async handleDislike() {
+                if (!this.currentUser) {
+                    alert('Please login to dislike videos');
+                    return;
+                }
+
+                const videoId = this.currentVideo.id;
+                const username = this.currentUser.username;
+                
+                // Disable button during request to prevent double-clicks
+                const dislikeButton = document.getElementById('dislikeButton');
+                dislikeButton.style.pointerEvents = 'none';
+                
+                try {
+                    console.log('👎 Sending dislike request:', { videoId, username });
+                    
+                    const response = await fetch('/api/video/dislike', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ videoId, username })
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log('✅ Dislike response:', data);
+                        
+                        // Update local state
+                        if (data.disliked) {
+                            this.userDislikes.add(videoId);
+                            this.userLikes.delete(videoId);
+                        } else {
+                            this.userDislikes.delete(videoId);
+                        }
+                        
+                        // Update UI
+                        this.updateLikeButtons(data.liked, data.disliked);
+                        this.currentVideo.likes = data.totalLikes;
+                        this.currentVideo.dislikes = data.totalDislikes;
+                        document.getElementById('likeCount').textContent = data.totalLikes;
+                        document.getElementById('dislikeCount').textContent = data.totalDislikes;
+                        
+                        // Show feedback
+                        this.showLikeFeedback(data.disliked ? 'disliked' : 'undisliked');
+                    } else {
+                        const errorData = await response.json();
+                        console.error('❌ Dislike request failed:', errorData);
+                        alert('Failed to dislike video. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('❌ Error handling dislike:', error);
+                    alert('Network error. Please check your connection and try again.');
+                } finally {
+                    // Re-enable button
+                    dislikeButton.style.pointerEvents = 'auto';
+                }
+            }
+
+            updateLikeButtons(liked, disliked) {
+                const likeButton = document.getElementById('likeButton');
+                const dislikeButton = document.getElementById('dislikeButton');
+                
+                // Remove all states first
+                likeButton.classList.remove('liked', 'active');
+                dislikeButton.classList.remove('liked', 'active');
+                
+                if (liked) {
+                    likeButton.classList.add('liked', 'active');
+                } else if (disliked) {
+                    dislikeButton.classList.add('liked', 'active');
+                }
+            }
+            
+            showLikeFeedback(action) {
+                // Create a temporary feedback element
+                const feedback = document.createElement('div');
+                feedback.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: rgba(0, 0, 0, 0.8);
+                    color: white;
+                    padding: 12px 24px;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    font-weight: 500;
+                    z-index: 10000;
+                    pointer-events: none;
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                `;
+                
+                const messages = {
+                    'liked': '👍 Video liked!',
+                    'unliked': 'Like removed',
+                    'disliked': '👎 Video disliked',
+                    'undisliked': 'Dislike removed'
+                };
+                
+                feedback.textContent = messages[action] || 'Action completed';
+                document.body.appendChild(feedback);
+                
+                // Show and hide with animation
+                setTimeout(() => feedback.style.opacity = '1', 10);
+                setTimeout(() => {
+                    feedback.style.opacity = '0';
+                    setTimeout(() => document.body.removeChild(feedback), 300);
+                }, 1500);
+            }
+
+            async submitComment() {
+                if (!this.currentUser) {
+                    alert('Please login to comment');
+                    return;
+                }
+
+                const commentText = document.getElementById('commentInput').value.trim();
+                if (!commentText) return;
+
+                const comment = {
+                    id: Date.now().toString(),
+                    videoId: this.currentVideo.id,
+                    username: this.currentUser.username,
+                    profilePic: this.currentUser.profilePic,
+                    text: commentText,
+                    timestamp: new Date().toISOString(),
+                    likes: 0
+                };
+
+                try {
+                    const response = await fetch('/api/video/comment', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(comment)
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.comments.unshift(data);
+                    } else {
+                        // Fallback to local state
+                        this.comments.unshift(comment);
+                    }
+                } catch (error) {
+                    // Fallback to local state
+                    this.comments.unshift(comment);
+                }
+
+                // Clear input and update UI
+                document.getElementById('commentInput').value = '';
+                document.getElementById('submitComment').disabled = true;
+                this.displayComments();
+            }
+
+            async loadVideo(videoId) {
+                console.log('🎬 Loading video with ID:', videoId);
+                
+                try {
+                    // Try to get video from API first
+                    const response = await fetch(`/api/videos/${videoId}`);
+                    if (response.ok) {
+                        const apiVideo = await response.json();
+                        console.log('✅ API returned video:', apiVideo);
+                        
+                        // Convert API video to proper format
+                        this.currentVideo = {
+                            ...apiVideo,
+                            videoUrl: apiVideo.videoUrl || `/api/videos/file/${apiVideo.category}/${apiVideo.filename}`,
+                            views: apiVideo.views || `${Math.floor(Math.random() * 5000) + 1000} views`,
+                            uploadTime: apiVideo.uploadTime || this.getTimeAgo(new Date(apiVideo.uploadDate || Date.now())),
+                            likes: apiVideo.likes || Math.floor(Math.random() * 500) + 50,
+                            dislikes: apiVideo.dislikes || Math.floor(Math.random() * 20) + 5
+                        };
+                    } else {
+                        console.warn('⚠️ API request failed, using sample data for:', videoId);
+                        this.currentVideo = this.getSampleVideo(videoId);
+                    }
+                } catch (error) {
+                    console.warn('⚠️ API not available, using sample data for:', videoId, error);
+                    this.currentVideo = this.getSampleVideo(videoId);
+                }
+
+                // Ensure we have a valid video object
+                if (!this.currentVideo) {
+                    console.error('❌ No video data available for:', videoId);
+                    this.currentVideo = this.getSampleVideo('mixed_1'); // Fallback to first video
+                }
+                
+                console.log('🎬 Final video object:', this.currentVideo);
+
+                // Load real video stats from database
+                await this.loadVideoStats(videoId);
+                
+                this.displayVideo();
+            }
+            
+            async loadVideoStats(videoId) {
+                try {
+                    const response = await fetch(`/api/video/${videoId}/stats`);
+                    if (response.ok) {
+                        const stats = await response.json();
+                        this.currentVideo.likes = stats.likes;
+                        this.currentVideo.dislikes = stats.dislikes;
+                        this.currentVideo.views = `${stats.views.toLocaleString()} views`;
+                        console.log('✅ Loaded real video stats:', stats);
+                        
+                        // Update UI with real stats
+                        document.getElementById('likeCount').textContent = stats.likes;
+                        document.getElementById('dislikeCount').textContent = stats.dislikes;
+                    }
+                } catch (error) {
+                    console.warn('⚠️ Could not load video stats, using defaults');
+                }
+            }
+
+            async loadUserStats() {
+                try {
+                    // Try the admin API endpoint first (same as admin.html uses)
+                    const response = await fetch('/api/users');
+                    if (response.ok) {
+                        const users = await response.json();
+                        this.totalUsers = users.length;
+                        console.log('✅ Loaded actual user count from admin API:', this.totalUsers);
+                        
+                        // Store for other pages
+                        localStorage.setItem('totalUsers', this.totalUsers.toString());
+                    } else {
+                        // Fallback to count endpoint
+                        const countResponse = await fetch('/api/users/count');
+                        if (countResponse.ok) {
+                            const data = await countResponse.json();
+                            this.totalUsers = data.totalUsers || 0;
+                            console.log('✅ Loaded user count from count API:', this.totalUsers);
+                        } else {
+                            throw new Error('Both APIs failed');
+                        }
+                    }
+                } catch (error) {
+                    console.error('❌ Error loading user stats:', error);
+                    
+                    // Try localStorage as final fallback
+                    const storedUsers = localStorage.getItem('totalUsers');
+                    this.totalUsers = storedUsers ? parseInt(storedUsers) : 1;
+                    console.warn('⚠️ Using stored/fallback user count:', this.totalUsers);
+                }
+                
+                // Update subscriber count (all registered users are subscribed)
+                const subscriberText = this.totalUsers > 0 ? `${this.formatNumber(this.totalUsers)} subscribers` : 'No subscribers yet';
+                document.getElementById('subscriberCount').textContent = subscriberText;
+                console.log('📊 Updated subscriber count:', subscriberText);
+            }
+
+            async loadUserInteractions(videoId) {
+                if (!this.currentUser) return;
+
+                try {
+                    const response = await fetch(`/api/video/${videoId}/interactions?username=${this.currentUser.username}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        // Update local state
+                        if (data.liked) {
+                            this.userLikes.add(videoId);
+                        } else {
+                            this.userLikes.delete(videoId);
+                        }
+                        
+                        if (data.disliked) {
+                            this.userDislikes.add(videoId);
+                        } else {
+                            this.userDislikes.delete(videoId);
+                        }
+                        
+                        // Update UI with current user's interaction state
+                        this.updateLikeButtons(data.liked, data.disliked);
+                        
+                        // Update counts with real data from database
+                        if (data.totalLikes !== undefined) {
+                            this.currentVideo.likes = data.totalLikes;
+                            document.getElementById('likeCount').textContent = data.totalLikes;
+                        }
+                        if (data.totalDislikes !== undefined) {
+                            this.currentVideo.dislikes = data.totalDislikes;
+                            document.getElementById('dislikeCount').textContent = data.totalDislikes;
+                        }
+                        
+                        console.log('✅ Loaded user interactions:', {
+                            liked: data.liked,
+                            disliked: data.disliked,
+                            totalLikes: data.totalLikes,
+                            totalDislikes: data.totalDislikes
+                        });
+                    }
+                } catch (error) {
+                    console.warn('Could not load user interactions:', error);
+                }
+            }
+
+            async loadComments(videoId) {
+                try {
+                    const response = await fetch(`/api/video/${videoId}/comments`);
+                    if (response.ok) {
+                        this.comments = await response.json();
+                    } else {
+                        this.comments = this.getSampleComments();
+                    }
+                } catch (error) {
+                    this.comments = this.getSampleComments();
+                }
+                
+                this.displayComments();
+            }
+
+            getSampleComments() {
+                return [
+                    {
+                        id: '1',
+                        username: 'user123',
+                        profilePic: null,
+                        text: 'Great video! Thanks for sharing this content. 👍',
+                        timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+                        likes: 5
+                    },
+                    {
+                        id: '2',
+                        username: 'videoLover',
+                        profilePic: null,
+                        text: 'Amazing quality! Keep up the great work BuddyStore! 🔥',
+                        timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+                        likes: 12
+                    }
+                ];
+            }
+
+            displayComments() {
+                const commentsList = document.getElementById('commentsList');
+                const commentsCount = document.getElementById('commentsCount');
+                
+                commentsCount.textContent = `${this.comments.length} Comments`;
+                
+                if (this.comments.length === 0) {
+                    commentsList.innerHTML = '<div style="text-align: center; color: var(--bs-text-secondary); padding: 2rem;">No comments yet. Be the first to comment!</div>';
+                    return;
+                }
+
+                commentsList.innerHTML = this.comments.map(comment => this.createCommentHTML(comment)).join('');
+            }
+
+            createCommentHTML(comment) {
+                const timeAgo = this.getTimeAgo(new Date(comment.timestamp));
+                const avatarContent = comment.profilePic && comment.profilePic !== 'null' 
+                    ? `style="background-image: url(${comment.profilePic}); background-size: cover; background-position: center;"` 
+                    : comment.username.substring(0, 2).toUpperCase();
+
+                return `
+                    <div class="yt-comment">
+                        <div class="yt-comment-box">
+                            <div class="yt-comment-avatar" ${comment.profilePic ? avatarContent : ''}>${comment.profilePic ? '' : avatarContent}</div>
+                            <div class="yt-comment-input-container">
+                                <div style="font-weight: 500; font-size: 13px; margin-bottom: 4px; color: var(--bs-text-primary);">@${comment.username} • ${timeAgo}</div>
+                                <div style="font-size: 14px; line-height: 1.4; color: var(--bs-text-primary);">${comment.text}</div>
+                                <div style="display: flex; align-items: center; gap: 16px; margin-top: 8px;">
+                                    <button class="yt-icon-button" style="width: auto; height: auto; padding: 8px;">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/>
+                                        </svg>
+                                        <span style="margin-left: 4px; font-size: 12px;">${comment.likes}</span>
+                                    </button>
+                                    <button class="yt-icon-button" style="width: auto; height: auto; padding: 8px;">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/>
+                                        </svg>
+                                    </button>
+                                    <button style="background: none; border: none; color: var(--bs-text-secondary); font-size: 12px; font-weight: 500; cursor: pointer;">Reply</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            getTimeAgo(date) {
+                const now = new Date();
+                const diffInSeconds = Math.floor((now - date) / 1000);
+                
+                if (diffInSeconds < 60) return 'just now';
+                if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+                if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+                if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)} days ago`;
+                if (diffInSeconds < 31536000) return `${Math.floor(diffInSeconds / 2592000)} months ago`;
+                return `${Math.floor(diffInSeconds / 31536000)} years ago`;
+            }
+
+            formatNumber(num) {
+                if (num >= 1000000) {
+                    return (num / 1000000).toFixed(1) + 'M';
+                }
+                if (num >= 1000) {
+                    return (num / 1000).toFixed(1) + 'K';
+                }
+                return num.toString();
+            }
+
+            formatDuration(seconds) {
+                if (!seconds || isNaN(seconds)) return '0:00';
+                
+                const hours = Math.floor(seconds / 3600);
+                const minutes = Math.floor((seconds % 3600) / 60);
+                const secs = Math.floor(seconds % 60);
+                
+                if (hours > 0) {
+                    return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                } else {
+                    return `${minutes}:${secs.toString().padStart(2, '0')}`;
+                }
+            }
+
+            getSampleVideo(videoId) {
+                console.log('🎬 Getting sample video for ID:', videoId);
+                
+                // Parse video ID to extract category and number - MUST MATCH videos.html logic exactly!
+                let category = 'Mixed';
+                let videoNumber = 1;
+                let videoPath = '/api/videos/file/Mixed/1.mp4';
+                
+                // Handle the exact ID patterns from videos.html (matching API format)
+                if (videoId.startsWith('Mixed_')) {
+                    // Extract number from Mixed_X
+                    const numberMatch = videoId.match(/Mixed_(\d+)/);
+                    if (numberMatch) {
+                        videoNumber = parseInt(numberMatch[1]);
+                        category = 'Mixed';
+                        videoPath = `/api/videos/file/Mixed/${videoNumber}.mp4`;
+                        console.log('🎬 Parsed Mixed video:', { videoId, videoNumber, videoPath });
+                    }
+                } else if (videoId.startsWith('Mom_And_Son_')) {
+                    // Extract number from Mom_And_Son_X
+                    const numberMatch = videoId.match(/Mom_And_Son_(\d+)/);
+                    if (numberMatch) {
+                        videoNumber = parseInt(numberMatch[1]);
+                        category = 'Mom_And_Son';
+                        videoPath = `/api/videos/file/Mom_And_Son/${videoNumber}.mp4`;
+                        console.log('🎬 Parsed Mom & Son video:', { videoId, videoNumber, videoPath });
+                    }
+                } else if (videoId.startsWith('mixed_')) {
+                    // Backward compatibility for old format
+                    const numberMatch = videoId.match(/mixed_(\d+)/);
+                    if (numberMatch) {
+                        videoNumber = parseInt(numberMatch[1]);
+                        category = 'Mixed';
+                        videoPath = `/api/videos/file/Mixed/${videoNumber}.mp4`;
+                        console.log('🎬 Parsed Mixed video (old format):', { videoId, videoNumber, videoPath });
+                    }
+                } else if (videoId.startsWith('mom_son_')) {
+                    // Backward compatibility for old format
+                    const numberMatch = videoId.match(/mom_son_(\d+)/);
+                    if (numberMatch) {
+                        videoNumber = parseInt(numberMatch[1]);
+                        category = 'Mom_And_Son';
+                        videoPath = `/api/videos/file/Mom_And_Son/${videoNumber}.mp4`;
+                        console.log('🎬 Parsed Mom & Son video (old format):', { videoId, videoNumber, videoPath });
+                    }
+                } else {
+                    // Fallback parsing for other formats
+                    const parts = videoId.split('_');
+                    if (parts.length >= 2) {
+                        const categoryPart = parts[0];
+                        const numberPart = parseInt(parts[parts.length - 1]) || 1;
+                        
+                        if (categoryPart === 'rape') {
+                            category = 'Rape';
+                            // Use Mixed videos for Rape category as fallback
+                            videoPath = `/api/videos/file/Mixed/${Math.min(numberPart, 11)}.mp4`;
+                        } else if (categoryPart === 'sl' || videoId.includes('sl_leaks')) {
+                            category = 'SL_Leaks';
+                            // Use Mom_And_Son videos for SL_Leaks as fallback
+                            videoPath = `/api/videos/file/Mom_And_Son/${Math.min(numberPart, 10)}.mp4`;
+                        } else if (categoryPart === 'cctv') {
+                            category = 'CCTV';
+                            // Use Mom_And_Son videos for CCTV as fallback
+                            videoPath = `/api/videos/file/Mom_And_Son/${Math.min(numberPart, 10)}.mp4`;
+                        } else {
+                            // Default to Mixed
+                            category = 'Mixed';
+                            videoPath = `/api/videos/file/Mixed/${Math.min(numberPart, 11)}.mp4`;
+                        }
+                        
+                        videoNumber = numberPart;
+                        console.log('🎬 Fallback parsing:', { videoId, categoryPart, numberPart, category, videoPath });
+                    }
+                }
+                
+                // Generate dynamic video data
+                const durations = ['1:30', '2:15', '3:45', '4:20', '2:50', '1:45', '3:10', '2:35', '4:05', '1:55', '3:25', '2:40'];
+                const uploadTimes = ['1 hour ago', '3 hours ago', '1 day ago', '2 days ago', '3 days ago', '1 week ago', '2 weeks ago'];
+                
+                const categoryTitles = {
+                    'Mixed': 'Mixed Content',
+                    'Mom_And_Son': 'Mom & Son',
+                    'Rape': 'Rape Category',
+                    'SL_Leaks': 'SL Leaks',
+                    'CCTV': 'CCTV Footage'
+                };
+                
+                const categoryDescriptions = {
+                    'Mixed': 'This is a free preview from our Mixed category collection. Enjoy this high-quality content and don\'t forget to subscribe for more amazing videos!',
+                    'Mom_And_Son': 'Free preview from our Mom & Son category. This exclusive content showcases the best of our collection.',
+                    'Rape': 'Free preview from our Rape category collection. Premium quality content.',
+                    'SL_Leaks': 'Free preview from our SL Leaks collection. Latest and exclusive content.',
+                    'CCTV': 'Free preview from our CCTV footage collection. High-quality surveillance content.'
+                };
+                
+                const video = {
+                    id: videoId,
+                    title: `${categoryTitles[category]} ${videoNumber} - Premium Collection`,
+                    category: category,
+                    duration: durations[Math.floor(Math.random() * durations.length)],
+                    views: `${Math.floor(Math.random() * 5000) + 1000} views`,
+                    uploadTime: uploadTimes[Math.floor(Math.random() * uploadTimes.length)],
+                    channelName: 'BuddyStore',
+                    description: `${categoryDescriptions[category]}\n\nCategories: ${categoryTitles[category]}\nQuality: HD\nVideo Number: ${videoNumber}\n\nFor premium access to our full collection, visit our store and choose from our various packages.`,
+                    likes: Math.floor(Math.random() * 500) + 50,
+                    dislikes: Math.floor(Math.random() * 20) + 5,
+                    videoUrl: videoPath
+                };
+                
+                console.log('🎬 Final generated video data:', {
+                    inputId: videoId,
+                    outputId: video.id,
+                    category: video.category,
+                    videoNumber: videoNumber,
+                    videoUrl: video.videoUrl,
+                    title: video.title
+                });
+                
+                return video;
+
+            }
+
+            displayVideo() {
+                // Update page title
+                document.title = `${this.currentVideo.title} - BuddyStore`;
+
+                // Update video info
+                document.getElementById('videoTitle').textContent = this.currentVideo.title;
+                document.getElementById('videoViews').textContent = this.currentVideo.views;
+                document.getElementById('videoDate').textContent = this.currentVideo.uploadTime;
+                document.getElementById('videoDescription').textContent = this.currentVideo.description;
+                document.getElementById('likeCount').textContent = this.currentVideo.likes;
+                document.getElementById('dislikeCount').textContent = this.currentVideo.dislikes;
+
+                // Load video player
+                this.loadVideoPlayer();
+            }
+
+            loadVideoPlayer() {
+                const player = document.getElementById('videoPlayer');
+                const loadingPlayer = document.getElementById('loadingPlayer');
+                
+                if (this.currentVideo.videoUrl) {
+                    console.log('🎬 Loading video player with:', {
+                        videoId: this.currentVideo.id,
+                        title: this.currentVideo.title,
+                        videoUrl: this.currentVideo.videoUrl,
+                        category: this.currentVideo.category
+                    });
+                    
+                    // Clear any existing source
+                    player.src = '';
+                    player.load();
+                    
+                    // Set new source
+                    player.src = this.currentVideo.videoUrl;
+                    player.preload = 'metadata';
+                    player.playsInline = true;
+                    
+                    // Add timeout for loading
+                    const loadTimeout = setTimeout(() => {
+                        console.error('Video loading timeout');
+                        this.showVideoError('Video loading timeout. Please check your connection.');
+                    }, 15000); // 15 second timeout
+                    
+                    // Handle successful load
+                    const handleSuccess = () => {
+                        clearTimeout(loadTimeout);
+                        loadingPlayer.style.display = 'none';
+                        player.style.display = 'block';
+                        console.log('Video loaded successfully:', this.currentVideo.videoUrl);
+                    };
+                    
+                    // Handle errors
+                    const handleError = (e) => {
+                        clearTimeout(loadTimeout);
+                        console.error('Video error:', {
+                            error: e,
+                            videoUrl: this.currentVideo.videoUrl,
+                            networkState: player.networkState,
+                            readyState: player.readyState,
+                            errorCode: player.error?.code,
+                            errorMessage: player.error?.message
+                        });
+                        
+                        let errorMessage = 'Video not available. ';
+                        if (player.error) {
+                            switch (player.error.code) {
+                                case 1:
+                                    errorMessage += 'Video loading was aborted.';
+                                    break;
+                                case 2:
+                                    errorMessage += 'Network error occurred.';
+                                    break;
+                                case 3:
+                                    errorMessage += 'Video format not supported.';
+                                    break;
+                                case 4:
+                                    errorMessage += 'Video source not found.';
+                                    break;
+                                default:
+                                    errorMessage += 'Unknown error occurred.';
+                            }
+                        }
+                        errorMessage += ` (File: ${this.currentVideo.videoUrl})`;
+                        
+                        this.showVideoError(errorMessage);
+                    };
+                    
+                    // Add multiple event listeners for better compatibility
+                    player.addEventListener('loadeddata', handleSuccess, { once: true });
+                    player.addEventListener('canplay', handleSuccess, { once: true });
+                    player.addEventListener('error', handleError, { once: true });
+                    
+                    // Start loading
+                    player.load();
+                    
+                    // Test if file exists first
+                    this.testVideoFile(this.currentVideo.videoUrl).then(exists => {
+                        if (!exists) {
+                            clearTimeout(loadTimeout);
+                            this.showVideoError(`Video file not found: ${this.currentVideo.videoUrl}`);
+                        }
+                    });
+                    
+                } else {
+                    this.showVideoError('No video URL provided');
+                }
+            }
+            
+            async testVideoFile(url) {
+                try {
+                    const response = await fetch(url, { method: 'HEAD' });
+                    console.log('Video file test:', {
+                        url,
+                        status: response.status,
+                        contentType: response.headers.get('content-type'),
+                        contentLength: response.headers.get('content-length')
+                    });
+                    return response.ok;
+                } catch (error) {
+                    console.error('Video file test failed:', error);
+                    return false;
+                }
+            }
+            
+            showVideoError(message) {
+                const loadingPlayer = document.getElementById('loadingPlayer');
+                loadingPlayer.innerHTML = `
+                    <div class="video-error-state">
+                        <div class="error-icon">⚠️</div>
+                        <div class="error-title">Video not available</div>
+                        <div class="error-message">${message}</div>
+                        <button onclick="location.reload()" style="margin-top: 16px; padding: 8px 16px; background: var(--bs-primary); color: white; border: none; border-radius: 4px; cursor: pointer;">Retry</button>
+                    </div>
+                `;
+            }
+
+            async loadRecommendations() {
+                try {
+                    console.log('🔄 Loading recommendations...');
+                    const response = await fetch('/api/videos');
+                    if (response.ok) {
+                        const allVideos = await response.json();
+                        console.log('✅ API returned videos for recommendations:', allVideos.length);
+                        
+                        if (allVideos.length > 0) {
+                            this.recommendations = allVideos
+                                .filter(video => video.id !== this.currentVideo.id)
+                                .map(video => ({
+                                    ...video,
+                                    videoUrl: `/api/videos/file/${video.category}/${video.filename}`,
+                                    views: this.generateRandomViews(),
+                                    uploadTime: video.uploadDate ? this.getTimeAgo(new Date(video.uploadDate)) : this.getRandomUploadTime(),
+                                    duration: video.duration || '0:00'
+                                }))
+                            
+                                .sort(() => Math.random() - 0.5)
+                                .slice(0, 15); // Show more recommendations
+                        } else {
+                            this.recommendations = this.getSampleRecommendations();
+                        }
+                    } else {
+                        this.recommendations = this.getSampleRecommendations();
+                    }
+                } catch (error) {
+                    console.warn('API not available, using sample recommendations');
+                    this.recommendations = this.getSampleRecommendations();
+                }
+                
+                // Force some recommendations if none exist
+                if (this.recommendations.length === 0) {
+                    console.log('🔴 No recommendations generated, creating fallback');
+                    this.recommendations = this.createFallbackRecommendations();
+                }
+
+                console.log('📹 Total recommendations loaded:', this.recommendations.length);
+                
+                // Add a small delay to make the loading feel more natural
+                setTimeout(() => {
+                    console.log('🔍 About to display recommendations:', this.recommendations.length);
+                    this.displayRecommendations();
+                }, 300);
+            }
+
+            generateRandomViews() {
+                const min = 1000;
+                const max = 10000;
+                const views = Math.floor(Math.random() * (max - min + 1)) + min;
+                
+                if (views >= 1000) {
+                    return `${(views / 1000).toFixed(1)}K views`;
+                }
+                return `${views} views`;
+            }
+
+            getRandomUploadTime() {
+                const times = ['1 hour ago', '3 hours ago', '1 day ago', '2 days ago', '3 days ago', '1 week ago', '2 weeks ago'];
+                return times[Math.floor(Math.random() * times.length)];
+            }
+
+            getSampleRecommendations() {
+                // Generate recommendations for categories with actual files
+                const recommendations = [];
+                const durations = ['1:30', '2:15', '3:45', '4:20', '2:50', '1:45', '3:10', '2:35', '4:05', '1:55', '3:25', '2:40'];
+                const uploadTimes = ['1 hour ago', '3 hours ago', '1 day ago', '2 days ago', '3 days ago', '1 week ago', '2 weeks ago'];
+                
+                // Generate recommendations for Mixed category (1.mp4 to 11.mp4)
+                for (let i = 1; i <= 11; i++) {
+                    recommendations.push({
+                        id: `mixed_${i}`,
+                        title: `Mixed Content ${i} - Premium Collection`,
+                        category: 'Mixed',
+                        duration: durations[Math.floor(Math.random() * durations.length)],
+                        views: this.generateRandomViews(),
+                        uploadTime: uploadTimes[Math.floor(Math.random() * uploadTimes.length)],
+                        channelName: 'BuddyStore',
+                        videoUrl: `/api/videos/file/Mixed/${i}.mp4`
+                    });
+                }
+                
+                // Generate recommendations for Mom & Son category (10 videos)
+                for (let i = 1; i <= 10; i++) {
+                    recommendations.push({
+                        id: `mom_son_${i}`,
+                        title: `Mom & Son ${i} - Premium Collection`,
+                        category: 'Mom_And_Son',
+                        duration: durations[Math.floor(Math.random() * durations.length)],
+                        views: this.generateRandomViews(),
+                        uploadTime: uploadTimes[Math.floor(Math.random() * uploadTimes.length)],
+                        channelName: 'BuddyStore',
+                        videoUrl: `/api/videos/file/Mom_And_Son/${i}.mp4`
+                    });
+                }
+                
+                // Shuffle and return first 15 recommendations
+                return recommendations
+                    .sort(() => Math.random() - 0.5)
+                    .slice(0, 15)
+                    .filter(rec => rec.id !== this.currentVideo?.id); // Exclude current video
+            }
+            
+            createFallbackRecommendations() {
+                console.log('🔴 Creating fallback recommendations');
+                const fallbackRecs = [];
+                
+                // Create fallback for existing Mixed videos (1-11)
+                for (let i = 1; i <= 11; i++) {
+                    fallbackRecs.push({
+                        id: `fallback_mixed_${i}`,
+                        title: `Mixed Content ${i} - Premium Collection`,
+                        category: 'Mixed',
+                        duration: '0:00', // Will be updated when video loads
+                        views: this.generateRandomViews(),
+                        uploadTime: this.getRandomUploadTime(),
+                        channelName: 'BuddyStore',
+                        videoUrl: `/api/videos/file/Mixed/${i}.mp4`
+                    });
+                }
+                
+                // Create fallback for Mom & Son videos (10 videos)
+                for (let i = 1; i <= 10; i++) {
+                    fallbackRecs.push({
+                        id: `fallback_mom_son_${i}`,
+                        title: `Mom & Son ${i} - Premium Collection`,
+                        category: 'Mom_And_Son',
+                        duration: '0:00', // Will be updated when video loads
+                        views: this.generateRandomViews(),
+                        uploadTime: this.getRandomUploadTime(),
+                        channelName: 'BuddyStore',
+                        videoUrl: `/api/videos/file/Mom_And_Son/${i}.mp4`
+                    });
+                }
+                
+                return fallbackRecs.slice(0, 15); // Return first 15
+            }
+
+            displayRecommendations() {
+                console.log('📺 Starting displayRecommendations with', this.recommendations.length, 'videos');
+                const container = document.getElementById('recommendations');
+                const loadingElement = document.getElementById('recommendationsLoading');
+                
+                console.log('📺 Container found:', !!container);
+                console.log('📺 Loading element found:', !!loadingElement);
+                
+                if (!container) {
+                    console.error('🔴 Recommendations container not found!');
+                    return;
+                }
+                
+                // Remove loading state completely
+                if (loadingElement) {
+                    loadingElement.remove();
+                    console.log('📺 Loading state removed');
+                }
+                
+                if (this.recommendations.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; color: var(--bs-text-secondary); padding: 2rem;">
+                            <div style="font-size: 48px; margin-bottom: 1rem;">📺</div>
+                            <div style="font-size: 16px; font-weight: 500; margin-bottom: 0.5rem;">No recommendations available</div>
+                            <div style="font-size: 14px;">Check back later for more videos!</div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const recommendationHTML = this.recommendations.map(video => this.createRecommendationCard(video)).join('');
+                console.log('📺 Generated HTML length:', recommendationHTML.length);
+                console.log('📺 First recommendation:', this.recommendations[0]);
+                
+                // Clear any existing content first
+                container.innerHTML = '';
+                
+                // Add the recommendations
+                container.innerHTML = recommendationHTML;
+                console.log('📺 Container updated with recommendations');
+                console.log('📺 Container children count:', container.children.length);
+
+                // Setup click handlers
+                container.querySelectorAll('.yt-recommendation-card').forEach((card, index) => {
+                    card.addEventListener('click', () => {
+                        const videoId = this.recommendations[index].id;
+                        const username = this.currentUser?.username || '';
+                        const profilePic = this.currentUser?.profilePic || '';
+                        window.location.href = `watch.html?v=${videoId}&user=${username}&pic=${encodeURIComponent(profilePic)}`;
+                    });
+                });
+                
+                // Setup video previews and hover effects
+                container.querySelectorAll('.yt-recommendation-card').forEach((card, index) => {
+                    const video = this.recommendations[index];
+                    const previewVideo = card.querySelector('.yt-rec-preview');
+                    const placeholder = card.querySelector('.yt-rec-placeholder');
+                    const durationElement = card.querySelector('.yt-video-duration');
+                    
+                    if (previewVideo && video.videoUrl) {
+                        // Load video metadata to get actual duration
+                        previewVideo.addEventListener('loadedmetadata', () => {
+                            if (previewVideo.duration && durationElement) {
+                                const actualDuration = this.formatDuration(previewVideo.duration);
+                                durationElement.textContent = actualDuration;
+                            }
+                            
+                            // Show preview on successful load
+                            previewVideo.style.opacity = '1';
+                            if (placeholder) placeholder.style.opacity = '0';
+                        });
+                        
+                        previewVideo.addEventListener('error', () => {
+                            console.warn('Failed to load preview for:', video.videoUrl);
+                            // Keep placeholder visible on error
+                        });
+                    }
+                    
+                    // Add hover effects
+                    card.addEventListener('mouseenter', () => {
+                        card.style.transform = 'translateY(-2px)';
+                        card.style.boxShadow = 'var(--bs-shadow-lg)';
+                        
+                        // Play preview on hover (desktop only)
+                        if (previewVideo && window.innerWidth > 768) {
+                            previewVideo.play().catch(() => {
+                                // Ignore autoplay errors
+                            });
+                        }
+                    });
+                    
+                    card.addEventListener('mouseleave', () => {
+                        card.style.transform = 'translateY(0)';
+                        card.style.boxShadow = 'var(--bs-shadow-sm)';
+                        
+                        // Pause preview on mouse leave
+                        if (previewVideo) {
+                            previewVideo.pause();
+                            previewVideo.currentTime = 0;
+                        }
+                    });
+                });
+            }
+
+            createRecommendationCard(video) {
+                return `
+                    <div class="yt-recommendation-card yt-fade-in" data-video-id="${video.id}">
+                        <div class="yt-recommendation-thumbnail">
+                            <video class="yt-rec-preview" muted preload="metadata" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.3s ease;" src="${video.videoUrl}"></video>
+                            <div class="yt-rec-placeholder" style="display: flex; align-items: center; justify-content: center; font-size: 24px; color: rgba(255,255,255,0.7); background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-secondary) 100%);">🎬</div>
+                            <div class="yt-video-duration">${video.duration || '0:00'}</div>
+                            <div class="yt-free-badge" style="position: absolute; top: 4px; left: 4px; background: linear-gradient(135deg, var(--bs-accent-green), #059669); color: white; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 700; text-transform: uppercase;">FREE</div>
+                        </div>
+                        <div class="yt-recommendation-info">
+                            <div class="yt-recommendation-title" style="font-size: 14px; font-weight: 500; line-height: 1.3; color: var(--bs-text-primary); margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${video.title}</div>
+                            <div class="yt-recommendation-meta" style="font-size: 12px; color: var(--bs-text-secondary); line-height: 1.3;">
+                                <div style="color: var(--bs-text-secondary); margin-bottom: 2px;">${video.channelName}</div>
+                                <div>${video.views} • ${video.uploadTime}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Initialize the BuddyStore watch page
+        document.addEventListener('DOMContentLoaded', () => {
+            new BuddyStoreWatchPage();
+        });
+    </script>
+    <script src="../js/twemoji-loader.js"></script>
+
+</body>
+</html>

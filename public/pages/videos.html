@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BuddyStore - Free Videos</title>
+    <link rel="icon" type="image/x-icon" href="../images/normal.ico">
+    <link rel="stylesheet" href="../css/youtube-style.css">
+    <style>
+        /* Video thumbnail fixes */
+        .yt-video-thumbnail {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: var(--bs-radius-lg) var(--bs-radius-lg) 0 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-secondary) 100%);
+        }
+
+        .yt-thumbnail-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-secondary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .yt-preview-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .yt-preview-video.loaded {
+            opacity: 1;
+        }
+
+        .play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 3;
+            border-radius: var(--bs-radius-xl) var(--bs-radius-xl) 0 0;
+        }
+
+        .yt-video-card:hover .play-overlay {
+            opacity: 1;
+        }
+
+        .play-button {
+            width: 64px;
+            height: 64px;
+            background: var(--bs-glass-bg);
+            backdrop-filter: var(--bs-glass-blur);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--bs-primary);
+            box-shadow: var(--bs-shadow-lg);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .play-button:hover {
+            transform: scale(1.15);
+            background: white;
+            box-shadow: 0 12px 35px rgba(0, 122, 255, 0.3);
+            color: var(--bs-primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <!-- BuddyStore YouTube-style Header -->
+    <header class="yt-header">
+        <div class="yt-header-left">
+            <button class="yt-menu-button" aria-label="Menu">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                </svg>
+            </button>
+            <a href="videos.html" class="yt-logo">
+                <div class="yt-logo-icon"></div>
+                <span class="yt-logo-text">BuddyStore</span>
+            </a>
+        </div>
+        
+        <div class="yt-header-center">
+            <div class="yt-search-container">
+                <input type="text" class="yt-search-input" placeholder="Search videos..." id="searchInput">
+                <button class="yt-search-button" aria-label="Search">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <div class="yt-header-right">
+            <a href="buy.html" class="yt-icon-button" aria-label="Buy Premium">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                </svg>
+            </a>
+            <a href="#" class="yt-icon-button" id="dashboardLink" aria-label="Dashboard">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                </svg>
+            </a>
+            <button class="yt-profile-button" aria-label="Account" id="profileButton">
+                BS
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="yt-main">
+        <!-- Category Chips -->
+        <div class="yt-category-chips">
+            <button class="yt-category-chip active" data-category="all">All</button>
+            <button class="yt-category-chip" data-category="Mixed">Mixed</button>
+            <button class="yt-category-chip" data-category="Mom_And_Son">Mom & Son</button>
+            <button class="yt-category-chip" data-category="Rape">Rape</button>
+            <button class="yt-category-chip" data-category="SL_Leaks">SL Leaks</button>
+            <button class="yt-category-chip" data-category="CCTV">CCTV</button>
+        </div>
+        <!-- Video Grid -->
+        <div class="yt-video-grid" id="videoGrid">
+            <!-- Loading skeleton -->
+            <div class="yt-video-card yt-skeleton-card">
+                <div class="yt-skeleton yt-skeleton-thumbnail"></div>
+                <div class="yt-video-info">
+                    <div class="yt-channel-avatar yt-skeleton"></div>
+                    <div class="yt-video-details">
+                        <div class="yt-skeleton yt-skeleton-text"></div>
+                        <div class="yt-skeleton yt-skeleton-text short"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        class BuddyStoreVideoGallery {
+            constructor() {
+                this.videos = [];
+                this.filteredVideos = [];
+                this.currentCategory = 'all';
+                this.searchTerm = '';
+                this.currentUser = null;
+                this.totalUsers = 0;
+                this.init();
+            }
+
+            async init() {
+                this.setupUserProfile();
+                this.setupEventListeners();
+                await this.loadVideos();
+                await this.loadUserStats();
+                this.renderVideos();
+                this.handleURLParams();
+                
+                // Test video accessibility
+                this.testVideoAccess();
+            }
+            
+            async testVideoAccess() {
+                if (this.videos.length > 0) {
+                    const testVideo = this.videos[0];
+                    try {
+                        const response = await fetch(testVideo.videoUrl, { method: 'HEAD' });
+                        console.log('Video access test:', {
+                            url: testVideo.videoUrl,
+                            status: response.status,
+                            contentType: response.headers.get('content-type'),
+                            accessible: response.ok
+                        });
+                        
+                        if (!response.ok) {
+                            console.error('Videos may not be accessible. Server response:', response.status);
+                        }
+                    } catch (error) {
+                        console.error('Video access test failed:', error);
+                    }
+                }
+            }
+
+            setupUserProfile() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const username = urlParams.get('name') || localStorage.getItem('username');
+                const profilePic = urlParams.get('pic') || localStorage.getItem('profilePic');
+                
+                if (username) {
+                    this.currentUser = { username, profilePic };
+                    localStorage.setItem('username', username);
+                    if (profilePic) localStorage.setItem('profilePic', profilePic);
+                    
+                    // Update profile button
+                    const profileButton = document.getElementById('profileButton');
+                    if (profilePic && profilePic !== 'null' && profilePic !== 'undefined') {
+                        profileButton.style.backgroundImage = `url(${profilePic})`;
+                        profileButton.textContent = '';
+                    } else {
+                        profileButton.textContent = username.substring(0, 2).toUpperCase();
+                    }
+                    
+                    // Update dashboard link
+                    const dashboardLink = document.getElementById('dashboardLink');
+                    dashboardLink.href = `dashboard.html?name=${username}&pic=${encodeURIComponent(profilePic || '')}`;
+                } else {
+                    // Redirect to login if no user
+                    window.location.href = '/';
+                }
+            }
+
+            handleURLParams() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const searchQuery = urlParams.get('search');
+                if (searchQuery) {
+                    document.getElementById('searchInput').value = searchQuery;
+                    this.searchTerm = searchQuery.toLowerCase();
+                    this.filterVideos();
+                }
+            }
+
+            setupEventListeners() {
+                // Category chips
+                document.querySelectorAll('.yt-category-chip').forEach(chip => {
+                    chip.addEventListener('click', (e) => {
+                        document.querySelectorAll('.yt-category-chip').forEach(c => c.classList.remove('active'));
+                        e.target.classList.add('active');
+                        this.currentCategory = e.target.dataset.category;
+                        this.filterVideos();
+                    });
+                });
+
+                // Search functionality
+                let searchTimeout;
+                document.getElementById('searchInput').addEventListener('input', (e) => {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        this.searchTerm = e.target.value.toLowerCase();
+                        this.filterVideos();
+                    }, 300);
+                });
+
+                document.querySelector('.yt-search-button').addEventListener('click', () => {
+                    const searchInput = document.getElementById('searchInput');
+                    this.searchTerm = searchInput.value.toLowerCase();
+                    this.filterVideos();
+                });
+
+                document.getElementById('searchInput').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.searchTerm = e.target.value.toLowerCase();
+                        this.filterVideos();
+                    }
+                });
+            }
+
+            async loadVideos() {
+                try {
+                    console.log('🔄 Loading videos from API...');
+                    // First try to get videos from API
+                    const response = await fetch('/api/videos');
+                    console.log('📡 API Response status:', response.status);
+                    
+                    if (response.ok) {
+                        const apiVideos = await response.json();
+                        console.log('✅ API returned videos:', apiVideos.length);
+                        
+                        if (apiVideos.length > 0) {
+                            // Convert API videos to proper format with direct URLs
+                            this.videos = apiVideos.map(video => ({
+                                ...video,
+                                videoUrl: `/api/videos/file/${video.category}/${video.filename}`,
+                                duration: '0:00', // Will be updated when video loads
+                                views: this.generateRandomViews(),
+                                uploadTime: this.getTimeAgo(new Date(video.uploadDate)),
+                                likes: Math.floor(Math.random() * 500) + 50,
+                                dislikes: Math.floor(Math.random() * 20) + 5
+                            }));
+                        } else {
+                            console.warn('⚠️ API returned empty array, using sample videos');
+                            this.videos = this.getSampleVideos();
+                        }
+                    } else {
+                        console.warn('⚠️ API request failed, using sample videos');
+                        this.videos = this.getSampleVideos();
+                    }
+                } catch (error) {
+                    console.error('❌ API error, using sample data:', error);
+                    this.videos = this.getSampleVideos();
+                }
+
+                this.filteredVideos = [...this.videos];
+                console.log('📹 Total videos loaded:', this.videos.length);
+            }
+            
+            createVideosFromList(videoList) {
+                const videos = [];
+                let videoIndex = 1;
+                
+                Object.entries(videoList).forEach(([category, files]) => {
+                    files.forEach(file => {
+                        videos.push({
+                            id: `${category.toLowerCase()}_${videoIndex++}`,
+                            title: `${category} - ${file.name.replace('.mp4', '')}`,
+                            category: category,
+                            duration: '0:00', // Duration unknown
+                            views: this.generateRandomViews(),
+                            uploadTime: 'Recently',
+                            channelName: 'BuddyStore',
+                            description: `Video from ${category} category`,
+                            likes: Math.floor(Math.random() * 500) + 50,
+                            dislikes: Math.floor(Math.random() * 20) + 5,
+                            videoUrl: file.url
+                        });
+                    });
+                });
+                
+                return videos;
+            }
+
+            async loadUserStats() {
+                try {
+                    // Try the admin API endpoint first (same as admin.html uses)
+                    const response = await fetch('/api/users');
+                    if (response.ok) {
+                        const users = await response.json();
+                        this.totalUsers = users.length;
+                        console.log('✅ Loaded actual user count from admin API:', this.totalUsers);
+                        
+                        // Store in localStorage for other pages
+                        localStorage.setItem('totalUsers', this.totalUsers.toString());
+                    } else {
+                        // Fallback to count endpoint
+                        const countResponse = await fetch('/api/users/count');
+                        if (countResponse.ok) {
+                            const data = await countResponse.json();
+                            this.totalUsers = data.totalUsers || 0;
+                            console.log('✅ Loaded user count from count API:', this.totalUsers);
+                        } else {
+                            throw new Error('Both APIs failed');
+                        }
+                    }
+                } catch (error) {
+                    console.error('❌ Error loading user stats:', error);
+                    
+                    // Try localStorage as final fallback
+                    const storedUsers = localStorage.getItem('totalUsers');
+                    this.totalUsers = storedUsers ? parseInt(storedUsers) : 1;
+                    console.warn('⚠️ Using stored/fallback user count:', this.totalUsers);
+                }
+                
+                console.log('📊 Total users loaded:', this.totalUsers);
+            }
+
+            getSampleVideos() {
+                console.log('🎬 Generating sample videos...');
+                // Generate sample videos based on actual file structure
+                const sampleVideos = [];
+                
+                // Mixed category videos (1.mp4 to 11.mp4)
+                for (let i = 1; i <= 11; i++) {
+                    const video = {
+                        id: `Mixed_${i}`,
+                        title: `Mixed Content ${i} - Premium Collection`,
+                        category: 'Mixed',
+                        filename: `${i}.mp4`,
+                        duration: '0:00', // Will be updated when video loads
+                        views: this.generateRandomViews(),
+                        uploadTime: this.getRandomUploadTime(),
+                        channelName: 'BuddyStore',
+                        description: `Free preview video ${i} from Mixed category collection.`,
+                        likes: Math.floor(Math.random() * 500) + 50,
+                        dislikes: Math.floor(Math.random() * 20) + 5,
+                        videoUrl: `/api/videos/file/Mixed/${i}.mp4`
+                    };
+                    sampleVideos.push(video);
+                    console.log(`🎬 Created Mixed video: ${video.id} -> ${video.videoUrl}`);
+                }
+                
+                // Mom & Son category videos (10 videos uploaded)
+                for (let i = 1; i <= 10; i++) {
+                    const video = {
+                        id: `Mom_And_Son_${i}`,
+                        title: `Mom & Son ${i} - Premium Collection`,
+                        category: 'Mom_And_Son',
+                        filename: `${i}.mp4`,
+                        duration: '0:00', // Will be updated when video loads
+                        views: this.generateRandomViews(),
+                        uploadTime: this.getRandomUploadTime(),
+                        channelName: 'BuddyStore',
+                        description: `Free preview video ${i} from Mom & Son category collection.`,
+                        likes: Math.floor(Math.random() * 500) + 50,
+                        dislikes: Math.floor(Math.random() * 20) + 5,
+                        videoUrl: `/api/videos/file/Mom_And_Son/${i}.mp4`
+                    };
+                    sampleVideos.push(video);
+                    console.log(`🎬 Created Mom & Son video: ${video.id} -> ${video.videoUrl}`);
+                }
+                
+                console.log(`🎬 Total sample videos generated: ${sampleVideos.length}`);
+                return sampleVideos;
+            }
+            
+            getRandomDuration() {
+                const durations = ['1:30', '2:15', '3:45', '4:20', '2:50', '1:45', '3:10', '2:35', '4:05', '1:55'];
+                return durations[Math.floor(Math.random() * durations.length)];
+            }
+            
+            getRandomUploadTime() {
+                const times = ['1 hour ago', '3 hours ago', '1 day ago', '2 days ago', '3 days ago', '1 week ago', '2 weeks ago'];
+                return times[Math.floor(Math.random() * times.length)];
+            }
+            
+
+
+            generateRandomViews() {
+                const min = 1000;
+                const max = 10000;
+                const views = Math.floor(Math.random() * (max - min + 1)) + min;
+                
+                if (views >= 1000) {
+                    return `${(views / 1000).toFixed(1)}K views`;
+                }
+                return `${views} views`;
+            }
+
+            getTimeAgo(date) {
+                const now = new Date();
+                const diffInSeconds = Math.floor((now - date) / 1000);
+                
+                if (diffInSeconds < 60) return 'just now';
+                if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+                if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+                if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)} days ago`;
+                if (diffInSeconds < 31536000) return `${Math.floor(diffInSeconds / 2592000)} months ago`;
+                return `${Math.floor(diffInSeconds / 31536000)} years ago`;
+            }
+
+            formatDuration(seconds) {
+                if (!seconds || isNaN(seconds)) return '0:00';
+                
+                const hours = Math.floor(seconds / 3600);
+                const minutes = Math.floor((seconds % 3600) / 60);
+                const secs = Math.floor(seconds % 60);
+                
+                if (hours > 0) {
+                    return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                } else {
+                    return `${minutes}:${secs.toString().padStart(2, '0')}`;
+                }
+            }
+
+            filterVideos() {
+                this.filteredVideos = this.videos.filter(video => {
+                    const matchesCategory = this.currentCategory === 'all' || video.category === this.currentCategory;
+                    const matchesSearch = video.title.toLowerCase().includes(this.searchTerm) ||
+                                        video.category.toLowerCase().includes(this.searchTerm);
+                    return matchesCategory && matchesSearch;
+                });
+
+                this.renderVideos();
+            }
+
+            renderVideos() {
+                const videoGrid = document.getElementById('videoGrid');
+                
+                if (this.filteredVideos.length === 0) {
+                    videoGrid.innerHTML = `
+                        <div class="no-videos-state">
+                            <h3>No videos found</h3>
+                            <p>Try adjusting your search or category filter</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                videoGrid.innerHTML = this.filteredVideos.map(video => this.createVideoCard(video)).join('');
+
+                // Setup click handlers
+                videoGrid.querySelectorAll('.yt-video-card').forEach((card, index) => {
+                    card.addEventListener('click', () => {
+                        const video = this.filteredVideos[index];
+                        const videoId = video.id;
+                        const username = this.currentUser?.username || '';
+                        const profilePic = this.currentUser?.profilePic || '';
+                        
+                        console.log('🎬 Clicking video:', {
+                            videoId,
+                            title: video.title,
+                            category: video.category,
+                            videoUrl: video.videoUrl
+                        });
+                        
+                        window.location.href = `watch.html?v=${videoId}&user=${username}&pic=${encodeURIComponent(profilePic)}`;
+                    });
+                });
+
+                // Load video previews
+                this.loadVideoPreviews();
+            }
+
+            loadVideoPreviews() {
+                const videoCards = document.querySelectorAll('.yt-video-card');
+                videoCards.forEach((card, index) => {
+                    const video = this.filteredVideos[index];
+                    if (video && video.videoUrl) {
+                        this.loadVideoPreview(card, video);
+                    }
+                });
+            }
+
+            loadVideoPreview(videoCard, videoData) {
+                const previewVideo = videoCard.querySelector('.yt-preview-video');
+                const placeholderElement = videoCard.querySelector('.yt-thumbnail-placeholder');
+                const durationElement = videoCard.querySelector('.yt-video-duration');
+                
+                if (!previewVideo || !videoData.videoUrl) return;
+
+                console.log('🎥 Loading preview for:', {
+                    videoId: videoData.id,
+                    title: videoData.title,
+                    videoUrl: videoData.videoUrl,
+                    category: videoData.category
+                });
+
+                // Set video source and configure
+                previewVideo.src = videoData.videoUrl;
+                previewVideo.preload = 'metadata';
+                previewVideo.muted = true;
+                previewVideo.playsInline = true;
+                
+                // Add timeout for preview loading
+                const previewTimeout = setTimeout(() => {
+                    console.warn('Preview loading timeout for:', videoData.videoUrl);
+                    if (placeholderElement) {
+                        placeholderElement.style.display = 'flex';
+                        placeholderElement.innerHTML = '📺'; // TV icon for timeout
+                    }
+                    previewVideo.style.display = 'none';
+                }, 10000); // 10 second timeout for previews
+
+                // Handle successful metadata load
+                previewVideo.addEventListener('loadedmetadata', () => {
+                    clearTimeout(previewTimeout);
+                    
+                    // Update duration with actual video duration
+                    if (durationElement && previewVideo.duration) {
+                        const actualDuration = this.formatDuration(previewVideo.duration);
+                        durationElement.textContent = actualDuration;
+                        console.log('Updated duration for', videoData.videoUrl, ':', actualDuration);
+                    }
+                    
+                    // Set preview time to 10% of video duration or 5 seconds, whichever is smaller
+                    const previewTime = Math.min(previewVideo.duration * 0.1, 5);
+                    previewVideo.currentTime = previewTime;
+                    console.log('Preview metadata loaded:', videoData.videoUrl);
+                }, { once: true });
+
+                // Handle successful seek
+                previewVideo.addEventListener('seeked', () => {
+                    clearTimeout(previewTimeout);
+                    previewVideo.classList.add('loaded');
+                    if (placeholderElement) {
+                        placeholderElement.style.display = 'none';
+                    }
+                    console.log('Preview ready:', videoData.videoUrl);
+                }, { once: true });
+
+                // Handle video load success
+                previewVideo.addEventListener('canplay', () => {
+                    clearTimeout(previewTimeout);
+                    previewVideo.classList.add('loaded');
+                    if (placeholderElement) {
+                        placeholderElement.style.display = 'none';
+                    }
+                    console.log('Preview can play:', videoData.videoUrl);
+                }, { once: true });
+
+                // Handle errors
+                previewVideo.addEventListener('error', (e) => {
+                    clearTimeout(previewTimeout);
+                    console.warn('Failed to load video preview:', {
+                        url: videoData.videoUrl,
+                        error: e,
+                        errorCode: previewVideo.error?.code,
+                        errorMessage: previewVideo.error?.message
+                    });
+                    if (placeholderElement) {
+                        placeholderElement.style.display = 'flex';
+                        placeholderElement.innerHTML = '⚠️'; // Warning icon for errors
+                    }
+                    previewVideo.style.display = 'none';
+                });
+
+                // Start loading
+                previewVideo.load();
+
+                // Hover effects for desktop
+                if (window.innerWidth > 768) {
+                    let hoverTimeout;
+                    
+                    videoCard.addEventListener('mouseenter', () => {
+                        hoverTimeout = setTimeout(() => {
+                            if (previewVideo.readyState >= 2 && previewVideo.classList.contains('loaded')) {
+                                previewVideo.play().catch(e => {
+                                    console.log('Hover play prevented:', e);
+                                    // If autoplay fails, just show the first frame
+                                });
+                            }
+                        }, 500);
+                    });
+
+                    videoCard.addEventListener('mouseleave', () => {
+                        clearTimeout(hoverTimeout);
+                        if (previewVideo.readyState >= 2) {
+                            previewVideo.pause();
+                            // Reset to preview time
+                            const previewTime = Math.min(previewVideo.duration * 0.1, 5);
+                            previewVideo.currentTime = previewTime;
+                        }
+                    });
+                }
+            }
+
+            createVideoCard(video) {
+                console.log('🎥 Creating video card for:', video.id, video.title);
+                return `
+                    <div class="yt-video-card yt-fade-in" data-video-id="${video.id}">
+                        <div class="yt-video-thumbnail">
+                            <div class="yt-free-badge">FREE</div>
+                            <div class="yt-thumbnail-placeholder">🎬</div>
+                            <video class="yt-preview-video" muted loop preload="none"></video>
+                            <div class="play-overlay">
+                                <div class="play-button">▶</div>
+                            </div>
+                            <div class="yt-video-duration">${video.duration}</div>
+                        </div>
+                        <div class="yt-video-info">
+                            <div class="yt-channel-avatar"></div>
+                            <div class="yt-video-details">
+                                <div class="yt-video-title">${video.title}</div>
+                                <div class="yt-video-meta">
+                                    <a href="#" class="yt-channel-name">${video.channelName}</a><br>
+                                    ${video.views} • ${video.uploadTime}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Initialize the BuddyStore video gallery
+        document.addEventListener('DOMContentLoaded', () => {
+            new BuddyStoreVideoGallery();
+        });
+    </script>
+    <script src="../js/twemoji-loader.js"></script>
+
+</body>
+</html>

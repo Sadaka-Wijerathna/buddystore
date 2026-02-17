@@ -1,0 +1,32 @@
+// ============================================
+// SERVER.JS MODIFICATION TEMPLATE
+// ============================================
+// Copy and paste these lines into your server.js file
+
+// FIND THIS SECTION IN YOUR server.js (around line 15):
+// =====================================================
+const app = express();
+app.use(express.json());
+const PORT = process.env.PORT || 3000;
+
+// ADD THESE LINES RIGHT AFTER THE ABOVE SECTION:
+// ===============================================
+
+// ✅ Import video routes
+const videoRoutes = require('./src/routes/videos');
+
+// ✅ Serve static files from Videos directory
+app.use('/videos', express.static(path.join(__dirname, 'Videos')));
+
+// ✅ Use video routes
+app.use('/', videoRoutes);
+
+// ===============================================
+// CONTINUE WITH YOUR EXISTING CODE AFTER THIS
+// ===============================================
+
+// Your existing MongoDB connection code continues here...
+// Initialize MongoDB client
+const mongo = new MongoClient(process.env.MONGO_URI);
+
+// ... rest of your existing server.js code ...

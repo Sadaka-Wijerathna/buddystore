@@ -1,0 +1,39 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="512" height="512" rx="100" fill="url(#grad)"/>
+  
+  <!-- Admin icon - simplified dashboard/chart -->
+  <g transform="translate(256, 256)">
+    <!-- Dashboard grid -->
+    <rect x="-120" y="-120" width="100" height="100" rx="15" fill="white" opacity="0.9"/>
+    <rect x="20" y="-120" width="100" height="100" rx="15" fill="white" opacity="0.9"/>
+    <rect x="-120" y="20" width="100" height="100" rx="15" fill="white" opacity="0.9"/>
+    <rect x="20" y="20" width="100" height="100" rx="15" fill="white" opacity="0.9"/>
+    
+    <!-- Chart bars inside -->
+    <rect x="-100" y="-60" width="20" height="60" rx="5" fill="#667eea"/>
+    <rect x="-70" y="-80" width="20" height="80" rx="5" fill="#667eea"/>
+    <rect x="-40" y="-50" width="20" height="50" rx="5" fill="#667eea"/>
+    
+    <!-- User icon -->
+    <circle cx="70" cy="-70" r="15" fill="#667eea"/>
+    <path d="M 50 -40 Q 70 -50 90 -40 L 90 -30 L 50 -30 Z" fill="#667eea"/>
+    
+    <!-- Settings gear -->
+    <circle cx="-70" cy="70" r="20" fill="none" stroke="#667eea" stroke-width="6"/>
+    <circle cx="-70" cy="70" r="8" fill="#667eea"/>
+    
+    <!-- Package box -->
+    <rect x="40" y="50" width="60" height="50" rx="5" fill="none" stroke="#667eea" stroke-width="6"/>
+    <line x1="40" y1="75" x2="100" y2="75" stroke="#667eea" stroke-width="6"/>
+    <line x1="70" y1="50" x2="70" y2="100" stroke="#667eea" stroke-width="6"/>
+  </g>
+</svg>

@@ -1,0 +1,1894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Buy Packages</title>
+  <link rel="icon" type="image/x-icon" href="../images/normal.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/animations.css">
+  <link rel="stylesheet" href="../css/enhanced-effects.css">
+    <style>\r\n    .slider-container {\r\n      margin-top: 0.5rem;\r\n    }\r\n\r\n    .slider {\r\n      -webkit-appearance: none;\r\n      width: 100%;\r\n      height: 15px;\r\n      border-radius: 5px;\r\n      background: #d3d3d3;\r\n      outline: none;\r\n      opacity: 0.7;\r\n      -webkit-transition: .2s;\r\n      transition: opacity .2s;\r\n    }\r\n\r\n    .slider:hover {\r\n      opacity: 1;\r\n    }\r\n\r\n    .slider::-webkit-slider-thumb {\r\n      -webkit-appearance: none;\r\n      appearance: none;\r\n      width: 25px;\r\n      height: 25px;\r\n      border-radius: 50%;\r\n      background: #007aff;\r\n      cursor: pointer;\r\n    }\r\n\r\n    .slider::-moz-range-thumb {\r\n      width: 25px;\r\n      height: 25px;\r\n      border-radius: 50%;\r\n      background: #007aff;\r\n      cursor: pointer;\r\n    }
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 50000;
+    }
+
+    .navbar-left {
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    .navbar a {
+      background: linear-gradient(135deg, #007aff, #0066ff);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+    }
+
+    .navbar a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
+    }
+
+    /* Currency Converter Styles */
+    .currency-converter {
+      position: relative;
+      display: inline-block;
+      z-index: 99999;
+    }
+
+    .currency-dropdown {
+      position: relative;
+      display: inline-block;
+      z-index: 99999;
+    }
+
+    .currency-button {
+      background: rgba(255, 255, 255, 0.95);
+      border: 2px solid rgba(0, 102, 255, 0.1);
+      border-radius: 8px;
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 13px;
+      font-weight: 500;
+      color: #333;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      min-width: 80px;
+      justify-content: center;
+    }
+
+    .currency-button:hover {
+      border-color: rgba(0, 102, 255, 0.3);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .currency-flag {
+      width: 16px;
+      height: 12px;
+      border-radius: 2px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .currency-code {
+      font-weight: 600;
+      color: #0066ff;
+    }
+
+    .dropdown-arrow {
+      width: 0;
+      height: 0;
+      border-left: 3px solid transparent;
+      border-right: 3px solid transparent;
+      border-top: 4px solid #666;
+      margin-left: 0.2rem;
+      transition: transform 0.3s ease;
+    }
+
+    .currency-dropdown.open .dropdown-arrow {
+      transform: rotate(180deg);
+    }
+
+    .currency-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(0, 102, 255, 0.1);
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      z-index: 999999;
+      min-width: 220px;
+      max-height: 350px;
+      overflow-y: auto;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      margin-top: 8px;
+    }
+
+    .currency-dropdown.open .currency-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .currency-option {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.6rem 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-bottom: 1px solid rgba(0, 102, 255, 0.05);
+      font-size: 13px;
+      position: relative;
+    }
+
+    .currency-option:last-child {
+      border-bottom: none;
+    }
+
+    .currency-option:hover {
+      background: rgba(0, 102, 255, 0.08);
+      color: #0066ff;
+    }
+
+    .currency-option.selected {
+      background: rgba(0, 102, 255, 0.1);
+      color: #0066ff;
+      font-weight: 600;
+    }
+
+    .currency-option .currency-flag {
+      width: 20px;
+      height: 15px;
+    }
+
+    .currency-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .currency-name {
+      font-weight: 500;
+      color: #333;
+    }
+
+    .currency-symbol {
+      font-size: 11px;
+      color: #666;
+      font-weight: 400;
+    }
+
+    .exchange-rate {
+      font-size: 10px;
+      color: #888;
+      font-style: italic;
+    }
+
+    .auto-location {
+      position: absolute;
+      top: 0.3rem;
+      right: 0.3rem;
+      font-size: 10px;
+      opacity: 0.7;
+    }
+
+    .error-message {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: rgba(255, 0, 0, 0.1);
+      color: #d32f2f;
+      padding: 0.3rem 0.6rem;
+      border-radius: 6px;
+      font-size: 11px;
+      margin-top: 0.2rem;
+      border: 1px solid rgba(255, 0, 0, 0.2);
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 3rem auto;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 2rem;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.3);
+    }
+
+    label {
+      font-weight: 600;
+      margin-top: 1rem;
+      display: block;
+    }
+
+    select, input, button {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+      border-radius: 12px;
+      border: 2px solid rgba(0, 102, 255, 0.1);
+      font-size: 16px;
+      box-sizing: border-box;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      padding-right: 2rem;
+      background: rgba(255, 255, 255, 0.8);
+      transition: all 0.3s ease;
+    }
+
+    select:focus, input:focus {
+      outline: none;
+      border-color: #0066ff;
+      box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+      background: rgba(255, 255, 255, 1);
+    }
+    
+    select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-color: #fff;
+      background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="8"><path fill="%23777" d="M0 0l6 8 6-8z"/></svg>');
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 12px 8px;
+      padding-right: 2rem;
+    }
+
+    button {
+      background: linear-gradient(135deg, #007aff, #0066ff);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 1.5rem;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .price-box {
+      margin-top: 1.2rem;
+      padding: 1rem;
+      background: linear-gradient(135deg, rgba(0, 102, 255, 0.1), rgba(0, 198, 255, 0.1));
+      border-radius: 12px;
+      font-weight: bold;
+      text-align: center;
+      border: 1px solid rgba(0, 102, 255, 0.2);
+      color: #0066ff;
+    }
+
+    .message {
+      margin-top: 1rem;
+      background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(34, 139, 34, 0.1));
+      color: #28a745;
+      font-weight: bold;
+      display: none;
+      text-align: center;
+      padding: 0.8rem;
+      border-radius: 12px;
+      border: 1px solid rgba(40, 167, 69, 0.2);
+    }
+
+    .samples-container {
+      border: 2px solid #CF2B58;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #fff 0%, #fef7f7 100%);
+    }
+
+    .channel-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
+    }
+
+    .button-group {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+     
+    .button-group button {
+      flex: 1;
+      margin-top: 0;
+    }
+     
+    .add-to-cart {
+      background: linear-gradient(135deg, #f1c40f, #f39c12);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(241, 196, 15, 0.3);
+    }
+     
+    .add-to-cart:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(241, 196, 15, 0.4);
+    }
+
+    /* Cart Styles */
+    .cart-container {
+      margin-top: 2rem;
+      display: none;
+    }
+
+    .cart-item {
+      background: rgba(255, 255, 255, 0.95);
+      border: 2px solid rgba(0, 102, 255, 0.1);
+      border-radius: 12px;
+      padding: 0.8rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .cart-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 102, 255, 0.15);
+      border-color: rgba(0, 102, 255, 0.2);
+    }
+
+    .cart-item-info {
+      flex: 1;
+    }
+
+    .cart-item-title {
+      font-weight: 600;
+      color: #0066ff;
+      margin-bottom: 0.2rem;
+    }
+
+    .cart-item-details {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .cart-item-price {
+      font-weight: 600;
+      color: #0066ff;
+      margin-right: 1rem;
+    }
+
+    .remove-item {
+      background: #ff4757;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 0.2rem 0.4rem;
+      cursor: pointer;
+      font-size: 0.7rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      min-width: auto;
+      width: auto;
+      margin-top: 0;
+    }
+
+    .remove-item:hover {
+      background: #ff3742;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3);
+    }
+
+    .cart-total {
+      background: linear-gradient(135deg, rgba(0, 102, 255, 0.15), rgba(0, 198, 255, 0.15));
+      border: 2px solid rgba(0, 102, 255, 0.3);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-top: 1rem;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #0066ff;
+    }
+
+    .cart-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .cart-actions button {
+      flex: 1;
+      margin-top: 0;
+    }
+
+    .clear-cart {
+      background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+      color: white;
+      box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+    }
+
+    .clear-cart:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+    }
+
+    .make-bulk-order {
+      background: linear-gradient(135deg, #007aff, #0066ff);
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+    }
+
+    .make-bulk-order:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
+    }
+
+    .cart-badge {
+      background: linear-gradient(135deg, #ff4757, #ff3742);
+      color: white;
+      border-radius: 50%;
+      padding: 0.15rem 0.4rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+      display: none;
+      box-shadow: 0 2px 6px rgba(255, 71, 87, 0.3);
+      min-width: 1.2rem;
+      text-align: center;
+    }
+
+    @media (max-width: 500px) {
+      .container {
+        margin: 2rem 1rem;
+        padding: 1.5rem;
+      }
+
+      .navbar a {
+        font-size: 13px;
+        padding: 0.4rem 0.8rem;
+      }
+      
+      #channelModal > div {
+        max-width: 350px;
+        padding: 1.5rem;
+      }
+      
+      .button-group {
+        flex-direction: row;
+        gap: 0.5rem;
+      }
+
+      .cart-actions {
+        flex-direction: row;
+        gap: 0.5rem;
+      }
+      
+      .currency-button {
+        padding: 0.3rem 0.6rem;
+        font-size: 12px;
+        min-width: 70px;
+      }
+      
+      .currency-menu {
+        min-width: 200px;
+        right: -10px;
+        z-index: 99999;
+      }
+      
+      .currency-converter {
+        z-index: 999999;
+      }
+      
+      .currency-dropdown {
+        z-index: 999999;
+      }
+      
+      .currency-menu {
+        z-index: 9999999;
+        right: -10px;
+      }
+      
+      .navbar {
+        z-index: 100000;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div class="navbar-left">Buy Packages</div>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <!-- Currency Converter -->
+      <div class="currency-converter" id="currencyConverter">
+        <div class="currency-dropdown" id="currencyDropdown">
+          <div class="currency-button" id="currencyButton">
+            <img src="https://flagcdn.com/w20/lk.png" alt="LKR" class="currency-flag" onerror="this.style.display='none'">
+            <span class="currency-code">LKR</span>
+            <div class="dropdown-arrow"></div>
+          </div>
+          <div class="currency-menu" id="currencyMenu">
+            <div class="currency-option selected" data-currency="LKR">
+              <img src="https://flagcdn.com/w20/lk.png" alt="LKR" class="currency-flag" onerror="this.style.display='none'">
+              <div class="currency-info">
+                <div class="currency-name">Sri Lankan Rupee</div>
+                <div class="currency-symbol">Rs</div>
+                <div class="exchange-rate">1 LKR = 1.0000 LKR</div>
+              </div>
+              <span class="auto-location">📍</span>
+            </div>
+            <div class="currency-option" data-currency="INR">
+              <img src="https://flagcdn.com/w20/in.png" alt="INR" class="currency-flag" onerror="this.style.display='none'">
+              <div class="currency-info">
+                <div class="currency-name">Indian Rupee</div>
+                <div class="currency-symbol">₹</div>
+                <div class="exchange-rate">Loading...</div>
+              </div>
+            </div>
+            <div class="currency-option" data-currency="USD">
+              <img src="https://flagcdn.com/w20/us.png" alt="USD" class="currency-flag" onerror="this.style.display='none'">
+              <div class="currency-info">
+                <div class="currency-name">US Dollar</div>
+                <div class="currency-symbol">$</div>
+                <div class="exchange-rate">Loading...</div>
+              </div>
+            </div>
+            <div class="currency-option" data-currency="EUR">
+              <img src="https://flagcdn.com/w20/eu.png" alt="EUR" class="currency-flag" onerror="this.style.display='none'">
+              <div class="currency-info">
+                <div class="currency-name">Euro</div>
+                <div class="currency-symbol">€</div>
+                <div class="exchange-rate">Loading...</div>
+              </div>
+            </div>
+            <div class="currency-option" data-currency="GBP">
+              <img src="https://flagcdn.com/w20/gb.png" alt="GBP" class="currency-flag" onerror="this.style.display='none'">
+              <div class="currency-info">
+                <div class="currency-name">British Pound</div>
+                <div class="currency-symbol">£</div>
+                <div class="exchange-rate">Loading...</div>
+              </div>
+            </div>
+            <div class="currency-option" data-currency="CAD">
+              <img src="https://flagcdn.com/w20/ca.png" alt="CAD" class="currency-flag" onerror="this.style.display='none'">
+              <div class="currency-info">
+                <div class="currency-name">Canadian Dollar</div>
+                <div class="currency-symbol">C$</div>
+                <div class="exchange-rate">Loading...</div>
+              </div>
+            </div>
+            <div class="currency-option" data-currency="MVR">
+              <img src="https://flagcdn.com/w20/mv.png" alt="MVR" class="currency-flag" onerror="this.style.display='none'">
+              <div class="currency-info">
+                <div class="currency-name">Maldivian Rufiyaa</div>
+                <div class="currency-symbol">MVR</div>
+                <div class="exchange-rate">Loading...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="error-message" id="errorMessage" style="display: none;">Failed to load rates</div>
+      </div>
+      <a id="dashboardLink">Dashboard</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <label for="package">Select Package</label>
+    <select id="package" onchange="updateInputs()">
+      <option>Mixed</option>
+      <option>Mom And Son</option>
+      <option>Rape</option>
+      <option>SL Leaks</option>
+      <option>CCTV</option>
+      <option>Full Package</option>
+    </select>
+
+    <label for="videos">How Many Videos? <span id="video-count" style="color: #0066ff; font-weight: bold;">100</span></label>
+    <div class="slider-container">
+      <input type="range" min="100" max="300" step="100" value="100" class="slider" id="videos" oninput="document.getElementById('video-count').textContent = this.value; updateCheckout();">
+    </div>
+    <div id="maxVideoText" style="font-size: 0.8rem; color: #666; margin-top: 0.3rem; font-style: italic;">Maximum video count is loading...</div>
+
+    <div class="price-box" id="checkout">Loading pricing...</div>
+
+    <div class="button-group">
+      <button onclick="makeOrder()">Make the Order</button>
+      <button onclick="addToCart()" class="add-to-cart">Add to Cart</button>
+    </div>
+
+    <div class="message" id="success">✅ Order received! Please contact <b>@buddyseller</b>.</div>
+  </div>
+
+  <!-- Shopping Cart Container -->
+  <div class="container cart-container" id="cartContainer">
+    <label style="margin-bottom: 1rem; display: flex; align-items: center; font-weight: 600; color: #333;">
+      Shopping Cart
+      <span class="cart-badge" id="cartBadge">0</span>
+    </label>
+    
+    <div id="cartItems">
+      <!-- Cart items will be dynamically added here -->
+    </div>
+
+    <div class="cart-total" id="cartTotal" style="display: none;">
+      Total: Rs.0.00
+    </div>
+
+    <div class="cart-actions" id="cartActions" style="display: none;">
+      <button onclick="makeBulkOrder()" class="make-bulk-order">Make the Order</button>
+      <button onclick="clearCart()" class="clear-cart">Clear Cart</button>
+    </div>
+
+    <div class="message" id="cartSuccess" style="display: none;">✅ Order received! Please contact <b>@buddyseller</b>.</div>
+  </div>
+  
+  <!-- Samples Access Button -->
+  <div class="container">
+    <div id="samplesAccess">
+      <button id="showSamplesBtn" style="background: linear-gradient(135deg, #9b59b6, #8e44ad); color:white; border:none; border-radius:12px; padding:0.7rem 1rem; font-weight:600; font-size:1.1rem; cursor:pointer; width:100%; margin-top: 1rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(155, 89, 182, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(155, 89, 182, 0.3)'">
+        Get Samples
+      </button>
+    </div>
+  </div>
+
+  <!-- Samples Section (Hidden Initially) -->
+  <div class="container" id="samplesContainer" style="display:none;">
+      <label for="samplePackage">Select Samples</label>
+      <select id="samplePackage" onchange="updateSampleInputs()">
+        <option>Mixed Samples</option>
+        <option>Mom And Son Samples</option>
+        <option>SL Leaks Samples</option>
+        <option>CCTV Samples</option>
+      </select>
+
+      <label for="sampleVideos">How Many Videos?</label>
+      <input type="text" id="sampleVideos" value="Sample Pack" readonly style="background:#f5f5f5; cursor:not-allowed;" placeholder="Sample videos (admin configured)">
+      
+      <div class="price-box" id="sampleCheckout">Sample Pack - FREE</div>
+
+      <button onclick="makeSampleOrder()" style="background: linear-gradient(135deg, #007aff, #0066ff); border-radius: 12px; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(0, 122, 255, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0, 122, 255, 0.3)'">Get Samples</button>
+      
+      <div class="message" id="sampleSuccess" style="display:none; color:#28a745; font-weight:bold; text-align:center; margin-top:1rem;">✅ Sample order received!</div>
+  </div>
+
+  <!-- Channel Verification Modal -->
+  <div id="channelModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(5px); z-index:1000; justify-content:center; align-items:center;">
+    <div style="background:#fff; padding:2rem; border-radius:16px; max-width:320px; width:90%; text-align:center; font-family: 'Inter', sans-serif; box-shadow:0 8px 20px rgba(0,0,0,0.1); position: relative;">
+      
+      <!-- Close button -->
+      <button id="closeChannelModal" style="
+        position: absolute;
+        top: -16px;
+        right: -16px;
+        background: white;
+        border: 2px solid #ccc;
+        border-radius: 50%;
+        font-size: 1.5rem;
+        color: #333;
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        z-index: 1001;
+      ">&times;</button>
+
+      <h2 style="margin-bottom:1rem; color:#CF2B58;">Join Our Channels</h2>
+      <p style="font-size:0.9rem; color:#666; margin-bottom:1.5rem;">
+        To get free samples, please join our Telegram channels first:
+      </p>
+
+      <div style="display:flex; flex-direction:column; gap:1rem; margin-bottom:2rem;">
+        <a href="https://t.me/BuddySellingsC" target="_blank" class="channel-link" style="
+          background: linear-gradient(135deg, #007aff, #0066ff); 
+          color:white; 
+          padding:0.8rem 1rem; 
+          border-radius:12px; 
+          text-decoration:none; 
+          font-weight:600;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          gap:0.5rem;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+        ">
+          Buddy Sellings Channel
+        </a>
+        
+        <a href="https://t.me/BuddySellingsG" target="_blank" class="channel-link" style="
+          background: linear-gradient(135deg, #007aff, #0066ff); 
+          color:white; 
+          padding:0.8rem 1rem; 
+          border-radius:12px; 
+          text-decoration:none; 
+          font-weight:600;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          gap:0.5rem;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+        ">
+         BuddyStore Group
+        </a>
+      </div>
+
+      <p style="font-size:0.85rem; color:#888; margin-bottom:1.5rem;">
+        After joining both channels, click the button below to verify:
+      </p>
+
+      <button id="checkChannelsBtn" style="
+        background: linear-gradient(135deg, #32CD32, #28a745); 
+        color:white; 
+        border:none; 
+        border-radius:12px; 
+        padding:0.8rem 2rem; 
+        font-weight:600; 
+        font-size:1.1rem; 
+        cursor:pointer; 
+        width:100%;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(50, 205, 50, 0.3);
+      " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(50, 205, 50, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(50, 205, 50, 0.3)'">Check Membership</button>
+      
+      <div id="channelError" style="color:#d33; margin-top:1rem; display:none;"></div>
+    </div>
+  </div>
+
+  <script>
+    const username = localStorage.getItem("username");
+    const pic = localStorage.getItem("profilePic");
+    document.getElementById("dashboardLink").href = `/dashboard.html?name=${username}&pic=${encodeURIComponent(pic)}`;
+
+    const packageSelect = document.getElementById("package");
+    const videoInput = document.getElementById("videos");
+    const priceDisplay = document.getElementById("checkout");
+
+    // Shopping cart array
+    let shoppingCart = [];
+
+    // Dynamic prices loaded from server
+    let prices = {
+      "Mixed": 1,
+      "Mom And Son": 1.5,
+      "Rape": 1.2,
+      "SL Leaks": 0.8,
+      "CCTV": 1.0,
+      "Full Package": 4000.00
+    };
+    
+    // Load dynamic pricing from server
+    async function loadPricing() {
+      try {
+        const response = await fetch('/api/package-prices');
+        if (response.ok) {
+          const serverPrices = await response.json();
+          // Convert server pricing format to buy.html format
+          Object.keys(serverPrices).forEach(packageName => {
+            if (serverPrices[packageName].pricePerVideo) {
+              prices[packageName] = serverPrices[packageName].pricePerVideo;
+            }
+          });
+          console.log('✅ Loaded dynamic pricing:', prices);
+          // Show success message briefly
+          priceDisplay.innerHTML = '<span style="color: #28a745;">✅ Pricing updated!</span>';
+          setTimeout(() => {
+            updateCheckout();
+          }, 1000);
+        } else {
+          console.warn('⚠️ Failed to load dynamic pricing, using defaults');
+          priceDisplay.innerHTML = '<span style="color: #f39c12;">⚠️ Using default pricing</span>';
+          setTimeout(() => {
+            updateCheckout();
+          }, 1500);
+        }
+      } catch (error) {
+        console.error('❌ Error loading pricing:', error);
+        console.log('Using default pricing');
+        priceDisplay.innerHTML = '<span style="color: #e74c3c;">❌ Error loading pricing, using defaults</span>';
+        setTimeout(() => {
+          updateCheckout();
+        }, 1500);
+      }
+    }
+
+    // Dynamic limits loaded from video inventory - NO STATIC VALUES!
+    let limits = {
+      // All limits will be loaded dynamically from database
+      // No hardcoded values to ensure real-time accuracy
+    };
+    
+    // Minimum video counts loaded from admin settings
+    let minVideoConfig = {};
+    
+    // Load minimum video count configuration from admin settings
+    async function loadMinVideoConfig() {
+      try {
+        console.log('🔄 Loading minimum video count configuration...');
+        const response = await fetch('/api/min-video-config');
+        if (response.ok) {
+          minVideoConfig = await response.json();
+          console.log('✅ Minimum video config loaded:', minVideoConfig);
+        } else {
+          console.warn('⚠️ Failed to load min video config, using defaults');
+          // Default to 100 if API fails
+          minVideoConfig = {
+            'Mixed': 100,
+            'Mom And Son': 100,
+            'Rape': 100,
+            'SL Leaks': 100,
+            'CCTV': 100
+          };
+        }
+      } catch (error) {
+        console.error('❌ Error loading min video config:', error);
+        // Default to 100 if error
+        minVideoConfig = {
+          'Mixed': 100,
+          'Mom And Son': 100,
+          'Rape': 100,
+          'SL Leaks': 100,
+          'CCTV': 100
+        };
+      }
+    }
+    
+    // Load ALL video inventory limits dynamically from database - NO STATIC VALUES!
+    async function loadVideoInventoryLimits() {
+      try {
+        console.log('🔄 Loading ALL video counts from database...');
+        
+        // Load minimum video config first
+        await loadMinVideoConfig();
+        
+        const response = await fetch('/api/video-counts');
+        if (response.ok) {
+          const videoCounts = await response.json();
+          let totalFullPackageVideos = 0;
+          
+          // Clear any existing limits to ensure fresh data
+          limits = {};
+          
+          // Set limits based ONLY on actual database inventory
+          Object.keys(videoCounts).forEach(packageName => {
+            const videoCount = videoCounts[packageName].totalVideos || 0;
+            const configuredMin = minVideoConfig[packageName] || 100;
+            
+            // Set limits for each package based on actual database count and admin config
+            limits[packageName] = {
+              min: Math.min(configuredMin, videoCount), // Use configured min or actual count if less
+              max: videoCount // Max is ALWAYS the actual database count
+            };
+            
+            // Calculate total for Full Package
+            if (["Mixed", "Mom And Son", "Rape", "SL Leaks", "CCTV"].includes(packageName)) {
+              totalFullPackageVideos += videoCount;
+            }
+            
+            console.log(`📦 ${packageName}: ${videoCount} videos (min: ${limits[packageName].min}, max: ${videoCount})`);
+          });
+          
+          // Set Full Package limit with real-time total
+          limits["Full Package"] = {
+            min: 1,
+            max: totalFullPackageVideos
+          };
+          
+          console.log('✅ ALL video limits loaded from database:', limits);
+          console.log(`📊 Full Package total: ${totalFullPackageVideos.toLocaleString()} videos`);
+          
+          // Update UI immediately after loading
+          updateInputs();
+          updateCheckout();
+          
+        } else {
+          console.error('❌ Failed to load video inventory from database');
+          // Set minimal fallback limits
+          limits = {
+            "Mixed": { min: 0, max: 0 },
+            "Mom And Son": { min: 0, max: 0 },
+            "Rape": { min: 0, max: 0 },
+            "SL Leaks": { min: 0, max: 0 },
+            "CCTV": { min: 0, max: 0 },
+            "Full Package": { min: 0, max: 0 }
+          };
+        }
+      } catch (error) {
+        console.error('❌ Error loading video inventory from database:', error);
+        // Set minimal fallback limits
+        limits = {
+          "Mixed": { min: 0, max: 0 },
+          "Mom And Son": { min: 0, max: 0 },
+          "Rape": { min: 0, max: 0 },
+          "SL Leaks": { min: 0, max: 0 },
+          "CCTV": { min: 0, max: 0 },
+          "Full Package": { min: 0, max: 0 }
+        };
+      }
+    }
+
+    function updateInputs() {
+      const pkg = packageSelect.value;
+      const limit = limits[pkg];
+
+      // Check if limits are loaded from database
+      if (!limit) {
+        const maxVideoText = document.getElementById("maxVideoText");
+        if (maxVideoText) {
+          maxVideoText.textContent = "Loading video counts from database...";
+        }
+        return;
+      }
+
+      if (pkg === 'Full Package') {
+        videoInput.disabled = true;
+        videoInput.value = "1";
+        videoInput.min = 1;
+        videoInput.max = 1;
+        
+        const maxVideoText = document.getElementById("maxVideoText");
+        if (maxVideoText) {
+          maxVideoText.textContent = `Full Package includes ${limit.max.toLocaleString()} total videos from all categories`;
+        }
+      } else {
+        videoInput.disabled = false;
+        videoInput.value = "";
+        videoInput.min = limit.min;
+        videoInput.max = limit.max;
+
+        const maxVideoText = document.getElementById("maxVideoText");
+        if (maxVideoText) {
+          if (limit.max === 0) {
+            maxVideoText.textContent = `No videos available for ${pkg} - contact admin`;
+          } else {
+            maxVideoText.textContent = `Minimum: ${limit.min.toLocaleString()} | Maximum: ${limit.max.toLocaleString()} videos`;
+          }
+        }
+      }
+
+      updateCheckout();
+    }
+
+    function updateCheckout() {
+      const pkg = packageSelect.value;
+      let count = parseInt(videoInput.value);
+      
+      // Get currency converter functions if available
+      const formatPrice = window.currencyConverter ? window.currencyConverter.formatPrice : (price) => `Rs.${price.toFixed(2)}`;
+      
+      if (pkg === 'Full Package') {
+        const totalPrice = prices['Full Package'];
+        const fullPackageLimit = limits['Full Package'];
+        
+        if (!fullPackageLimit) {
+          priceDisplay.innerHTML = `<span style="color: #666;">Loading Full Package details from database...</span>`;
+          return;
+        }
+        
+        const totalVideos = fullPackageLimit.max;
+        priceDisplay.innerHTML = `
+          <div style="font-size: 1.1rem; margin-bottom: 0.3rem;">
+            Full Package Price: <span style="color: #0066ff; font-weight: bold;">${formatPrice(totalPrice)}</span>
+          </div>
+          <div style="font-size: 0.8rem; color: #666;">
+            Includes ${totalVideos.toLocaleString()} videos from all categories
+          </div>
+        `;
+        return;
+      }
+      
+      const limit = limits[pkg];
+      if (!limit) {
+        priceDisplay.innerHTML = `<span style="color: #666;">Loading ${pkg} details from database...</span>`;
+        return;
+      }
+      
+      if (!count || isNaN(count)) {
+        priceDisplay.innerHTML = `<span style="color: #666;">Enter video count to see price</span>`;
+        return;
+      }
+
+      if (count < (limit.min || 0)) count = limit.min;
+      if (count > (limit.max || 0)) count = limit.max;
+
+      const pricePerVideo = prices[pkg] || 1;
+      const totalPrice = pricePerVideo * count;
+      
+      if (limit.max === 0) {
+        priceDisplay.innerHTML = `<span style="color: #ff6b6b;">No videos available for ${pkg} - contact admin</span>`;
+        return;
+      }
+      
+      priceDisplay.innerHTML = `
+        <div style="font-size: 1.1rem; margin-bottom: 0.3rem;">
+          (v${count}) Total Price: <span style="color: #0066ff; font-weight: bold;">${formatPrice(totalPrice)}</span>
+        </div>
+        <div style="font-size: 0.8rem; color: #666;">
+          ${formatPrice(pricePerVideo)} per video
+        </div>
+      `;
+    }
+
+    function makeOrder() {
+      const pkg = packageSelect.value;
+      const count = parseInt(videoInput.value);
+
+      if (!username) return alert("Please login first");
+
+      // Special handling for Full Package - create bulk order with all packages
+      if (pkg === 'Full Package') {
+        makeFullPackageOrder();
+        return;
+      }
+
+      if (!count || isNaN(count)) return alert("Please enter valid input");
+
+      fetch("/api/order", {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, package: pkg, count })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("success").style.display = "block";
+      });
+    }
+
+    // Full Package order function - creates bulk order with all packages using real-time video counts
+    async function makeFullPackageOrder() {
+      if (!username) return alert("Please login first");
+
+      try {
+        // Get real-time video counts from database
+        console.log('🔄 Loading real-time video counts for Full Package...');
+        const response = await fetch('/api/video-counts');
+        if (!response.ok) {
+          throw new Error('Failed to load video counts');
+        }
+        
+        const videoCounts = await response.json();
+        console.log('✅ Real-time video counts loaded:', videoCounts);
+        
+        // Create bulk order with all categories using real-time counts in the order: Mixed → Mom And Son → Rape → SL Leaks → CCTV
+        const fullPackageItems = [];
+        const categories = ["Mixed", "Mom And Son", "Rape", "SL Leaks", "CCTV"];
+        let totalVideos = 0;
+        
+        for (const category of categories) {
+          const videoCount = videoCounts[category]?.totalVideos || 0;
+          if (videoCount > 0) {
+            const item = {
+              package: category,
+              count: videoCount,
+              pricePerVideo: prices[category] || 1,
+              totalPrice: (prices[category] || 1) * videoCount,
+              date: new Date().toISOString().split('T')[0]
+            };
+            fullPackageItems.push(item);
+            totalVideos += videoCount;
+            console.log(`📦 ${category}: ${videoCount} videos`);
+          } else {
+            console.warn(`⚠️ No videos found for ${category}`);
+          }
+        }
+        
+        if (fullPackageItems.length === 0) {
+          return alert("No videos available for Full Package. Please contact admin.");
+        }
+        
+        console.log(`🎁 Creating Full Package bulk order with ${totalVideos} total videos:`, fullPackageItems);
+
+        // Send as bulk order using existing bulk order API
+        const orderResponse = await fetch("/api/bulk-order", {
+          method: "POST",
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            username, 
+            cartItems: fullPackageItems,
+            isFullPackage: true,
+            totalPrice: prices['Full Package'],
+            totalVideos: totalVideos
+          })
+        });
+        
+        const data = await orderResponse.json();
+        
+        if (data.success) {
+          document.getElementById("success").innerHTML = `✅ Full Package order received! ${totalVideos.toLocaleString()} videos will be sent sequentially. Please contact <b>@buddyseller</b>.`;
+          document.getElementById("success").style.display = "block";
+          
+          // Hide success message after 10 seconds
+          setTimeout(() => {
+            document.getElementById("success").style.display = "none";
+          }, 10000);
+        } else {
+          alert(data.error || "Failed to process Full Package order");
+        }
+        
+      } catch (err) {
+        console.error("Full Package order error:", err);
+        alert(`Failed to process Full Package order: ${err.message}`);
+      }
+    }
+
+    // Add to cart function
+    function addToCart() {
+      const pkg = packageSelect.value;
+      const count = parseInt(videoInput.value);
+
+      if (!username) {
+        return alert("Please login first");
+      }
+
+      // Full Package cannot be added to cart - it's a special order
+      if (pkg === 'Full Package') {
+        return alert("Full Package must be ordered directly. Please use 'Make the Order' button.");
+      }
+
+      if (!count || isNaN(count)) {
+        return alert("Please enter valid input");
+      }
+
+      const limit = limits[pkg];
+      if (count < (limit.min || 0) || count > (limit.max || 99999)) {
+        return alert(`Please enter a video count between ${limit.min} and ${limit.max}`);
+      }
+
+      const pricePerVideo = prices[pkg] || 1;
+      const totalPrice = pricePerVideo * count;
+
+      // Check if package already exists in cart
+      const existingItemIndex = shoppingCart.findIndex(item => item.package === pkg);
+      
+      if (existingItemIndex !== -1) {
+        // Update existing item
+        shoppingCart[existingItemIndex].count += count;
+        shoppingCart[existingItemIndex].totalPrice += totalPrice;
+      } else {
+        // Add new item
+        const cartItem = {
+          package: pkg,
+          count: count,
+          pricePerVideo: pricePerVideo,
+          totalPrice: totalPrice,
+          date: new Date().toISOString().split('T')[0]
+        };
+        shoppingCart.push(cartItem);
+      }
+
+      // Clear form
+      videoInput.value = "";
+      updateCheckout();
+      
+      // Update cart display
+      updateCartDisplay();
+    }
+
+    // Update cart display
+    function updateCartDisplay() {
+      const cartContainer = document.getElementById("cartContainer");
+      const cartItems = document.getElementById("cartItems");
+      const cartTotal = document.getElementById("cartTotal");
+      const cartActions = document.getElementById("cartActions");
+      const cartBadge = document.getElementById("cartBadge");
+
+      if (shoppingCart.length === 0) {
+        cartContainer.style.display = "none";
+        cartBadge.style.display = "none";
+        return;
+      }
+
+      cartContainer.style.display = "block";
+      cartBadge.style.display = "inline-block";
+      cartBadge.textContent = shoppingCart.length;
+
+      // Clear existing items
+      cartItems.innerHTML = "";
+
+      let grandTotal = 0;
+
+      // Add each cart item
+      shoppingCart.forEach((item, index) => {
+        grandTotal += item.totalPrice;
+
+        const cartItemDiv = document.createElement("div");
+        cartItemDiv.className = "cart-item";
+        cartItemDiv.innerHTML = `
+          <div class="cart-item-info">
+            <div class="cart-item-title">${item.package} v${item.count}</div>
+            <div class="cart-item-details">Rs ${item.pricePerVideo} per video</div>
+          </div>
+          <div class="cart-item-price">Rs.${item.totalPrice.toFixed(2)}</div>
+          <button class="remove-item" onclick="removeFromCart(${index})">Remove</button>
+        `;
+        cartItems.appendChild(cartItemDiv);
+      });
+
+      // Update total
+      cartTotal.innerHTML = `Total: <span style="color: #0066ff;">Rs.${grandTotal.toFixed(2)}</span>`;
+      cartTotal.style.display = "block";
+      cartActions.style.display = "flex";
+    }
+
+    // Remove item from cart
+    function removeFromCart(index) {
+      shoppingCart.splice(index, 1);
+      updateCartDisplay();
+    }
+
+    // Clear entire cart
+    function clearCart() {
+      if (confirm("Are you sure you want to clear the entire cart?")) {
+        shoppingCart = [];
+        updateCartDisplay();
+      }
+    }
+
+    // Make bulk order
+    function makeBulkOrder() {
+      if (shoppingCart.length === 0) {
+        return alert("Your cart is empty!");
+      }
+
+      if (!username) {
+        return alert("Please login first");
+      }
+
+      // Send bulk order to server
+      fetch("/api/bulk-order", {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          username, 
+          cartItems: shoppingCart 
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById("cartSuccess").style.display = "block";
+          // Clear cart after successful order
+          shoppingCart = [];
+          updateCartDisplay();
+          // Hide success message after 5 seconds
+          setTimeout(() => {
+            document.getElementById("cartSuccess").style.display = "none";
+          }, 5000);
+        } else {
+          alert(data.error || "Failed to process bulk order");
+        }
+      })
+      .catch(err => {
+        console.error("Bulk order error:", err);
+        alert("Failed to process bulk order");
+      });
+    }
+
+    packageSelect.addEventListener("change", updateInputs);
+    videoInput.addEventListener("input", updateCheckout);
+
+    // Initialize on page load - LOAD DATABASE COUNTS FIRST!
+    async function initializePage() {
+      try {
+        console.log('🚀 Initializing page with real-time database counts...');
+        
+        // Load video inventory limits FIRST (this sets all the limits from database)
+        await loadVideoInventoryLimits();
+        
+        // Then load pricing
+        await loadPricing();
+        
+        // Finally update UI
+        updateInputs();
+        updateSampleInputs();
+        
+        console.log('✅ Page initialized with real-time database counts!');
+      } catch (error) {
+        console.error('❌ Error initializing page:', error);
+      }
+    }
+    
+    // Start initialization
+    initializePage();
+    
+
+    // ===== SAMPLES FUNCTIONALITY =====
+    const channelModal = document.getElementById("channelModal");
+    const samplesContainer = document.getElementById("samplesContainer");
+    const showSamplesBtn = document.getElementById("showSamplesBtn");
+    const checkChannelsBtn = document.getElementById("checkChannelsBtn");
+    const closeChannelModalBtn = document.getElementById("closeChannelModal");
+    const channelError = document.getElementById("channelError");
+
+    // Show channel verification modal when "Get Samples" is clicked
+    showSamplesBtn.addEventListener("click", () => {
+      const username = localStorage.getItem("username");
+      
+      if (!username) {
+        alert("Please login with your Telegram account first to access samples.");
+        return;
+      }
+      
+      channelModal.style.display = "flex";
+      channelError.style.display = "none";
+    });
+
+    // Close channel modal
+    closeChannelModalBtn.addEventListener("click", () => {
+      channelModal.style.display = "none";
+      channelError.style.display = "none";
+    });
+
+    // Check channel membership
+    checkChannelsBtn.addEventListener("click", async () => {
+      const username = localStorage.getItem("username");
+      
+      if (!username) {
+        alert("Please login first");
+        return;
+      }
+      
+      // Show loading state
+      checkChannelsBtn.textContent = "Checking...";
+      checkChannelsBtn.disabled = true;
+      channelError.style.display = "none";
+      
+      try {
+        const response = await fetch("/api/check-channels", {
+          method: "POST",
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username })
+        });
+        
+        const data = await response.json();
+        
+        if (data.hasJoined) {
+          // Success - hide samples access button and show samples section
+          channelModal.style.display = "none";
+          document.getElementById("samplesAccess").style.display = "none";
+          samplesContainer.style.display = "block";
+          
+          // Update available sample packages based on user's history
+          await updateAvailableSamplePackages();
+          
+          // Scroll to samples section with a small delay for better UX
+          setTimeout(() => {
+            samplesContainer.scrollIntoView({ behavior: 'smooth' });
+          }, 300);
+        } else {
+          // Failed - show error
+          channelError.style.display = "block";
+          channelError.textContent = "❌ Please make sure you've joined both channels and try again.";
+        }
+      } catch (error) {
+        console.error("Channel check error:", error);
+        channelError.style.display = "block";
+        channelError.textContent = "❌ Error checking membership. Please try again.";
+      }
+      
+      // Reset button
+      checkChannelsBtn.textContent = "Check Membership";
+      checkChannelsBtn.disabled = false;
+    });
+
+    // Update available sample packages based on user's sample history
+    async function updateAvailableSamplePackages() {
+      const username = localStorage.getItem("username");
+      if (!username) return;
+      
+      try {
+        const response = await fetch(`/api/user-samples-received?username=${username}`);
+        const data = await response.json();
+        
+        const samplePackageSelect = document.getElementById("samplePackage");
+        const allPackages = [
+          { value: "Mixed Samples", text: "Mixed Samples" },
+          { value: "Mom And Son Samples", text: "Mom And Son Samples" },
+          { value: "SL Leaks Samples", text: "SL Leaks Samples" },
+          { value: "CCTV Samples", text: "CCTV Samples" }
+        ];
+        
+        // Filter out packages user has already received samples for
+        const availablePackages = allPackages.filter(pkg => {
+          const packageName = pkg.value.replace(" Samples", "");
+          return !data.receivedSamples || !data.receivedSamples.includes(packageName);
+        });
+        
+        // Clear and repopulate the select
+        samplePackageSelect.innerHTML = "";
+        
+        if (availablePackages.length === 0) {
+          samplePackageSelect.innerHTML = '<option>No more samples available</option>';
+          const sampleBtn = document.querySelector('button[onclick="makeSampleOrder()"]');
+          sampleBtn.disabled = true;
+          sampleBtn.textContent = "All Samples Received";
+          sampleBtn.style.background = "#6c757d";
+          sampleBtn.style.cursor = "not-allowed";
+          
+          // Hide the container after a delay if all samples received
+          setTimeout(() => {
+            samplesContainer.style.display = "none";
+            document.getElementById("samplesAccess").style.display = "block";
+          }, 3000);
+        } else {
+          availablePackages.forEach(pkg => {
+            const option = document.createElement("option");
+            option.value = pkg.value;
+            option.textContent = pkg.text;
+            samplePackageSelect.appendChild(option);
+          });
+        }
+        
+        updateSampleInputs();
+      } catch (error) {
+        console.error("Error updating sample packages:", error);
+      }
+    }
+
+    // Sample package functionality
+    function updateSampleInputs() {
+      const sampleCheckout = document.getElementById("sampleCheckout");
+      const samplePackage = document.getElementById("samplePackage").value;
+      
+      // Hide success message when changing package
+      document.getElementById("sampleSuccess").style.display = "none";
+      
+      if (samplePackage && samplePackage !== "No more samples available") {
+        sampleCheckout.textContent = `${samplePackage} - FREE`;
+      } else {
+        sampleCheckout.textContent = "All available samples have been claimed";
+      }
+    }
+
+    function makeSampleOrder() {
+      const samplePackage = document.getElementById("samplePackage").value;
+      const username = localStorage.getItem("username");
+      
+      if (!username) {
+        alert("Please login first");
+        return;
+      }
+      
+      if (samplePackage === "No more samples available") {
+        alert("No more samples available");
+        return;
+      }
+      
+      // Convert sample package name to regular package name
+      const packageMap = {
+        "Mixed Samples": "Mixed",
+        "Mom And Son Samples": "Mom And Son", 
+        "SL Leaks Samples": "SL Leaks",
+        "CCTV Samples": "CCTV"
+      };
+      
+      const actualPackage = packageMap[samplePackage];
+      
+      fetch("/api/sample-order", {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          username, 
+          package: actualPackage, 
+          isSample: true
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          // Show success message
+          document.getElementById("sampleSuccess").innerHTML = "✅ Sample order received! Please contact <b>@buddyseller</b>.";
+          document.getElementById("sampleSuccess").style.display = "block";
+          
+          // Update available packages (remove the one just ordered)
+          setTimeout(() => {
+            updateAvailableSamplePackages();
+          }, 1000);
+        } else {
+          alert(data.error || "Failed to process sample request");
+        }
+      })
+      .catch(err => {
+        console.error("Sample order error:", err);
+        alert("Failed to process sample request");
+      });
+    }
+
+    // Function to update available sample packages based on user's order history
+    async function updateAvailableSamplePackages() {
+      const username = localStorage.getItem("username");
+      if (!username) return;
+      
+      try {
+        const response = await fetch(`/api/user-samples-received?username=${username}`);
+        const data = await response.json();
+        
+        const sampleSelect = document.getElementById("samplePackage");
+        const allPackages = ["Mixed Samples", "Mom And Son Samples", "SL Leaks Samples", "CCTV Samples"];
+        const orderedPackages = data.orderedSamples || [];
+        
+        // Clear current options
+        sampleSelect.innerHTML = "";
+        
+        // Add only packages that haven't been ordered
+        allPackages.forEach(pkg => {
+          const packageKey = pkg.replace(" Samples", "");
+          if (!orderedPackages.includes(packageKey)) {
+            const option = document.createElement("option");
+            option.value = pkg;
+            option.textContent = pkg;
+            sampleSelect.appendChild(option);
+          }
+        });
+        
+        // If no packages available, show message
+        if (sampleSelect.options.length === 0) {
+          const option = document.createElement("option");
+          option.value = "";
+          option.textContent = "No more samples available";
+          option.disabled = true;
+          sampleSelect.appendChild(option);
+          
+          // Disable the get samples button
+          const getSamplesBtn = samplesContainer.querySelector('button[onclick="makeSampleOrder()"]');
+          if (getSamplesBtn) {
+            getSamplesBtn.disabled = true;
+            getSamplesBtn.textContent = "All Samples Claimed";
+            getSamplesBtn.style.background = "#6c757d";
+          }
+        }
+        
+        updateSampleInputs();
+      } catch (error) {
+        console.error("Error fetching user samples:", error);
+      }
+    }
+  </script>
+
+  <!-- Real-time Currency Converter Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('🔄 Setting up real-time currency converter for buy page...');
+      
+      const currencyButton = document.getElementById('currencyButton');
+      const currencyDropdown = document.getElementById('currencyDropdown');
+      const currencyMenu = document.getElementById('currencyMenu');
+      const currencyOptions = document.querySelectorAll('.currency-option');
+      const errorMessage = document.getElementById('errorMessage');
+      
+      if (!currencyButton || !currencyDropdown || !currencyMenu) {
+        console.error('❌ Currency elements not found');
+        return;
+      }
+      
+      console.log('✅ Currency elements found, setting up real-time rates...');
+      
+      // Real-time exchange rates (updated from API)
+      let exchangeRates = {
+        'LKR': 1,
+        'INR': 0.25,
+        'USD': 0.003,
+        'EUR': 0.0028,
+        'GBP': 0.0024,
+        'CAD': 0.004,
+        'MVR': 0.046
+      };
+      
+      const currencyData = {
+        'LKR': { name: 'Sri Lankan Rupee', symbol: 'Rs', flag: 'https://flagcdn.com/w20/lk.png', country: 'LK' },
+        'INR': { name: 'Indian Rupee', symbol: '₹', flag: 'https://flagcdn.com/w20/in.png', country: 'IN' },
+        'USD': { name: 'US Dollar', symbol: '$', flag: 'https://flagcdn.com/w20/us.png', country: 'US' },
+        'EUR': { name: 'Euro', symbol: '€', flag: 'https://flagcdn.com/w20/eu.png', country: 'EU' },
+        'GBP': { name: 'British Pound', symbol: '£', flag: 'https://flagcdn.com/w20/gb.png', country: 'GB' },
+        'CAD': { name: 'Canadian Dollar', symbol: 'C$', flag: 'https://flagcdn.com/w20/ca.png', country: 'CA' },
+        'MVR': { name: 'Maldivian Rufiyaa', symbol: 'MVR', flag: 'https://flagcdn.com/w20/mv.png', country: 'MV' }
+      };
+      
+      let selectedCurrency = 'LKR';
+      let lastUpdated = null;
+      
+      // Load real-time exchange rates
+      async function loadRealTimeRates() {
+        try {
+          console.log('🔄 Loading real-time exchange rates...');
+          
+          // Try multiple APIs for better reliability
+          const apis = [
+            {
+              url: 'https://v6.exchangerate-api.com/v6/f3d458516acc282f63f8d26e/latest/LKR',
+              parser: (data) => data.conversion_rates
+            },
+            {
+              url: 'https://api.fxratesapi.com/latest?api_key=fxr_live_b2bdb822bf914ad3b2a18af79678b734eb0b&base=LKR',
+              parser: (data) => data.rates
+            },
+            {
+              url: 'https://api.currencyapi.com/v3/latest?apikey=cur_live_hI1wDtWPnBjqXFdfqQA5ocTDaVly8PFuYj7g6AU6&base_currency=LKR',
+              parser: (data) => data.data ? Object.fromEntries(Object.entries(data.data).map(([k, v]) => [k, v.value])) : null
+            },
+            {
+              url: 'https://api.exchangerate-api.com/v4/latest/LKR',
+              parser: (data) => data.rates
+            }
+          ];
+          
+          let ratesLoaded = false;
+          
+          for (const api of apis) {
+            try {
+              const response = await fetch(api.url);
+              if (response.ok) {
+                const data = await response.json();
+                const rates = api.parser(data);
+                
+                if (rates) {
+                  // Update exchange rates
+                  Object.keys(currencyData).forEach(currency => {
+                    if (rates[currency]) {
+                      exchangeRates[currency] = rates[currency];
+                    }
+                  });
+                  
+                  lastUpdated = new Date();
+                  ratesLoaded = true;
+                  console.log('✅ Real-time rates loaded:', exchangeRates);
+                  break;
+                }
+              }
+            } catch (apiError) {
+              console.warn(`⚠️ API ${api.url} failed:`, apiError);
+              continue;
+            }
+          }
+          
+          if (!ratesLoaded) {
+            throw new Error('All APIs failed');
+          }
+          
+          // Update exchange rate displays
+          updateExchangeRateDisplays();
+          errorMessage.style.display = 'none';
+          
+        } catch (error) {
+          console.error('❌ Failed to load real-time rates:', error);
+          errorMessage.style.display = 'block';
+          errorMessage.textContent = 'Using offline rates';
+          
+          // Hide error after 3 seconds
+          setTimeout(() => {
+            errorMessage.style.display = 'none';
+          }, 3000);
+        }
+      }
+      
+      // Update exchange rate displays in dropdown
+      function updateExchangeRateDisplays() {
+        currencyOptions.forEach(option => {
+          const currency = option.dataset.currency;
+          const rateElement = option.querySelector('.exchange-rate');
+          
+          if (rateElement && exchangeRates[currency]) {
+            if (currency === 'LKR') {
+              rateElement.textContent = '1 LKR = 1.0000 LKR';
+            } else {
+              const rate = exchangeRates[currency];
+              rateElement.textContent = `1 LKR = ${rate.toFixed(4)} ${currency}`;
+            }
+          }
+        });
+        
+        // Update last updated time
+        if (lastUpdated) {
+          console.log(`🔄 Rates updated at: ${lastUpdated.toLocaleTimeString()}`);
+        }
+      }
+      
+      // Auto-detect user location and set currency
+      async function detectUserLocation() {
+        try {
+          const response = await fetch('https://ipapi.co/json/');
+          const data = await response.json();
+          
+          const countryToCurrency = {
+            'LK': 'LKR',
+            'IN': 'INR', 
+            'US': 'USD',
+            'GB': 'GBP',
+            'CA': 'CAD',
+            'MV': 'MVR'
+          };
+          
+          const detectedCurrency = countryToCurrency[data.country_code];
+          if (detectedCurrency && !localStorage.getItem('selectedCurrency')) {
+            selectCurrency(detectedCurrency);
+            console.log(`📍 Auto-detected currency: ${detectedCurrency} for ${data.country}`);
+          }
+        } catch (error) {
+          console.log('📍 Could not detect location, using default currency');
+        }
+      }
+      
+      // Toggle dropdown
+      currencyButton.addEventListener('click', function(e) {
+        e.stopPropagation();
+        console.log('💡 Currency button clicked!');
+        currencyDropdown.classList.toggle('open');
+      });
+      
+      // Close dropdown when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!currencyDropdown.contains(e.target)) {
+          currencyDropdown.classList.remove('open');
+        }
+      });
+      
+      // Handle currency selection
+      currencyOptions.forEach(option => {
+        option.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const newCurrency = this.dataset.currency;
+          console.log('💰 Currency selected:', newCurrency);
+          selectCurrency(newCurrency);
+          currencyDropdown.classList.remove('open');
+        });
+      });
+      
+      // Select currency function
+      function selectCurrency(currencyCode) {
+        if (!currencyData[currencyCode]) return;
+        
+        selectedCurrency = currencyCode;
+        const data = currencyData[currencyCode];
+        
+        // Update button display
+        currencyButton.innerHTML = `
+          <img src="${data.flag}" alt="${currencyCode}" class="currency-flag" onerror="this.style.display='none'">
+          <span class="currency-code">${currencyCode}</span>
+          <div class="dropdown-arrow"></div>
+        `;
+        
+        // Update selected state
+        currencyOptions.forEach(opt => {
+          opt.classList.toggle('selected', opt.dataset.currency === currencyCode);
+        });
+        
+        // Update prices
+        updateAllPrices();
+        
+        // Save preference
+        localStorage.setItem('selectedCurrency', currencyCode);
+        
+        console.log(`💱 Currency changed to: ${data.name} (${currencyCode})`);
+      }
+      
+      // Convert price function
+      function convertPrice(priceInLKR) {
+        const rate = exchangeRates[selectedCurrency] || 1;
+        return priceInLKR * rate;
+      }
+      
+      // Format price function
+      function formatPrice(price) {
+        const convertedPrice = convertPrice(price);
+        const symbol = currencyData[selectedCurrency].symbol;
+        
+        if (selectedCurrency === 'LKR') {
+          return `Rs.${convertedPrice.toFixed(2)}`;
+        } else if (selectedCurrency === 'INR') {
+          return `₹${convertedPrice.toFixed(2)}`;
+        } else {
+          return `${symbol}${convertedPrice.toFixed(2)}`;
+        }
+      }
+      
+      // Update all prices on page
+      function updateAllPrices() {
+        console.log('🔄 Updating prices for currency:', selectedCurrency);
+        
+        // Update checkout prices
+        if (typeof updateCheckout === 'function') {
+          updateCheckout();
+        }
+        
+        // Update any elements with data-price attribute
+        const priceElements = document.querySelectorAll('[data-price]');
+        priceElements.forEach(element => {
+          const originalPrice = parseFloat(element.dataset.price);
+          if (!isNaN(originalPrice)) {
+            element.textContent = formatPrice(originalPrice);
+          }
+        });
+      }
+      
+      // Make functions globally available
+      window.currencyConverter = {
+        formatPrice: formatPrice,
+        convertPrice: convertPrice,
+        selectedCurrency: () => selectedCurrency,
+        updatePricesOnPage: updateAllPrices,
+        exchangeRates: () => exchangeRates,
+        lastUpdated: () => lastUpdated
+      };
+      
+      // Initialize
+      loadRealTimeRates();
+      detectUserLocation();
+      
+      // Load saved currency
+      const savedCurrency = localStorage.getItem('selectedCurrency');
+      if (savedCurrency && currencyData[savedCurrency]) {
+        selectCurrency(savedCurrency);
+      }
+      
+      // Auto-refresh rates every 5 minutes
+      setInterval(loadRealTimeRates, 5 * 60 * 1000);
+      
+      console.log('✅ Real-time currency converter setup complete!');
+    });
+  </script>
+
+  <!-- Enhanced Animations Script -->
+  <script src="../js/twemoji-loader.js"></script>
+  <script src="../js/page-transitions.js"></script>
+  <script src="../js/enhanced-interactions.js"></script>
+
+</body>
+</html>
