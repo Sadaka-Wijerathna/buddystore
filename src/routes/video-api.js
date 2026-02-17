@@ -4,64 +4,27 @@ const fs = require('fs').promises;
 const fsSync = require('fs');
 const router = express.Router();
 
-// Database for storing likes/dislikes and video stats
-const dbPath = path.join(__dirname, '../../data');
-const videoStatsFile = path.join(dbPath, 'video-stats.json');
-const userInteractionsFile = path.join(dbPath, 'user-interactions.json');
+// In-memory storage for video stats (will be replaced with MongoDB in production)
+let videoStatsCache = {};
+let userInteractionsCache = {};
 
-// Ensure data directory exists
-if (!fsSync.existsSync(dbPath)) {
-    fsSync.mkdirSync(dbPath, { recursive: true });
-}
-
-// Initialize database files if they don't exist
-if (!fsSync.existsSync(videoStatsFile)) {
-    fsSync.writeFileSync(videoStatsFile, JSON.stringify({}));
-}
-
-if (!fsSync.existsSync(userInteractionsFile)) {
-    fsSync.writeFileSync(userInteractionsFile, JSON.stringify({}));
-}
-
-// Helper functions for database operations
+// Helper functions for database operations (using in-memory cache for Vercel compatibility)
 function loadVideoStats() {
-    try {
-        const data = fsSync.readFileSync(videoStatsFile, 'utf8');
-        return JSON.parse(data);
-    } catch (error) {
-        console.error('Error loading video stats:', error);
-        return {};
-    }
+    return videoStatsCache;
 }
 
 function saveVideoStats(stats) {
-    try {
-        fsSync.writeFileSync(videoStatsFile, JSON.stringify(stats, null, 2));
-        return true;
-    } catch (error) {
-        console.error('Error saving video stats:', error);
-        return false;
-    }
+    videoStatsCache = stats;
+    return true;
 }
 
 function loadUserInteractions() {
-    try {
-        const data = fsSync.readFileSync(userInteractionsFile, 'utf8');
-        return JSON.parse(data);
-    } catch (error) {
-        console.error('Error loading user interactions:', error);
-        return {};
-    }
+    return userInteractionsCache;
 }
 
 function saveUserInteractions(interactions) {
-    try {
-        fsSync.writeFileSync(userInteractionsFile, JSON.stringify(interactions, null, 2));
-        return true;
-    } catch (error) {
-        console.error('Error saving user interactions:', error);
-        return false;
-    }
+    userInteractionsCache = interactions;
+    return true;
 }
 
 // Get or initialize video stats
@@ -79,21 +42,19 @@ function getVideoStats(videoId) {
 }
 
 // VPS video storage path - you can change this to your actual VPS path
-const VPS_VIDEO_PATH = process.env.VPS_VIDEO_PATH || path.join(__dirname, '../../Videos');
+const VPS_VIDEO_PATH = process.env.VPS_VIDEO_PATH || path.join(__dirname, '../../public/Videos');
 console.log('📁 VPS Video Path:', VPS_VIDEO_PATH);
-console.log('📁 Path exists:', fsSync.existsSync(VPS_VIDEO_PATH));
 
-// Test path access on startup
+// Test path access on startup (with error handling for Vercel)
 try {
     if (fsSync.existsSync(VPS_VIDEO_PATH)) {
         const testRead = fsSync.readdirSync(VPS_VIDEO_PATH);
         console.log('✅ Successfully read video directory. Found:', testRead.length, 'items');
-        console.log('📂 Items:', testRead);
     } else {
-        console.error('❌ Video directory does not exist:', VPS_VIDEO_PATH);
+        console.warn('⚠️ Video directory does not exist:', VPS_VIDEO_PATH);
     }
 } catch (error) {
-    console.error('❌ Error accessing video directory:', error.message);
+    console.warn('⚠️ Error accessing video directory (this is normal on Vercel):', error.message);
 }
 
 // Supported video formats
